@@ -67,7 +67,6 @@ def dFOscillator(x, y, *, ω=1):
 > *class* phaseportrait.**PhasePortrait2D**(*dF, Range, \*, MeshDim=10, dF_args={}, Density=1, Polar=False, \*\*kwargs*)
 
 Gives the option to represent a 2D phase portrait given a [dF](.readme/dFfunction.md) function with 2 args.
-Permite representar un retrato de fases en dos dimensiones de una función [dF](.readme/dFfuncion.md) de 2 parámetros obligatorios.
 
 # [Trajectory3D](.readme/trajectory3d.md)
 > *class* phaseportrait.**Trajectory3D**(*dF, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kwargs*)
