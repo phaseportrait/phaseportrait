@@ -1,30 +1,29 @@
-# Trajectory3D
-> *class* phaseportrait.**Trajectory3D**(*dF, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kwargs*)
+# Trajectory2D
+> *class* phaseportrait.**Trajectory2D**(*dF, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kargs*)
 
 Inherits from parent class [trajectory](trajectory.md).
 
-Gives the option to represent 3D trajectories given a [dF](dFfunction.md) function with 3 args.
+Computes a trajectory on a 2D system given a [dF](dFfunction.md) consisting of 2 args.
 
 | Attributes          | Methods                                                                  |
 | ------------------ | ------------------------------------------------------------------------ |
-| dF                 | [initial_position           ](#trajectory3dinitial_position)             |
-| dF_args            | [termalize                 ](#trajectory3dtermalize)                     |
-| Range              | [add_slider                 ](#trajectory3dadd_slider)                   |
-| values             | [plot                       ](#trajectory3dplot)                         |
-| velocity           | [compute_trajectory         ](#trajectory3dcompute_trajectory)           |
-| initial_conditions | [rungekutta_time_independent](#trajectory3drungekutta_time_independent)  |
+| dF                 | [initial_position           ](#Trajectory2dinitial_position)            |
+| dF_args            | [thermalize                 ](#Trajectory2dthermalize)                  |
+| Range              | [add_slider                 ](#Trajectory2dadd_slider)                  |
+| values             | [plot                       ](#Trajectory2dplot)                        |
+| velocity           | [compute_trajectory         ](#Trajectory2dcompute_trajectory)          |
+| initial_conditions | [rungekutta_time_independent](#Trajectory2drungekutta_time_independent) |
 | runge_kutta_step   |                                                                          |
 | runge_kutta_freq   |                                                                          |
 | n_points           |                                                                          |
 | Title              |                                                                          |
 | xlabel             |                                                                          |
 | ylabel             |                                                                          |
-| zlabel             |                                                                          |
 | fig                |                                                                          |
 | ax                 |                                                                          |
 | sliders            |                                                                          |
 | lines              |                                                                          |
-| termalization      |                                                                          |
+| thermalization     |                                                                          |
 | color              |                                                                          |
 
 ### **Attributes**
@@ -32,7 +31,7 @@ Gives the option to represent 3D trajectories given a [dF](dFfunction.md) functi
 
 * **dF_args** (dict) - dictionary with parameters for `dF` function.
 
-* **Range** (Optional[list, float]) - see [defining a 3D range](#defining-range).
+* **Range** (Optional[list, float]) - see [defining a 2D range](#defining-range).
 
 * **lines**=False (bool) - representing with lines instead of points.
 
@@ -56,50 +55,48 @@ Gives the option to represent 3D trajectories given a [dF](dFfunction.md) functi
   
 * **ylabel** (str) -  y axis label in the plot. Default value is `'Y'`.
 
-* **zlabel** (str) -  z axis label in the plot. Default value is `'Z'`.
-
 * **mark_start_point** (bool) - marks staring position with a bigger point size.
 
 
 # Methods
-## *Trajectory3D*.initial_position
-> *Trajectory3D*.**initial_position**(**position*)
+## *Trajectory2D*.initial_position
+> *Trajectory2D*.**initial_position**(**position*)
 
-Parameter `position` must be a 3 element list or ndarray.
+Parameter `position` must be a 2 element list or ndarray.
 
 
-## *Trajectory3D*.termalize
-> *Trajectory3D*.**termalize**(**position*)
+## *Trajectory2D*.thermalize
+> *Trajectory2D*.**thermalize**(**position*)
 
 Parameter `position` is optional. If it is not introduced, a random number between 0 and 1 will be taken for each coordinate.
 
-## *Trajectory3D*.add_slider
-> *Trajectory3D*.**add_slider**(*param_name, \*, valinit=None, valstep=0.1, valinterval=10*)
+## *Trajectory2D*.add_slider
+> *Trajectory2D*.**add_slider**(*param_name, \*, valinit=None, valstep=0.1, valinterval=10*)
 
 Adds a [slider](slider.md) which can change the value of a parameter in execution time.
 
 
-## *Trajectory3D*.plot
-> *Trajectory3D*.**plot**(*, color=None)
+## *Trajectory2D*.plot
+> *Trajectory2D*.**plot**(*, color=None)
 
 Takes as arguments class attributes. Color scheme can be changed introducing kwarg `color`. A list with accepted values can be found [here](https://matplotlib.org/stable/gallery/color/colormap_reference.html). 
 
 
-## *Trajectory3D*.compute_trajectory
-> *Trajectory3D*.**compute_trajectory**(*initial_values*)
+## *Trajectory2D*.compute_trajectory
+> *Trajectory2D*.**compute_trajectory**(*initial_values*)
 
 Given an initial posotion by `initial_values` (containing 3 coordinates), the method returns a tuple with two lists: positions and difference between following positions. Returns `n_points` points.
 
 
-## *Trajectory3D*.rungekutta_time_independent
-> *Trajectory3D*.**rungekutta_time_independent**(*initial_values*)
+## *Trajectory2D*.rungekutta_time_independent
+> *Trajectory2D*.**rungekutta_time_independent**(*initial_values*)
 
 Generator that given `initial_values`, returns the next point.
 
 # Defining Range:
 
-1. A single number. In this case the range is defined from zero to the given number in all axes.
+1. A single number. In this case the range is defined from zero to the given number in both axes.
 
-2. A range, such `[lowerLimit , upperLimit]`. All axes will take the same limits.
+2. A range, such `[lowerLimit , upperLimit]`. Both axes will take the same limits.
 
-3. Three ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit], [zAxisLowerLimit , zAxisUpperLimit]]`
+3. Two ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit]]`

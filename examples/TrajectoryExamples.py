@@ -7,6 +7,21 @@ For each example, 3 or 4 plots will be created. In order to prevent your PC from
 of a sudden every example. If that happens, mark as False all examples except the one you want to visualize.
 """
 
+if True:
+    """
+    Exampple 0: circular motion in 2D.
+    """
+
+    def dFCircle(x,y,*, w=1, z=1):
+        return w*y, -z*x
+
+    circle = Trajectory2D(dFCircle, n_points=1300, size=2, mark_start_position=True, Title='Just a circle')
+    circle.initial_position(1,1)
+    circle.initial_position(2,2)
+    circle.add_slider('w', valinterval=[-1,5])
+    circle.add_slider('z', valinterval=[-1,5])
+    circle.plot()
+    plt.show()
 
 if True:
     """
@@ -47,9 +62,9 @@ if True:
     def Rossler(x,y,z,*, s=10, r=28, b=8/3):
         return -(y+z), s*y+x, b+z*(x-r)
     
-    c = Trajectory3D(Rossler, Range=[20, 20,[0,40]], dF_args={'s':0.2, 'r':5.7, 'b':0.2}, n_points=20000, numba=True, termalization=2000, size=4, Title= 'Rossler attractor')
+    c = Trajectory3D(Rossler, Range=[20, 20,[0,40]], dF_args={'s':0.2, 'r':5.7, 'b':0.2}, n_points=20000, numba=True, thermalization=2000, size=4, Title= 'Rossler attractor')
     c.add_slider('r', valinit=5.7, valinterval=[0,10])
-    c.termalize()
+    c.thermalize()
     c.plot()
     plt.show()
 
@@ -62,7 +77,7 @@ if True:
         delta = (3*s+15)
         return -s*x+2*y-4*z-y**2+delta , -s*y+2*z-4*x-z**2+delta, -s*z+2*x-4*y-x**2+delta
 
-    d = Trajectory3D(Halvorsen, dF_args={'s':1.4}, n_points=10000, termalization=0, numba=True, size=2, mark_start_point=True, Title='Halvorsen attractor')
+    d = Trajectory3D(Halvorsen, dF_args={'s':1.4}, n_points=10000, thermalization=0, numba=True, size=2, mark_start_point=True, Title='Halvorsen attractor')
     d.initial_position(0,5,10)
     d.plot()
     plt.show()
@@ -76,8 +91,8 @@ if True:
     def Thomas(x,y,z,*, s=0.208186):
       return -s*x+np.sin(y), -s*y+np.sin(z), -s*z+np.sin(x)
     
-    e = Trajectory3D(Thomas, dF_args={'s':0.208186}, n_points=30000, size=1, numba=True, termalization=2000, Title='Thomas attractor')
-    e.termalize()
+    e = Trajectory3D(Thomas, dF_args={'s':0.208186}, n_points=30000, size=1, numba=True, thermalization=2000, Title='Thomas attractor')
+    e.thermalize()
     e.plot()
     plt.show()
 
@@ -88,11 +103,11 @@ if True:
     def Four_wings(x,y,z,*, a=0.2, b=0.01, c=-0.4):
       return a*x+y*z, b*x+c*y-x*z, -z - x*y
     
-    f = Trajectory3D(Four_wings, dF_args={'a':0.2, 'b':0.01, 'c':-0.4}, n_points=10000, runge_kutta_freq=5, size=2, termalization=2000, Title='Four-Wings attractor')
+    f = Trajectory3D(Four_wings, dF_args={'a':0.2, 'b':0.01, 'c':-0.4}, n_points=10000, runge_kutta_freq=5, size=2, thermalization=2000, Title='Four-Wings attractor')
     f.add_slider('a', valinit=0.21, valinterval=[0.1,0.3], valstep=0.005)
     f.add_slider('b', valinit=0.01, valinterval=[0,0.3], valstep=0.005)
     f.add_slider('c', valinit=-0.4, valinterval=[-1,0], valstep=0.005)
-    f.termalize()
+    f.thermalize()
     f.plot()
     plt.show()
 
@@ -103,8 +118,8 @@ if True:
     def Aizawa(x,y,z,*, a=0.95, b=0.7, c=0.6, d=3.5, e=0.25, f=0.1):
         return (z-b)*x - d*y, d*x + (z-b)*y, c + a*z - z*z*z/3 - (x*x + y*y) * (1 + e*z) + f*z*x*x*x
 
-    g = Trajectory3D(Aizawa, dF_args={'a':0.95, 'b':0.7, 'c':0.6, 'd':3.5, 'e':0.25, 'f':0.1}, n_points=10000, size=1, termalization=2000, Title='Aizawa attractor')
-    g.termalize()
+    g = Trajectory3D(Aizawa, dF_args={'a':0.95, 'b':0.7, 'c':0.6, 'd':3.5, 'e':0.25, 'f':0.1}, n_points=10000, size=1, thermalization=2000, Title='Aizawa attractor')
+    g.thermalize()
     g.add_slider('a', valinit=0.95, valinterval=[0,1], valstep=0.005)
     g.add_slider('b', valinit=0.7, valinterval=[0,1], valstep=0.005)
     g.add_slider('c', valinit=0.6, valinterval=[0,1], valstep=0.005)
@@ -123,8 +138,8 @@ if True:
     def Sprott(x, y, z, *, a=2.07, b=1.79):
         return y + a*x*y + x*z, 1 - b*x*x + y*z, x - x*x - y*y
 
-    h = Trajectory3D(Sprott, dF_args={'a':2.07, 'b':1.79}, n_points=10000, numba=True, size=1, termalization=2000, Title='Sprott attractor')
-    h.termalize()
+    h = Trajectory3D(Sprott, dF_args={'a':2.07, 'b':1.79}, n_points=10000, numba=True, size=1, thermalization=2000, Title='Sprott attractor')
+    h.thermalize()
     h.add_slider('a', valinterval=[0,5])
     h.add_slider('b', valinterval= [0,5])
     h.plot()

@@ -37,7 +37,7 @@ Examples showing how to use *PhasePortrait2D* class.
 Examples using the *slider* feature from *PhasePortrait2D* class.
 
 - ### [TrajectoryExamples.py](examples/TrajectoryExamples.py):
-Contains examples of 3D trajectories with and without sliders.
+Contains examples of 2D and 3D trajectories with and without sliders.
 
 # Instructions
 Using *phaseportrait* is easy, it has to be firstly imported, which can be done this way:
@@ -64,12 +64,16 @@ def dFOscillator(x, y, *, ω=1):
 ```
 
 # [PhasePortrait2D](.readme/phaseportrait2d.md)
-> *class* phaseportrait.**PhasePortrait2D**(*dF, Range, \*, MeshDim=10, dF_args={}, Density=1, Polar=False, \*\*kwargs*)
+> *class* phaseportrait.**PhasePortrait2D**(*dF, Range, \*, MeshDim=10, dF_args={}, Density=1, Polar=False, \*\*kargs*)
 
 Gives the option to represent a 2D phase portrait given a [dF](.readme/dFfunction.md) function with 2 args.
-Permite representar un retrato de fases en dos dimensiones de una función [dF](.readme/dFfuncion.md) de 2 parámetros obligatorios.
+
+# [Trajectory2D](.readme/trajectory2d.md)
+> *class* phaseportrait.**Trajectory2D**(*dF, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kargs*)
+
+Gives the option to represent 2D trajectories given a [dF](.readme/dFfunction.md) function with 3 args.
 
 # [Trajectory3D](.readme/trajectory3d.md)
-> *class* phaseportrait.**Trajectory3D**(*dF, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kwargs*)
+> *class* phaseportrait.**Trajectory3D**(*dF, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kargs*)
 
 Gives the option to represent 3D trajectories given a [dF](.readme/dFfunction.md) function with 3 args.
