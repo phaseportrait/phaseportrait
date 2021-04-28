@@ -1,16 +1,9 @@
-import random
-from inspect import signature
-
-import matplotlib
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib import cm
 
-from .trajectories import trajectory as trj
+from .trajectories import trajectory
+ 
 
-
-class Trajectory3D(trj):
+class Trajectory3D(trajectory):
     """
     Computes a trajectory on a 3D system.
     """

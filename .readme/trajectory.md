@@ -1,6 +1,6 @@
 
 # trajectory
-> *class* phaseportrait.trajectories.**trajectory**(*dF, dimension, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*kargs*)
+> *class* phaseportrait.trajectories.**trajectory**(*dF, dimension, \*, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, \*\*karg*)
 
 Parent class for trajectories. Represents trajectories given a [dF](dFfunction.md) function with N args.
 

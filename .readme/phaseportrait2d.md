@@ -1,5 +1,5 @@
 # PhasePortrait2D
-> *class* phaseportrait.**PhasePortrait2D**(*dF, Range, \*, MeshDim=10, dF_args={}, Density=1, Polar=False, \*\*kwargs*)
+> *class* phaseportrait.**PhasePortrait2D**(*dF, Range, \*, MeshDim=10, dF_args={}, Density=1, Polar=False, \*\*kargs*)
 
 Gives the option to represent a 2D phase portrait given a [dF](dFfunction.md) function with 2 args.
 

@@ -1,10 +1,21 @@
+# from inspect import signature
+
+# from .exceptions import *
+# from . import sliders
+# from .utils import utils
+
+# import matplotlib
+# import matplotlib.pyplot as plt
+
+# import numpy as np
+
 from inspect import signature
 
-from .exceptions import *
-from . import sliders
+from .exceptions import exceptions
+from .sliders import sliders
 from .utils import utils
 
-import matplotlib
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -57,7 +68,7 @@ class PhasePortrait2D:
         else:
             self._dX, self._dY = self.dF(self._X, self._Y, **self.dF_args)
         colors = (self._dX**2+self._dY**2)**(0.5)
-        colors_norm = matplotlib.colors.Normalize(vmin=colors.min(), vmax=colors.max())
+        colors_norm = mcolors.Normalize(vmin=colors.min(), vmax=colors.max())
         stream = self.ax.streamplot(self._X, self._Y, self._dX, self._dY, color=colors, cmap=color, norm=colors_norm, linewidth=1, density= self.Density)
         self.ax.set_xlim(self.Range[0,:])
         self.ax.set_ylim(self.Range[1,:])

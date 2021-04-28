@@ -11,9 +11,9 @@ Adds a slider which can change the value of a parameter in [dF](dFfunction.md) d
 Adds a slider which can change the value of a parameter in execution time.
 
 **Args**:
-* param_name : string type. It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as kwarg in the `dF` function.
+* param_name : string type. It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
 
-**\*\*kwargs**:
+**\*\*kargs**:
 
 * valinit: initial value of *param_name* variable. Default value is 0.5 .
 
