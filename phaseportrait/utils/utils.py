@@ -67,7 +67,7 @@ def construct_interval(var, *, dim=None, depth=0):
     if dim==1:
         inter = construct_interval_1d(var)
     elif dim==2:
-        inter = construct_interval_2d(var, depth=depth)
+        inter = construct_interval_2d(var)
     elif dim==3:
         inter = construct_interval_3d(var, depth=depth)
     while len(inter)<dim:

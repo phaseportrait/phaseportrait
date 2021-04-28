@@ -1,7 +1,7 @@
 import numpy as np
 
-from .exceptions import *
-from .utils import utils
+from ..exceptions import *
+from ..utils import utils
 from matplotlib.widgets import Slider as matplot_slider
 
 class Slider():

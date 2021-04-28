@@ -9,7 +9,7 @@ from matplotlib import cm
 
 from .trajectories import trajectory as trj
 
-class Trajectory2D(trj.trajectory):
+class Trajectory2D(trj):
     """
     Computes a trajectory on a 2D system.
     """
@@ -50,7 +50,7 @@ class Trajectory2D(trj.trajectory):
             ('Z', 0, 1, self.xlabel, self.ylabel),
         ]:
 
-            self.ax[coord].set_title(f'{self.Titulo}')
+            self.ax[coord].set_title(f'{self.Title}')
             if self.Range is not None:
                 self.ax[coord].set_xlim(self.Range[r0,:])
                 self.ax[coord].set_ylim(self.Range[r1,:])

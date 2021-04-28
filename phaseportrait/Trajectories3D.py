@@ -10,7 +10,7 @@ from matplotlib import cm
 from .trajectories import trajectory as trj
 
 
-class Trajectory3D:
+class Trajectory3D(trj):
     """
     Computes a trajectory on a 3D system.
     """
@@ -67,7 +67,7 @@ class Trajectory3D:
 
 
     def _prepare_plot(self):
-        self.ax['3d'].set_title(f'{self.Titulo}')
+        self.ax['3d'].set_title(f'{self.Title}')
         if self.Range is not None:
             self.ax['3d'].set_xlim(self.Range[0,:])
             self.ax['3d'].set_ylim(self.Range[1,:])
@@ -83,7 +83,7 @@ class Trajectory3D:
             ('Z', 0, 1, 'XY', self.xlabel, self.ylabel),
         ]:
 
-            self.ax[coord].set_title(f'{self.Titulo}: {title}')
+            self.ax[coord].set_title(f'{self.Title}: {title}')
             if self.Range is not None:
                 self.ax[coord].set_xlim(self.Range[r0,:])
                 self.ax[coord].set_ylim(self.Range[r1,:])
