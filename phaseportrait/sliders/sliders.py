@@ -13,10 +13,10 @@ class Slider():
         valinterval = utils.construct_interval_1d(valinterval)
         valinterval = np.array(valinterval)
  
-        if 'Trajectory' in self.portrait._name_: 
+        if 'Trajectory' in self.portrait._name_ or 'Cobweb' in self.portrait._name_: 
             self.ax = self.portrait.sliders_fig.add_axes([0.25, 0.88 - 0.05*len(self.portrait.sliders), 0.4, 0.05])
 
-        if 'PhasePortrait' in self.portrait._name_ or 'Cobweb' in self.portrait._name_:
+        if 'PhasePortrait' in self.portrait._name_:
             self.ax = self.portrait.fig.add_axes([0.25, 0.015 + 0.05*len(self.portrait.sliders), 0.4, 0.03])
         
         aux = {'valinit':valinit} if isinstance(self.value, (int, float)) else {}

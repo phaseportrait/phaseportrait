@@ -26,7 +26,18 @@ class Cobweb:
         self.xlabel = kargs['xlabel'] if kargs.get('xlabel') else r'$X_n$'
         self.ylabel = kargs['ylabel'] if kargs.get('ylabel') else r'$X_{n+1}$'
 
-        self.fig, self.ax = plt.subplots()
+        figCobweb, axCobweb = plt.subplots()
+        figTimeSeries, axTimeSeries = plt.subplots()
+
+        self.fig = {
+            'Cobweb': figCobweb,
+            'TimeSeries': figTimeSeries
+        }
+        self.ax = {
+            'Cobweb': axCobweb,
+            'TimeSeries': axTimeSeries
+        }
+
         self.sliders = {}
         self.sliders_fig = False
 
@@ -34,17 +45,22 @@ class Cobweb:
 
     def _prepare_plot(self, min_value, max_value):
 
-        self.ax.set_title(self.Title)
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylabel(self.ylabel)
+        self.ax['Cobweb'].set_title(self.Title)
+        self.ax['Cobweb'].set_xlabel(self.xlabel)
+        self.ax['Cobweb'].set_ylabel(self.ylabel)
 
         if self.yrange==[]:
-            self.ax.set_ylim(bottom= 1.10*min_value,top=1.10*max_value)
+            self.ax['Cobweb'].set_ylim(bottom= 1.10*min_value,top=1.10*max_value)
         else:
-            self.ax.set_ylim(self.yrange)
+            self.ax['Cobweb'].set_ylim(self.yrange)
 
-        self.ax.grid()
-    
+        self.ax['Cobweb'].grid()
+
+        self.ax['TimeSeries'].set_title('Time Series')
+        self.ax['TimeSeries'].set_ylabel(r'$x_t$')
+        self.ax['TimeSeries'].set_xlabel('t')
+        self.ax['TimeSeries'].set_ylim(self.xrange)
+        self.ax['TimeSeries'].grid()
 
 
     def plot(self, *args, **kargs):
@@ -54,35 +70,56 @@ class Cobweb:
 
         self._prepare_plot(np.min(func_result), np.max(func_result))
 
-        self.ax.plot(bisector, func_result, 'b')
-        self.ax.plot(bisector, bisector, "k:", color='grey')
+        self.ax['Cobweb'].plot(bisector, func_result, 'b')
+        self.ax['Cobweb'].plot(bisector, bisector, "k:", color='grey')
 
         x, y = self.initial_position, self.dF(self.initial_position, **self.dF_args)
-        self.ax.plot([x, x], [0, y], 'k:')
-        self.ax.scatter(x , 0, color='green')
+        self.ax['Cobweb'].plot([x, x], [0, y], 'k:')
+        self.ax['Cobweb'].scatter(x , 0, color='green')
 
-        for _ in range(self.max_steps):
+        self.ax['TimeSeries'].scatter(0 , x, color='black', s=5.5)
 
-            self.ax.plot([x, y], [y, y], 'k:')
-            self.ax.plot([y, y], [y, self.dF(y, **self.dF_args)], 'k:')
+        for i in range(self.max_steps):
+
+            self.ax['Cobweb'].plot([x, y], [y, y], 'k:')
+            self.ax['Cobweb'].plot([y, y], [y, self.dF(y, **self.dF_args)], 'k:')
             x, y = y, self.dF(y, **self.dF_args)
+            self.ax['TimeSeries'].scatter(i , x, color='black', s=5.5)
 
             if y>self.xrange[1] or y<self.xrange[0]:
                 print(f'Warning: cobweb plot got out of range and could not compute {self.max_steps} steps.')
                 break
 
 
-        self.fig.canvas.draw_idle()
+        self.fig['Cobweb'].canvas.draw_idle()
+        self.fig['TimeSeries'].canvas.draw_idle()
 
 
+    def _create_sliders_plot(self):
+        if not isinstance(self.sliders_fig, plt.Figure):
+            self.sliders_fig, self.sliders_ax = plt.subplots() 
+            self.sliders_ax.set_visible(False)
+            
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
         """
-        Adds a slider on an existing plot
-        """
-        self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})
+        Adds a slider which can change the value of a parameter in execution time.
 
-        self.fig.subplots_adjust(bottom=0.25)
+        Args:
+
+            param_name : string type. It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
+
+        **kargs:
+
+            valinit: initial value of *param_name* variable. Default value is 0.5 .
+
+            valstep : slider step value. Default value is 0.1 .
+
+            valinterval : slider range. Default value is [-10, 10] .
+        """
+        self._create_sliders_plot()
+
+        self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})
 
         self.sliders[param_name].slider.on_changed(self.sliders[param_name])
 
