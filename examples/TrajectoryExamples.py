@@ -9,7 +9,7 @@ of a sudden every example. If that happens, mark as False all examples except th
 
 if True:
     """
-    Exampple 0: circular motion in 2D.
+    Example 0: circular motion in 2D.
     """
 
     def dFCircle(x,y,*, w=1, z=1):

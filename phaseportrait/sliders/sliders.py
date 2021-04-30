@@ -16,9 +16,8 @@ class Slider():
         if 'Trajectory' in self.portrait._name_: 
             self.ax = self.portrait.sliders_fig.add_axes([0.25, 0.88 - 0.05*len(self.portrait.sliders), 0.4, 0.05])
 
-        if 'PhasePortrait' in self.portrait._name_:
+        if 'PhasePortrait' in self.portrait._name_ or 'Cobweb' in self.portrait._name_:
             self.ax = self.portrait.fig.add_axes([0.25, 0.015 + 0.05*len(self.portrait.sliders), 0.4, 0.03])
-
         
         aux = {'valinit':valinit} if isinstance(self.value, (int, float)) else {}
         self.slider = matplot_slider(self.ax, self.param_name, *valinterval, valstep=valstep, **aux)
@@ -30,4 +29,8 @@ class Slider():
             for ax in self.portrait.ax.values():
                 ax.cla()
         self.value = value
+
+        if 'Cobweb' in self.portrait._name_:
+            self.portrait.update_dF_args()
+
         self.portrait.plot()

@@ -1,14 +1,3 @@
-# from inspect import signature
-
-# from .exceptions import *
-# from . import sliders
-# from .utils import utils
-
-# import matplotlib
-# import matplotlib.pyplot as plt
-
-# import numpy as np
-
 from inspect import signature
 
 from .exceptions import exceptions
@@ -25,7 +14,7 @@ class PhasePortrait2D:
     Makes a phase portrait of a 2D system.
     """
     _name_ = 'PhasePortrait2D'
-    def __init__(self, dF, Range, *, MeshDim=10, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow'):
+    def __init__(self, dF, Range, *, MeshDim=500, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow'):
 
         
         self.dF_args = dF_args                           # dF function's args
@@ -33,7 +22,7 @@ class PhasePortrait2D:
         self.Range = Range                               # Range of graphical representation
         
         
-        self.L = int (MeshDim*abs(self.Range[0,0]-self.Range[0,1]))      # Number of points in the meshgrid
+        self.L = MeshDim                                                 # Number of points in the meshgrid
         self.Density = Density                                           # Controls concentration of nearby trajectories
         self.Polar = Polar                                               # If dF expression given in polar coord. mark as True
         self.Title = Title                                               # Title of the plot
@@ -105,7 +94,6 @@ class PhasePortrait2D:
         self.fig.subplots_adjust(bottom=0.25)
 
         self.sliders[param_name].slider.on_changed(self.sliders[param_name])
-    
     
     def _PolarTransformation(self):
         """

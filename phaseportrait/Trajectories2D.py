@@ -1,21 +1,4 @@
-# import random
-# from inspect import signature
-
-# import matplotlib
-# import matplotlib.animation as animation
-# import matplotlib.pyplot as plt
-# import numpy as np
-# from matplotlib import cm
-
-# from .trajectories import trajectory as trj
-
-#import random
-#from inspect import signature
-#
-#import matplotlib
-#import matplotlib.animation as animation
 import matplotlib.pyplot as plt
-#import numpy as np
 
 from .trajectories import trajectory
 
