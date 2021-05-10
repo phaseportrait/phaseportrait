@@ -9,9 +9,45 @@ from .utils import utils
 
 
 class Cobweb:
+    """
+    A class used to represent a Cobweb plot and a time series to study the convergence of a map.
 
+    Attributes
+    ----------
+    dF : function
+        Map function, which returns value given a point and some parameters.
+    initial_position : numeric
+        Initial position for iterating the map.
+    xrange : numeric or list
+        Range of representation on x axis.
+    dF_args : dict, optional
+        Dictionary with parameters for `dF` function.
+    yrange : numeric or list, optional
+        Range of representation on y axis.
+    max_steps : int, optional
+        Number of iterations of the map.
+    n_points : int, optional
+        Number of points to plot the map.
+    xlabel : str, optional
+        x axis label in the plot. Default value is `r'$X_{n}$'`
+    ylabel : str, optional
+        y axis label in the plot. Default value is `r'$X_{n+1}$'`
+    Title : str, optional
+        title of the plot. Default value is `'Cobweb plot'`.
+
+    Methods
+    -------
+    plot():
+        Creates two figures, one containing the Cobweb plot and other with the time series.
+
+    add_slider(param_name, valinit=None, valstep=0.1, valinterval=10):
+        Adds a slider which can change the value of a parameter in execution time.
+
+    initial_position_slider(valinit=None, valstep=0.05, valinterval=None):
+        Adds a slider for changing initial value on a cobweb plot
+    """
     _name_ = 'Cobweb'
-    def __init__(self, dF, initial_position, xrange, *, dF_args={None}, yrange=[], max_steps=100, n_points=10000, **kargs):
+    def __init__(self, dF, initial_position, xrange, *, dF_args={}, yrange=[], max_steps=100, n_points=10000, **kargs):
         
         self.dF = dF
         self.dF_args = dF_args
@@ -44,7 +80,17 @@ class Cobweb:
 
 
     def _prepare_plot(self, min_value, max_value):
+        """
+        Internally used method. Sets titles and axis for Cobweb and Time Series plots.
 
+        Parameters
+        ----------
+        min_value: numeric
+            Minimum value of the function in the interval.
+
+        max_value: numeric
+            Maximum value of the function in the interval.
+        """
         self.ax['Cobweb'].set_title(self.Title)
         self.ax['Cobweb'].set_xlabel(self.xlabel)
         self.ax['Cobweb'].set_ylabel(self.ylabel)
@@ -64,9 +110,16 @@ class Cobweb:
 
 
     def plot(self, *args, **kargs):
-
+        """
+        Creates two figures, one containing the Cobweb plot and other with the time series.
+        Calls _prepare_plot method which sets titles and axis for both plots.
+        Then, it computes the several values of x given by the dF function, making a total of `max_steps` steps and ploting results.
+        """
         bisector = np.linspace(self.xrange[0], self.xrange[1], self.n_points)
         func_result = self.dF(bisector, **self.dF_args)
+
+        xTimeSeries = []
+        yTimeSeries = []
 
         self._prepare_plot(np.min(func_result), np.max(func_result))
 
@@ -77,25 +130,34 @@ class Cobweb:
         self.ax['Cobweb'].plot([x, x], [0, y], 'k:')
         self.ax['Cobweb'].scatter(x , 0, color='green')
 
-        self.ax['TimeSeries'].scatter(0 , x, color='black', s=5.5)
+        xTimeSeries.append(0)
+        yTimeSeries.append(x)
 
         for i in range(self.max_steps):
 
             self.ax['Cobweb'].plot([x, y], [y, y], 'k:')
             self.ax['Cobweb'].plot([y, y], [y, self.dF(y, **self.dF_args)], 'k:')
+
             x, y = y, self.dF(y, **self.dF_args)
-            self.ax['TimeSeries'].scatter(i , x, color='black', s=5.5)
+
+            xTimeSeries.append(i)
+            yTimeSeries.append(x)
 
             if y>self.xrange[1] or y<self.xrange[0]:
                 print(f'Warning: cobweb plot got out of range and could not compute {self.max_steps} steps.')
                 break
-
+        
+        self.ax['TimeSeries'].scatter(xTimeSeries , yTimeSeries, color='black', s=10)
+        self.ax['TimeSeries'].plot(xTimeSeries , yTimeSeries, 'k:', color='grey')
 
         self.fig['Cobweb'].canvas.draw_idle()
         self.fig['TimeSeries'].canvas.draw_idle()
 
 
     def _create_sliders_plot(self):
+        """
+        Internally used method. Checks if there is already a sliders plot. If not, it creates it.
+        """
         if not isinstance(self.sliders_fig, plt.Figure):
             self.sliders_fig, self.sliders_ax = plt.subplots() 
             self.sliders_ax.set_visible(False)
@@ -105,17 +167,19 @@ class Cobweb:
         """
         Adds a slider which can change the value of a parameter in execution time.
 
-        Args:
+        Parameters
+        ----------
+        param_name : str
+            It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
 
-            param_name : string type. It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
+        valinit : numeric, optional
+            Initial value of *param_name* variable. Default value is 0.5.
 
-        **kargs:
+        valstep : numeric, optional
+            Slider step value. Default value is 0.1.
 
-            valinit: initial value of *param_name* variable. Default value is 0.5 .
-
-            valstep : slider step value. Default value is 0.1 .
-
-            valinterval : slider range. Default value is [-10, 10] .
+        valinterval : numeric or list, optional
+            Slider range. Default value is [-10, 10].
         """
         self._create_sliders_plot()
 
@@ -125,6 +189,11 @@ class Cobweb:
 
 
     def update_dF_args(self):
+        """
+        Internally used method. It is used for setting the new values of dF_args and also for initial position.
+
+        It is meant to be called on `call` method in Slider class.
+        """
         for name, slider in self.sliders.items():
             if slider.value!= None and name!=r'$x_0$':
                 self.dF_args[name] = slider.value 
@@ -135,6 +204,18 @@ class Cobweb:
     def initial_position_slider(self, *, valinit=None, valstep=0.05, valinterval=None):
         """
         Adds a slider for changing initial value on a cobweb plot
+
+        Parameters
+        ----------
+
+        valinit : numeric, optional
+            Initial position. Default value is the same as initial position given when initializing Cobweb object.
+
+        valstep : numeric, optional
+            Slider step value. Default value is 0.05.
+
+        valinterval : numeric or list, optional
+            Slider range. Default value is xrange given when initalizing Cobweb object.
         """
         if valinit is None:
             valinit = self.initial_position
@@ -144,7 +225,7 @@ class Cobweb:
         
         self.add_slider(r'$x_0$', valinit=valinit, valstep=valstep, valinterval=valinterval)
 
-    # Funciones para asegurarse que los parametros introducidos son válidos
+    
     @property
     def dF(self):
         return self._dF

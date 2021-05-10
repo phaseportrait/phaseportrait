@@ -20,16 +20,16 @@ class trajectory:
     Class inheriting must have the following methods:
 
     def _prepare_plot(self): ...
-    Prepares the plots: axis titles, graph title, grid, etc.
+        Prepares the plots: axis titles, graph title, grid, etc.
         
     def _plot_lines(self, val, val_init): ...
-    Plots a line of points given in a tuple of positions `val` and an initial position `val_init`, both N-dimensional.
+        Plots a line of points given in a tuple of positions `val` and an initial position `val_init`, both N-dimensional.
 
     def _scatter_start_point(self, val_init): ...
-    Marks starting position `val_init` (N-dimensional) in the several plots created. 
+        Marks starting position `val_init` (N-dimensional) in the several plots created. 
         
     def _scatter_trajectory(self, val, color, cmap): ...
-    Plots with points `val` (N-dimensional list) according to `color` (N-dimensional) with `cmap` color map.
+        Plots with points `val` (N-dimensional list) according to `color` (N-dimensional) with `cmap` color map.
     """
 
     _name_ = 'trajectory'
@@ -166,17 +166,19 @@ class trajectory:
         """
         Adds a slider which can change the value of a parameter in execution time.
 
-        Args:
+        Parameters
+        ----------
+        param_name : str
+            It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
 
-            param_name : string type. It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
+        valinit : numeric, optional
+            Initial value of *param_name* variable. Default value is 0.5.
 
-        **kargs:
+        valstep : numeric, optional
+            Slider step value. Default value is 0.1.
 
-            valinit: initial value of *param_name* variable. Default value is 0.5 .
-
-            valstep : slider step value. Default value is 0.1 .
-
-            valinterval : slider range. Default value is [-10, 10] .
+        valinterval : numeric or list, optional
+            Slider range. Default value is [-10, 10].
         """
         self._create_sliders_plot()
         self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})

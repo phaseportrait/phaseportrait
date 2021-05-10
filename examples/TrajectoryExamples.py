@@ -140,7 +140,7 @@ if True:
 
     h = Trajectory3D(Sprott, dF_args={'a':2.07, 'b':1.79}, n_points=10000, numba=True, size=1, thermalization=2000, Title='Sprott attractor')
     h.thermalize()
-    h.add_slider('a', valinterval=[0,5])
-    h.add_slider('b', valinterval= [0,5])
+    h.add_slider('a', valinit=2.07, valinterval=[0,5])
+    h.add_slider('b', valinit=1.79, valinterval= [0,5])
     h.plot()
     plt.show()
