@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Víctor Loras & Unai Lería">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Trajectory3d - Phase Portrait</title>
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Trajectory3d";
+    var mkdocs_page_input_path = "trajectory3d.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Phase Portrait</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../getting_started/">Getting started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Documentation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../dFfunction/">dF Function</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../phaseportrait2d/">PhasePortrait2d</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../slider/">Slider</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../trajectory/">Trajectory</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../trajectory2d/">Trajectory2d</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Trajectory3d</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#trajectory3d">Trajectory3D</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#attributes">Attributes</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#methods">Methods</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#trajectory3dinitial_position">Trajectory3D.initial_position</a></li>
+        
+            <li><a class="toctree-l4" href="#trajectory3dtermalize">Trajectory3D.termalize</a></li>
+        
+            <li><a class="toctree-l4" href="#trajectory3dadd_slider">Trajectory3D.add_slider</a></li>
+        
+            <li><a class="toctree-l4" href="#trajectory3dplot">Trajectory3D.plot</a></li>
+        
+            <li><a class="toctree-l4" href="#trajectory3dcompute_trajectory">Trajectory3D.compute_trajectory</a></li>
+        
+            <li><a class="toctree-l4" href="#trajectory3drungekutta_time_independent">Trajectory3D.rungekutta_time_independent</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#defining-range">Defining Range:</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">About</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../license/">License</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../contributing/">Contributing</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Phase Portrait</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Documentation &raquo;</li>
+        
+      
+    
+    <li>Trajectory3d</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Loracio/phase-portrait/edit/master/docs/trajectory3d.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="trajectory3d">Trajectory3D</h1>
+<blockquote>
+<p><em>class</em> phaseportrait.<strong>Trajectory3D</strong>(<em>dF, *, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, **kwargs</em>)</p>
+</blockquote>
+<p>Inherits from parent class <a href="../trajectory/">trajectory</a>.</p>
+<p>Gives the option to represent 3D trajectories given a <a href="../dFfunction/">dF</a> function with 3 args.</p>
+<table>
+<thead>
+<tr>
+<th>Attributes</th>
+<th>Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dF</td>
+<td><a href="#trajectory3dinitial_position">initial_position           </a></td>
+</tr>
+<tr>
+<td>dF_args</td>
+<td><a href="#trajectory3dtermalize">termalize                 </a></td>
+</tr>
+<tr>
+<td>Range</td>
+<td><a href="#trajectory3dadd_slider">add_slider                 </a></td>
+</tr>
+<tr>
+<td>values</td>
+<td><a href="#trajectory3dplot">plot                       </a></td>
+</tr>
+<tr>
+<td>velocity</td>
+<td><a href="#trajectory3dcompute_trajectory">compute_trajectory         </a></td>
+</tr>
+<tr>
+<td>initial_conditions</td>
+<td><a href="#trajectory3drungekutta_time_independent">rungekutta_time_independent</a></td>
+</tr>
+<tr>
+<td>runge_kutta_step</td>
+<td></td>
+</tr>
+<tr>
+<td>runge_kutta_freq</td>
+<td></td>
+</tr>
+<tr>
+<td>n_points</td>
+<td></td>
+</tr>
+<tr>
+<td>Title</td>
+<td></td>
+</tr>
+<tr>
+<td>xlabel</td>
+<td></td>
+</tr>
+<tr>
+<td>ylabel</td>
+<td></td>
+</tr>
+<tr>
+<td>zlabel</td>
+<td></td>
+</tr>
+<tr>
+<td>fig</td>
+<td></td>
+</tr>
+<tr>
+<td>ax</td>
+<td></td>
+</tr>
+<tr>
+<td>sliders</td>
+<td></td>
+</tr>
+<tr>
+<td>lines</td>
+<td></td>
+</tr>
+<tr>
+<td>termalization</td>
+<td></td>
+</tr>
+<tr>
+<td>color</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="attributes"><strong>Attributes</strong></h3>
+<ul>
+<li>
+<p><strong>dF</strong> (<a href="../dFfunction/">dF</a> function) - computes the derivatives of given coordinates.</p>
+</li>
+<li>
+<p><strong>dF_args</strong> (dict) - dictionary with parameters for <code>dF</code> function.</p>
+</li>
+<li>
+<p><strong>Range</strong> (Optional[list, float]) - see <a href="#defining-range">defining a 3D range</a>.</p>
+</li>
+<li>
+<p><strong>lines</strong>=False (bool) - representing with lines instead of points.</p>
+</li>
+<li>
+<p><strong>color</strong> (str) - if <code>'t'</code> passed, trajectories are colored depending on time. It doesn't work with <code>lines=True</code>. In other case, it paints dependong on velocities with the color scheme given.</p>
+</li>
+<li>
+<p><strong>termalization</strong>=0 (int) - number of steps taken before trajectory is saved.</p>
+</li>
+<li>
+<p><strong>size</strong>=0.5 (float) - point size in the plot.</p>
+</li>
+<li>
+<p><strong>numba</strong>=False (bool) - compiles <a href="../dFfunction/">dF</a> using numba.</p>
+</li>
+<li>
+<p><strong>n_points</strong> (int) - number of points in the plot.</p>
+</li>
+<li>
+<p><strong>runge_kutta_spet</strong> (float) - time step in 4th order runge-kutta algorithm.</p>
+</li>
+<li>
+<p><strong>runge_kutta_freq</strong> (int) - number of points computed between saved positions.</p>
+</li>
+<li>
+<p><strong>Title</strong> (str) -  title of the plot. Default value is <code>'Trajectory'</code>.</p>
+</li>
+<li>
+<p><strong>xlabel</strong> (str) -  x axis label in the plot. Default value is <code>'X'</code>.</p>
+</li>
+<li>
+<p><strong>ylabel</strong> (str) -  y axis label in the plot. Default value is <code>'Y'</code>.</p>
+</li>
+<li>
+<p><strong>zlabel</strong> (str) -  z axis label in the plot. Default value is <code>'Z'</code>.</p>
+</li>
+<li>
+<p><strong>mark_start_point</strong> (bool) - marks staring position with a bigger point size.</p>
+</li>
+</ul>
+<h1 id="methods">Methods</h1>
+<h2 id="trajectory3dinitial_position"><em>Trajectory3D</em>.initial_position</h2>
+<blockquote>
+<p><em>Trajectory3D</em>.<strong>initial_position</strong>(*<em>position</em>)</p>
+</blockquote>
+<p>Parameter <code>position</code> must be a 3 element list or ndarray.</p>
+<h2 id="trajectory3dtermalize"><em>Trajectory3D</em>.termalize</h2>
+<blockquote>
+<p><em>Trajectory3D</em>.<strong>termalize</strong>(*<em>position</em>)</p>
+</blockquote>
+<p>Parameter <code>position</code> is optional. If it is not introduced, a random number between 0 and 1 will be taken for each coordinate.</p>
+<h2 id="trajectory3dadd_slider"><em>Trajectory3D</em>.add_slider</h2>
+<blockquote>
+<p><em>Trajectory3D</em>.<strong>add_slider</strong>(<em>param_name, *, valinit=None, valstep=0.1, valinterval=10</em>)</p>
+</blockquote>
+<p>Adds a <a href="../slider/">slider</a> which can change the value of a parameter in execution time.</p>
+<h2 id="trajectory3dplot"><em>Trajectory3D</em>.plot</h2>
+<blockquote>
+<p><em>Trajectory3D</em>.<strong>plot</strong>(*, color=None)</p>
+</blockquote>
+<p>Takes as arguments class attributes. Color scheme can be changed introducing kwarg <code>color</code>. A list with accepted values can be found <a href="https://matplotlib.org/stable/gallery/color/colormap_reference.html">here</a>. </p>
+<h2 id="trajectory3dcompute_trajectory"><em>Trajectory3D</em>.compute_trajectory</h2>
+<blockquote>
+<p><em>Trajectory3D</em>.<strong>compute_trajectory</strong>(<em>initial_values</em>)</p>
+</blockquote>
+<p>Given an initial posotion by <code>initial_values</code> (containing 3 coordinates), the method returns a tuple with two lists: positions and difference between following positions. Returns <code>n_points</code> points.</p>
+<h2 id="trajectory3drungekutta_time_independent"><em>Trajectory3D</em>.rungekutta_time_independent</h2>
+<blockquote>
+<p><em>Trajectory3D</em>.<strong>rungekutta_time_independent</strong>(<em>initial_values</em>)</p>
+</blockquote>
+<p>Generator that given <code>initial_values</code>, returns the next point.</p>
+<h1 id="defining-range">Defining Range:</h1>
+<ol>
+<li>
+<p>A single number. In this case the range is defined from zero to the given number in all axes.</p>
+</li>
+<li>
+<p>A range, such <code>[lowerLimit , upperLimit]</code>. All axes will take the same limits.</p>
+</li>
+<li>
+<p>Three ranges, such that <code>[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit], [zAxisLowerLimit , zAxisUpperLimit]]</code></p>
+</li>
+</ol>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../license/" class="btn btn-neutral float-right" title="License">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../trajectory2d/" class="btn btn-neutral" title="Trajectory2d"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2021 Víctor Loras, Unai Lería</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/Loracio/phase-portrait/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../trajectory2d/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../license/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
