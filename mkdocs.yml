@@ -1,0 +1,19 @@
+site_name: Phase Portrait
+nav:
+- Home: 'index.md'
+- Getting started: 'getting_started.md'
+- Documentation:
+    - 'dF Function' : 'dFfunction.md'
+    - 'PhasePortrait2d' : 'phaseportrait2d.md'
+    - 'Slider' : 'slider.md'
+    - 'Trajectory' : 'trajectory.md'
+    - 'Trajectory2d' : 'trajectory2d.md'
+    - 'Trajectory3d' : 'trajectory3d.md'
+- About:
+    - 'License': 'license.md'
+    - 'Contributing' : 'contributing.md'
+theme: readthedocs
+repo_url: https://github.com/Loracio/phase-portrait/
+site_description: Python package for visualizing non-linear dynamics and chaos
+site_author : Víctor Loras & Unai Lería
+copyright : Copyright © 2021 Víctor Loras, Unai Lería
