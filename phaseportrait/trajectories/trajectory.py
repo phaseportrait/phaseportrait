@@ -1,39 +1,95 @@
-import random
 from inspect import signature
 
-import matplotlib
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import cm
 
+from ..exceptions import exceptions
 from ..sliders import sliders
-from . import rungekutta
-from ..exceptions import *
 from ..utils import utils
-
+from . import RungeKutta
 
 class trajectory:
     """
-    Parent class for trajectories. Represents trajectories given a dF function with N args.
-
-    Class inheriting must have the following methods:
-
-    def _prepare_plot(self): ...
-        Prepares the plots: axis titles, graph title, grid, etc.
+    trajectory
+    ----------
+    Base class of trajectory classes: 
+        -Trajectory2D
         
-    def _plot_lines(self, val, val_init): ...
-        Plots a line of points given in a tuple of positions `val` and an initial position `val_init`, both N-dimensional.
-
-    def _scatter_start_point(self, val_init): ...
-        Marks starting position `val_init` (N-dimensional) in the several plots created. 
+        -Trajectory3D
         
-    def _scatter_trajectory(self, val, color, cmap): ...
-        Plots with points `val` (N-dimensional list) according to `color` (N-dimensional) with `cmap` color map.
+    Methods
+    -------
+    _prepare_plot :
+        Prepares the plots.
+        
+    _scatter_start_point :
+        Scatter all the start points.
+        
+    _scatter_trajectory :
+        Scatter all the trajectories.
+        
+    _plot_lines :
+        Plots the lines of all the trajectories.
+        
+    _create_sliders_plot :
+        Creates the sliders plot.
+        
+    thermalize : 
+        Adds thermalization steps and random initial position.
+        
+    initial_position :
+        Adds a trajectory with the given initial position.
+        
+    plot : 
+        Prepares the plots and computes the values. 
+        Returns the axis and the figure.
+        
+    add_slider :
+        Adds a `Slider` for the `dF` function.
+        
+    _calculate_values : 
+        Computes the trajectories.
     """
 
     _name_ = 'trajectory'
+
     def __init__(self, dF, dimension, *, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, **kargs):
+        """
+        Creates an instance of trajectory
+        
+        Parameters
+        ----------
+        dF : callable
+            A dF type function.
+        dimension :
+            The number of dimensions in which the trajectory is calculated.
+            Must equal `dF` return lengh.
+        
+        Key Arguments
+        -----
+        Range : Union[float,list], default=None
+            Range of every coordinate in the graphs.
+        dF_args : dict
+            If necesary, must contain the kargs for the `dF` function.
+        n_points : int, default=10000    
+            Number of positions to be saved for every trajectory.
+        runge_kutta_step : float, default=0.1
+            Step of 'time' in the Runge-Kutta method.
+        runge_kutta_freq : int
+            Number of times `dF` is aplied between positions saved.
+        lines : bool
+            Must be `True` if method _plot_lines is used.
+        Titulo : str
+            Title of the plot.
+        color : str
+            Matplotlib `Cmap`.
+        size : float
+            Size of the scattered points.
+        thermalization : int
+            Thermalization steps before points saved.
+        mark_start_point : bool
+            Marks the start position if True.
+        """
 
         self._dimension = dimension
         self.dF_args = dF_args
@@ -86,11 +142,45 @@ class trajectory:
             self.sliders_ax.set_visible(False)
 
         
-    def thermalize(self):
+    def thermalize(self, *, thermalization_steps=200):
+        """
+        Shortcut to:
+        
+        ```
+        self.thermalization = thermalization_steps
+        self.initial_position()
+        ```
+        """
+        
+        if self.thermalization is None:
+            self.thermalization = thermalization_steps
         self.initial_position()
 
 
     def initial_position(self, *args, **kargs):
+        """
+        Adds a initial position for the computation.
+        More than one can be added.
+        
+        Arguments
+        ---------
+        args : Union[float, list[2], list[3]], optional
+            Inicial position for the computation.
+            If None, a random position is chosen.
+            
+        Example
+        -------
+        This example generates 2 circles with diferent radius. 
+        ```
+        def Circulo(x,y,*, w=1, z=1):
+            return w*y, -z*x
+
+        circle = Trayectoria2D(Circulo, n_points=1300, size=2, mark_start_position=True, Titulo='Just a circle')
+        circle.posicion_inicial(1,1)
+        circle.posicion_inicial(2,2)
+        ```
+        """
+
         flag = False
         for trajectory in self.trajectories:
             for a, b in zip(args, trajectory.initial_value):
@@ -101,7 +191,7 @@ class trajectory:
             return
         
         self.trajectories.append(
-            rungekutta.RungeKutta(
+            RungeKutta(
                 self, self.dF, self._dimension, self.n_points, 
                 dt=self.runge_kutta_step,
                 dF_args=self.dF_args, 
@@ -117,6 +207,22 @@ class trajectory:
 
 
     def plot(self, *args, **kargs):
+        """
+        Prepares the plots and computes the values.
+        
+        Returns
+        -------
+        tuple(matplotlib Figure, matplotlib Axis)
+        
+        None 
+            If attribute `fig` or `ax` not found.
+        
+        Key Arguments
+        -------------
+        color : str
+            Matplotlib `Cmap`.
+        """
+
         self._prepare_plot()
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
         for trajectory in self.trajectories:
@@ -161,25 +267,30 @@ class trajectory:
         except:
             pass
 
+        try:
+            return self.fig, self.ax
+        except AttributeError:
+            return None
+
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
         """
-        Adds a slider which can change the value of a parameter in execution time.
-
+        Adds a `Slider` for the `dF` function.
+    
         Parameters
-        ----------
+        ---------
         param_name : str
-            It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
-
-        valinit : numeric, optional
-            Initial value of *param_name* variable. Default value is 0.5.
-
-        valstep : numeric, optional
-            Slider step value. Default value is 0.1.
-
-        valinterval : numeric or list, optional
-            Slider range. Default value is [-10, 10].
-        """
+            Name of the variable. Must be in the `dF` kargs of the `Map1D.dF` function.
+        
+        Key Arguments
+        ------------
+        valinit : float, defautl=None
+            Initial position of the Slider
+        valinterval : Union[float,list], default=10
+            Min and max value for the param range.
+        valstep : float, default=0.1
+            Separation between consecutive values in the param range.
+        """ 
         self._create_sliders_plot()
         self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})
 

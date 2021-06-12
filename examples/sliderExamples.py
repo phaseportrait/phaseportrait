@@ -1,5 +1,18 @@
 from phaseportrait import *
 import matplotlib.pyplot as plt
+import numpy as np
+
+
+"""
+Nullclines example
+"""
+def dFnull(x,y):
+    return x + np.exp(-y), -y
+
+null = PhasePortrait2D(dFnull, [[-10,10], [-5, 5]])
+null.add_nullclines(precision=0.05)
+null.plot()
+plt.show()
 
 """
 Example 1: sliders for 2 parameters
@@ -12,6 +25,7 @@ def dFPolar(r, θ, *, μ=0.5,η=0):
 PolarCoordinates = PhasePortrait2D(dFPolar, [-3, 3], Polar=True, Title='Limit cicle')
 PolarCoordinates.add_slider('μ', valinit=0.5)
 PolarCoordinates.add_slider('η', valinit=0.0)
+PolarCoordinates.add_nullclines()
 PolarCoordinates.plot()
 
 """
@@ -27,6 +41,7 @@ LoveAffairsPortrait.add_slider('d', valinit=1)
 LoveAffairsPortrait.add_slider('c', valinit=-1)
 LoveAffairsPortrait.add_slider('b', valinit=0)
 LoveAffairsPortrait.add_slider('a', valinit=1)
+LoveAffairsPortrait.add_nullclines()
 
 LoveAffairsPortrait.plot()
 
@@ -42,6 +57,7 @@ NonLinearCenterPortrait.add_slider('d', valinit=1)
 NonLinearCenterPortrait.add_slider('c', valinit=1)
 NonLinearCenterPortrait.add_slider('b', valinit=1)
 NonLinearCenterPortrait.add_slider('a', valinit=1)
+NonLinearCenterPortrait.add_nullclines()
 
 NonLinearCenterPortrait.plot()
 

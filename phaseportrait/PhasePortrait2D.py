@@ -9,13 +9,60 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+from .nullclines import Nullcline2D
+
 class PhasePortrait2D:
     """
+    PhasePortrait2D
+    ----------------
     Makes a phase portrait of a 2D system.
+    
+    Methods
+    -------    
+    draw_plot : 
+        Draws the streamplot. Is internaly used by method `plot`.
+        
+    add_function : 
+        Adds a function to the `dF` plot.
+    
+    add_slider :
+        Adds a `Slider` for the `dF` function.
+
+    plot :
+        Prepares the plots and computes the values. 
+        Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait2D'
     def __init__(self, dF, Range, *, MeshDim=500, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow'):
-
+        """
+        PhasePortrait2D
+        ---------------
+        
+        Parameters
+        ----------
+        dF : callable
+            A dF type function.
+        Range : [x_range, y_range]
+            Ranges of the axis in the main plot.
+            
+        Key Arguments
+        -------------
+        MeshDim : int, default=500
+            Number of elements in the arrows grid.
+        dF_args : dict
+            If necesary, must contain the kargs for the `dF` function.
+        Density : float, default=1
+            Number of elements in the arrows grid plot.
+        Polar : bool, default=False
+            Whether to use polar coordinates or not.
+        Title : str, default='Phase Portrait' 
+        xlabel : str, default='X'
+            x label of the plot.
+        ylabel : str, default='$\dot{X}$' 
+            y label of the plot.
+        color : str, default='rainbow'
+            Matplotlib `Cmap`.
+        """
         
         self.dF_args = dF_args                           # dF function's args
         self.dF = dF                                     # Function containing system's equations
@@ -34,6 +81,7 @@ class PhasePortrait2D:
         self.fig, self.ax = plt.subplots()
         self.color = color
         self.sliders = {}
+        self.nullclines = []
 
         # Meshgrid 
         self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.L), np.linspace(*self.Range[1,:], self.L))
@@ -43,15 +91,45 @@ class PhasePortrait2D:
 
 
     def plot(self, *, color=None):
-        self._draw_streamplot(color=color if color else self.color)
-
+        """
+        Prepares the plots and computes the values.
+        
+        Returns
+        -------
+        tuple(matplotlib Figure, matplotlib Axis)
+        
+        Key Arguments
+        -------------
+        color : str
+            Matplotlib `Cmap`.
+        """
+        self.draw_plot(color=color)
         self.fig.canvas.draw_idle()
 
+        return self.fig, self.ax 
+        
 
-    def _draw_streamplot(self, *, color=None):
-
+    def draw_plot(self, *, color=None):
+        """
+        Draws the streamplot. Is internaly used by method `plot`.
+        
+        Returns
+        -------
+        matplotlib.Streamplot
+        
+        Key Arguments
+        -------------
+        color : str
+            Matplotlib `Cmap`.
+        """
         self.dF_args = {name: slider.value for name, slider in self.sliders.items() if slider.value!= None}
 
+        try:
+            for nullcline in self.nullclines:
+                nullcline.plot()
+        except AttributeError:
+            pass
+        
         if self.Polar:
             self._PolarTransformation()
         else:
@@ -70,6 +148,12 @@ class PhasePortrait2D:
         self.ax.grid()
         
         return stream
+
+    def add_nullclines(self, *, precision=0.01, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+        self.nullclines.append(Nullcline2D(self, self.dF, 
+                                          precision=precision, offset=offset, density=density, 
+                                          xRange=xRange, yRange=yRange, dF_args=dF_args, 
+                                          xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha))
 
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):

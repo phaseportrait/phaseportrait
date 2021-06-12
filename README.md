@@ -1,5 +1,5 @@
 # What's this?
-The idea behind this project was to create a simple way to make phase portraits in 2D and 3D, as we couldn't find something similar on the internet, so we got down to work.
+The idea behind this project was to create a simple way to make phase portraits in 2D and 3D, as we couldn't find something similar on the internet, so we got down to work. Eventually, we did some work on bifurcations, 1D maps and chaos.
 
 This idea came while taking a course in non linear dynamics and chaos, during the 3rd year of physics degree, brought by our desire of visualizing things and programming.
 

@@ -5,11 +5,70 @@ from .trajectories import trajectory
 
 class Trajectory2D(trajectory):
     """
-    Computes a trajectory on a 2D system.
-    """
+    Trajectory2D
+    ----------
+    Class dedicated to compute and represent trajectories in 2D.
+        
+    Methods
+    -------
+    thermalize : 
+        Adds thermalization steps and random initial position.
+        
+    initial_position :
+        Adds a trajectory with the given initial position.
+        
+    plot : 
+        Prepares the plots and computes the values. 
+        Returns the axis and the figure.
+        
+    add_slider :
+        Adds a `Slider` for the `dF` function.
+        
+    _prepare_plot :
+        Prepares the plots.
+        
+    _scatter_start_point :
+        Scatter all the start points.
+        
+    _scatter_trajectory :
+        Scatter all the trajectories.
+        
+    _plot_lines :
+        Plots the lines of all the trajectories.
+        
+    _create_sliders_plot :
+        Creates the sliders plot.
+    """ 
+
     _name_ = 'Trajectory2D'
+
     def __init__(self, dF, *, Range=None, dF_args={}, n_points=10000, runge_kutta_step=0.01, runge_kutta_freq=1, **kargs):
-       
+        """
+        Creates an instance of Trjaectoy2D
+
+        Parameters
+        ----------
+        dF : callable
+            A `dF` type function.
+            
+        Key Arguments
+        -------------
+        RangoRepresentacion : list, optional
+            Ranges if the axis in the main plot, by default None
+        dF_args : dict, optional
+            If necesary, must contain the kargs for the `dF` function, by default {}
+        n_points : int, optional
+            Maximum number of points to be calculated and represented, by default 10000
+        runge_kutta_step : float, optional
+            Step of 'time' in the Runge-Kutta method, by default 0.01
+        runge_kutta_freq : int, optional
+            Number of times `dF` is aplied between positions saved, by default 1
+        xlabel : str, optional
+            x label of the plot, by default 'X'
+        ylabel : str, optional
+            y label of the plot, by default 'Y'
+        """
+        
         super().__init__(dF, 2, Range=Range, dF_args=dF_args, n_points=n_points, runge_kutta_step=runge_kutta_step, runge_kutta_freq=runge_kutta_freq, **kargs)
 
         # Variables for plots

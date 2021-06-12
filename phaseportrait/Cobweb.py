@@ -111,9 +111,11 @@ class Cobweb:
 
     def plot(self, *args, **kargs):
         """
-        Creates two figures, one containing the Cobweb plot and other with the time series.
-        Calls _prepare_plot method which sets titles and axis for both plots.
-        Then, it computes the several values of x given by the dF function, making a total of `max_steps` steps and ploting results.
+        Prepares the plots, compute the values and plots them.
+        
+        Returns
+        -------
+        tuple(matplotlib Figure (Cobweb plot), matplotlib Axis (Cobweb plot), matplotlib Figure (Time series), matplotlib Axis (Time series))
         """
         bisector = np.linspace(self.xrange[0], self.xrange[1], self.n_points)
         func_result = self.dF(bisector, **self.dF_args)
@@ -165,21 +167,21 @@ class Cobweb:
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
         """
-        Adds a slider which can change the value of a parameter in execution time.
-
+        Adds a slider on an existing plot.
+        
         Parameters
         ----------
         param_name : str
-            It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
-
-        valinit : numeric, optional
-            Initial value of *param_name* variable. Default value is 0.5.
-
-        valstep : numeric, optional
-            Slider step value. Default value is 0.1.
-
-        valinterval : numeric or list, optional
-            Slider range. Default value is [-10, 10].
+            The string key of the variable. Must be the same as the key in the `dF` function.
+        
+        Key Arguments
+        -------------
+        valinit : float
+            Initial value of the parameter.
+        valinterval : Union[float, list]
+            The range of values the slider of the parameter will cover.
+        valstep : float
+            Precision in the slider.
         """
         self._create_sliders_plot()
 
@@ -203,19 +205,16 @@ class Cobweb:
 
     def initial_position_slider(self, *, valinit=None, valstep=0.05, valinterval=None):
         """
-        Adds a slider for changing initial value on a cobweb plot
-
-        Parameters
-        ----------
-
+        Adds a slider for changing initial value on a cobweb plot.
+        
+        Key Arguments
+        -------------
         valinit : numeric, optional
             Initial position. Default value is the same as initial position given when initializing Cobweb object.
-
-        valstep : numeric, optional
-            Slider step value. Default value is 0.05.
-
-        valinterval : numeric or list, optional
-            Slider range. Default value is xrange given when initalizing Cobweb object.
+        valinterval : Union[float, list]
+            The range of values the slider of the parameter will cover.
+        valstep : float
+            Precision in the slider.
         """
         if valinit is None:
             valinit = self.initial_position
