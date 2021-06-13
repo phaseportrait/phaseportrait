@@ -1,5 +1,6 @@
 import matplotlib
 import numpy as np
+import random
 from matplotlib import pyplot as plt
 
 from .maps import Map
@@ -98,7 +99,9 @@ class Map1D():
             self.size = 1
         self.thermalization = kargs.get('thermalization')
         
-        self._initial_x = sum(self.Range[1])/2
+        self._initial_x = random.uniform(*self.Range[1])
+
+        self._prepare_plot()
 
     def _compute_data(self):
         self._range = np.arange(
@@ -139,12 +142,14 @@ class Map1D():
         
         self._param_name = param_name
         self._valinterval = valinterval
+        
         if initial_x is None:
             initial_x = self._initial_x
+        self._initial_x = initial_x
+
         self._valstep = valstep
         self._limit_cycle_check_first = limit_cycle_check_first
         self._delta_cycle_check = delta_cycle_check
-        self._prepare_plot()
 
     def _prepare_plot(self):
         self.ax.set_title(f'{self.Title}')
@@ -178,7 +183,8 @@ class Map1D():
         """
         for func in self.functions:
             func.plot()
-        
+
+        self.update_dF_args()
         self._compute_data()
 
         if color is not None:

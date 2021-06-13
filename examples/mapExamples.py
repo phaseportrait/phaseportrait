@@ -1,4 +1,4 @@
-from phaseportrait import *
+from phaseportrait import Cobweb, Map1D
 from matplotlib import pyplot as plt
 
 """
@@ -11,7 +11,7 @@ def Logistic(x, *, r=1.5):
 # Create an instance of Map1D
 Logistic_Map = Map1D(Logistic, [2,3.9], [0,1], 5000, thermalization=50, size=0.05)
 
-# We want to plot for r in the range 20 < r <4. Every 0.005.
+# We want to plot for r in the range 0 < r <4. Every 0.005.
 Logistic_Map.plot_over_variable('r', [0,4], 0.0005)
 
 # Plot.
@@ -58,8 +58,8 @@ SingerCobweb.add_slider('r', valinit=0.5, valinterval=[0,1])
 SingerCobweb.initial_position_slider(valstep=0.01)
 SingerCobweb.plot()
 
-Singer_Map =  Map1D(SingerMap, [0.9,1.075], [0,1], 3000, dF_args={'r':1}, thermalization=500, size=0.1, Title= 'Singer Map')
-Singer_Map.plot_over_variable('r', [0.9,1.075], 0.00001)
+Singer_Map =  Map1D(SingerMap, [0.9,1.075], [0,1], 1000, dF_args={'r':1}, thermalization=500, size=0.1, Title= 'Singer Map')
+Singer_Map.plot_over_variable('r', [0.9,1.075], 0.0001)
 Singer_Map.plot()
 
 plt.show()

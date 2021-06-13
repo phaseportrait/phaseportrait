@@ -126,10 +126,10 @@ class Cobweb:
         self._prepare_plot(np.min(func_result), np.max(func_result))
 
         self.ax['Cobweb'].plot(bisector, func_result, 'b')
-        self.ax['Cobweb'].plot(bisector, bisector, "k:", color='grey')
+        self.ax['Cobweb'].plot(bisector, bisector, ":", color='grey')
 
         x, y = self.initial_position, self.dF(self.initial_position, **self.dF_args)
-        self.ax['Cobweb'].plot([x, x], [0, y], 'k:')
+        self.ax['Cobweb'].plot([x, x], [0, y], ':')
         self.ax['Cobweb'].scatter(x , 0, color='green')
 
         xTimeSeries.append(0)
@@ -150,7 +150,7 @@ class Cobweb:
                 break
         
         self.ax['TimeSeries'].scatter(xTimeSeries , yTimeSeries, color='black', s=10)
-        self.ax['TimeSeries'].plot(xTimeSeries , yTimeSeries, 'k:', color='grey')
+        self.ax['TimeSeries'].plot(xTimeSeries , yTimeSeries, ':', color='grey')
 
         self.fig['Cobweb'].canvas.draw_idle()
         self.fig['TimeSeries'].canvas.draw_idle()
