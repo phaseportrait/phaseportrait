@@ -6,24 +6,6 @@ Useful where it is necessary to plot nulclines in a plot.
 
 Integrated via method `add_nullclines` in [PhasePortrait2D](phaseportrait2d.md).
 
-| Parameters| Methods                                   |
-| --------- | ----------------------------------------- |
-| portrait  | [plot](#nullcline2dplot)                  |
-| function  |                                           |
-| precision |                                           |
-| xprecision|                                           |
-| yprecision|                                           |
-| offset    |                                           |
-| density   |                                           |
-| xRange    |                                           |
-| yRange    |                                           |
-| dF_args   |                                           |
-| xcolor    |                                           |
-| ycolor    |                                           |
-| bgcolor   |                                           |
-| alpha     |                                           |
-
-
 ### **Parameters**
 
 * **portrait** : 
@@ -36,7 +18,7 @@ Integrated via method `add_nullclines` in [PhasePortrait2D](phaseportrait2d.md).
     
 * **precision** : float, optional
 
-    The minimum diferencie from `offset` to be considerated a nullcline, by default 0.01
+    The minimum diference from `offset` to be considerated a nullcline, by default 0.01
     
 * **xprecision** : float, optional
 
@@ -72,7 +54,7 @@ Integrated via method `add_nullclines` in [PhasePortrait2D](phaseportrait2d.md).
     
 * **ycolor** : str, optional
 
-    Y nullcline color], by default 'b'
+    Y nullcline color, by default 'b'
     
 * **bgcolor** : str, optional
 
@@ -83,7 +65,7 @@ Integrated via method `add_nullclines` in [PhasePortrait2D](phaseportrait2d.md).
     Opacity of the background, by default 0
     
 # Methods
-## *Nullcline2D*.plot
+### *Nullcline2D*.plot
 > *Nullcline2D*.**plot**(*, axis=None)
 
 Plots the nullclines in the given axis
@@ -98,4 +80,19 @@ Plots the nullclines in the given axis
 
 * [matplotlib.contour.QuadContourSet,matplotlib.contour.QuadContourSet]
     X and Y contours.
+
+# Examples
+
+```python
+from phaseportrait import PhasePortrait2D
+
+def dF(x,y):
+    return x + np.exp(-y), -y
+
+example = PhasePortrait2D(dF, [[-10,10], [-5, 5]])
+example.add_nullclines(precision=0.05)
+example.plot()
+```
+
+![image](imgs/nullclines_example.png)
 

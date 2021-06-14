@@ -6,7 +6,7 @@ def dF(x,y):
 ```
 It must contain as much args as returned elements.
 
-## kargs
+### kargs
 Kargs can be given. They can be changed using [sliders](slider.md) method.
 
 For an harmonic oscillator, the dF function will be defined as:

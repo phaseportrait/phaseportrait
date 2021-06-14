@@ -16,16 +16,7 @@ Integrated via method `add_slider` in:
 
 * Trajectory3D
 
-
-| Parameters| Methods                                   |
-| --------- | ----------------------------------------- |
-| portrait  | [plot](#slider__call__)                  |
-| param_name|                                           |
-| valinit   |                                           |
-| valstep   |                                           |
-| valinterval|                                           |
-
-**Parameters**
+### **Parameters**
 
 * portrait : 
 
@@ -47,7 +38,9 @@ Integrated via method `add_slider` in:
 
     Parameter range in the slider. Default value is `[-10, 10]` 
 
-# *Slider*.\_\_call\_\_
+# Methods
+
+### *Slider*.\_\_call\_\_
 
 > *method* **\_\_call\_\_**(*value*)
 
