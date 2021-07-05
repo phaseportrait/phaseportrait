@@ -96,7 +96,7 @@ class _Generator_():
     # General methods
     def compute_all(self, *, save_freq=1, limit_cycle_check=False, delta=0.01):
         """
-        Computes `RungeKutta.max_values` and saves them.
+        Computes `_Generator_.max_values` and saves them.
 
         Parameters
         ----------
