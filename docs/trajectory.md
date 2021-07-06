@@ -22,7 +22,7 @@ Marks starting position `val_init` (N-dimensional) in the several plots created.
 
 Plots with points `val` (N-dimensional list) according to `color` (N-dimensional) with `cmap` color map.
 
-# Example (from Trajectories2D):
+# Example (from [Trajectories2D](trajectory2d.md)):
 ```py
 def _plot_lines(self, val, val_init):
         self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")

@@ -26,7 +26,7 @@ This class is an implementation of [\_Generator\_](generator.md) for a Runge-Kut
 
 ### **Key Arguments**
 
-* **dt** : double, by default 0.1
+* **dt** : double, optional, by default 0.1
 
     Time interval used in the Runge-Kutta 4th order method.
 
@@ -66,9 +66,16 @@ def _next(self):
 * None
 
 ### *\_Generator\_*._save_
-> *\_Generator\_*.**save**()
+> *\_Generator\_*.**save**(i)
 
 Saves `self.position` in the attribute `self.positions`, and `self.velocity` in `self.velocities`.
+
+**Parameters**
+
+* **i** : int
+
+    Index in which the data is saved.
+
 Explicitly:
 
 ```py
