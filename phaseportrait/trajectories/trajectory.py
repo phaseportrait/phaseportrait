@@ -65,7 +65,7 @@ class trajectory:
             The number of dimensions in which the trajectory is calculated.
             Must equal `dF` return lengh.
         
-        Key Arguments
+        Key Parameters
         -----
         Range : Union[float,list], default=None
             Range of every coordinate in the graphs.
@@ -162,7 +162,7 @@ class trajectory:
         Adds a initial position for the computation.
         More than one can be added.
         
-        Arguments
+        Parameters
         ---------
         args : Union[float, list[2], list[3]], optional
             Inicial position for the computation.
@@ -172,12 +172,12 @@ class trajectory:
         -------
         This example generates 2 circles with diferent radius. 
         ```
-        def Circulo(x,y,*, w=1, z=1):
+        def Circle(x,y,*, w=1, z=1):
             return w*y, -z*x
 
-        circle = Trayectoria2D(Circulo, n_points=1300, size=2, mark_start_position=True, Titulo='Just a circle')
-        circle.posicion_inicial(1,1)
-        circle.posicion_inicial(2,2)
+        circle = Trayectoria2D(Circle, n_points=1300, size=2, mark_start_position=True, Titulo='Just a circle')
+        circle.initial_position(1,1)
+        circle.initial_position(2,2)
         ```
         """
 

@@ -15,7 +15,7 @@ def construct_interval_1d(var):
         if is_range(var):
              return var
     except Exception as e:
-        raise exceptions.RangoInvalid(f"{var} as 1D range gave the following error: "+str(e))
+        raise exceptions.InvalidRange(f"{var} as 1D range gave the following error: "+str(e))
 
 def construct_interval_2d(var):
     try:
@@ -37,7 +37,7 @@ def construct_interval_2d(var):
                 else:
                     raise Exception
             except Exception as e:    
-                raise exceptions.RangoInvalid(f"{var} is not a valid 2D range.")
+                raise exceptions.InvalidRange(f"{var} is not a valid 2D range.")
     a1 = [a,b]
     a2 = [c,d]
     a1.sort()
@@ -57,7 +57,7 @@ def construct_interval_3d(var, *, depth=0):
             if depth==1:
                 return var
     except Exception as e:
-        raise exceptions.RangoInvalid(f"{var} as 3D range gave the following error: "+str(e))
+        raise exceptions.InvalidRange(f"{var} as 3D range gave the following error: "+str(e))
 
 
 def construct_interval(var, *, dim=None, depth=0):

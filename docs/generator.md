@@ -1,5 +1,5 @@
 # \_Generator\_
-> *class* phaseportrait.generator_base.**\_Generator\_**(*dF, initial_position, xrange, \*, dF_args={None}, yrange=[], max_steps=100, n_points=100, \*\*kargs)*)
+> *class* phaseportrait.generator_base.**\_Generator\_**(*dF, initial_position, xrange, \*, dF_args={None}, yrange=[], max_steps=100, n_points=100, \*\*kargs*)
 
 **This class is used internally in Maps and Trajectories. We do not recommend beginners using it directly.**
 
@@ -7,6 +7,7 @@ A class used to generate and save data.
 
 
 ### **Parameters**
+
 * **portrait** : 
 
     Class that uses the \_Generator\_ objects.
@@ -116,6 +117,7 @@ Creates an array for storaging the values.
 **Key Arguments**
 
 * max_values : int, optional, by default None
+
     Max size of the arrays.
 
 
@@ -132,6 +134,7 @@ Creates an array for storaging the values.
 Computes next `number` pairs of position and velocity values and saves them.
 
 **Parameters**
+
 * number : int
 
     Number of pairs of values saved.
@@ -164,6 +167,7 @@ Computes the next usable pair of values and saves them.
 
 
 **Parameters**
+
 * index : int, optional, by default 1
 
     Where to save the pair of values.

@@ -1,5 +1,5 @@
 # Cobweb
-> *class* phaseportrait.**Cobweb**(*dF, initial_position, xrange, \*, dF_args={None}, yrange=[], max_steps=100, n_points=100, \*\*kargs)*)
+> *class* phaseportrait.**Cobweb**(*dF, initial_position, xrange, \*, dF_args={None}, yrange=[], max_steps=100, n_points=100, \*\*kargs*)
 
 A class used to represent a Cobweb plot and a time series to study the convergence of a 1D map `x(t+1) = f(x)`.
 
@@ -28,23 +28,23 @@ A class used to represent a Cobweb plot and a time series to study the convergen
 
     Range of the y axis in the main plot
     
-* **max_steps** : int
+* **max_steps** : int, default=100
 
-    Maximun number of poits to be represented.
+    Maximun number of points to be represented.
     
-* **n_points** : int
+* **n_points** : int, default=10000
 
     Number of points in the bisector. 
     
-* **Title** : str
+* **Title** : str, default='Cobweb plot'
 
     Title of the plot.
     
-* **xlabel** : str
+* **xlabel** : str, default=r'$X_{n}$'
 
     x label of the plot.
     
-* **ylabel** : str
+* **ylabel** : str, default=r'$X_{n+1}$'
 
     y label of the plot.
     
@@ -70,15 +70,15 @@ Adds a slider which can change the value of a parameter in execution time.
 
 **Key Arguments**
 
-* valinit : float
+* valinit : float, default=None
 
     Initial value of the parameter.
     
-* valinterval : Union[float, list]
+* valinterval : Union[float, list], default=0.1
 
     The range of values the slider of the parameter will cover.
     
-* valstep : float
+* valstep : float, default=10
 
     Precision in the slider.
 
@@ -93,7 +93,7 @@ Adds a slider for changing initial value on a cobweb plot.
 
 **Key Arguments**
 
-* valinit : numeric, optional
+* valinit : numeric
 
     Initial position. Default value is the same as initial position given when initializing Cobweb object.
 

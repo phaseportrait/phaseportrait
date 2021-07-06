@@ -5,98 +5,86 @@ Inherits from parent class [trajectory](trajectory.md).
 
 Computes a trajectory on a 2D system given a [dF](dFfunction.md) consisting of 2 args.
 
-| Attributes          | Methods                                                                  |
-| ------------------ | ------------------------------------------------------------------------ |
-| dF                 | [initial_position           ](#Trajectory2dinitial_position)            |
-| dF_args            | [thermalize                 ](#Trajectory2dthermalize)                  |
-| Range              | [add_slider                 ](#Trajectory2dadd_slider)                  |
-| values             | [plot                       ](#Trajectory2dplot)                        |
-| velocity           | [compute_trajectory         ](#Trajectory2dcompute_trajectory)          |
-| initial_conditions | [rungekutta_time_independent](#Trajectory2drungekutta_time_independent) |
-| runge_kutta_step   |                                                                          |
-| runge_kutta_freq   |                                                                          |
-| n_points           |                                                                          |
-| Title              |                                                                          |
-| xlabel             |                                                                          |
-| ylabel             |                                                                          |
-| fig                |                                                                          |
-| ax                 |                                                                          |
-| sliders            |                                                                          |
-| lines              |                                                                          |
-| thermalization     |                                                                          |
-| color              |                                                                          |
 
-### **Attributes**
-* **dF** ([dF](dFfunction.md) function) - computes the derivatives of given coordinates.
+### **Parameters**
 
-* **dF_args** (dict) - dictionary with parameters for `dF` function.
+* **dF** : callable
 
-* **Range** (Optional[list, float]) - see [defining a 2D range](#defining-range).
+    A dF type function.
 
-* **lines**=False (bool) - representing with lines instead of points.
+### Key Arguments
 
-* **color** (str) - if `'t'` passed, trajectories are colored depending on time. It doesn't work with `lines=True`. In other case, it paints dependong on velocities with the color scheme given.
+* **Range** : list
 
-* **termalization**=0 (int) - number of steps taken before trajectory is saved.
+    Ranges if the axis in the main plot, by default None. See [Defining Range](#defining-range).
 
-* **size**=0.5 (float) - point size in the plot.
+* **dF_args** : dict
 
-* **numba**=False (bool) - compiles [dF](dFfunction.md) using numba.
+    If necesary, must contain the kargs for the `dF` function, by default {}
 
-* **n_points** (int) - number of points in the plot.
+* **n_points** : int
 
-* **runge_kutta_spet** (float) - time step in 4th order runge-kutta algorithm.
+    Maximum number of points to be calculated and represented, by default 10000
 
-* **runge_kutta_freq** (int) - number of points computed between saved positions.
+* **runge_kutta_step** : float
 
-* **Title** (str) -  title of the plot. Default value is `'Trajectory'`.
-  
-* **xlabel** (str) -  x axis label in the plot. Default value is `'X'`.
-  
-* **ylabel** (str) -  y axis label in the plot. Default value is `'Y'`.
+    Step of 'time' in the Runge-Kutta method, by default 0.01
 
-* **mark_start_point** (bool) - marks staring position with a bigger point size.
+* **runge_kutta_freq** : int
 
+    Number of times `dF` is aplied between positions saved, by default 1
+
+* **xlabel** : str
+
+    x label of the plot, by default 'X'
+
+* **ylabel** : str
+
+    y label of the plot, by default 'Y'
 
 # Methods
-## *Trajectory2D*.initial_position
-> *Trajectory2D*.**initial_position**(**position*)
 
-Parameter `position` must be a 2 element list or ndarray.
+Inherits methods from parent class [trajectory](trajectory.md), a brief resume is offered, click on the method to see more information:
 
+* [thermalize](../trajectory/#methods) :
 
-## *Trajectory2D*.thermalize
-> *Trajectory2D*.**thermalize**(**position*)
+    Adds thermalization steps and random initial position.
+        
+* [initial_position](../trajectory/#methods) :
 
-Parameter `position` is optional. If it is not introduced, a random number between 0 and 1 will be taken for each coordinate.
+    Adds a trajectory with the given initial position.
+    
+* [plot](../trajectory/#methods) : 
 
-## *Trajectory2D*.add_slider
-> *Trajectory2D*.**add_slider**(*param_name, \*, valinit=None, valstep=0.1, valinterval=10*)
+    Prepares the plots and computes the values. 
+    Returns the axis and the figure.
+    
+* [add_slider](../trajectory/#methods) :
 
-Adds a [slider](slider.md) which can change the value of a parameter in execution time.
+    Adds a slider for the dF function.
 
-
-## *Trajectory2D*.plot
-> *Trajectory2D*.**plot**(*, color=None)
-
-Takes as arguments class attributes. Color scheme can be changed introducing kwarg `color`. A list with accepted values can be found [here](https://matplotlib.org/stable/gallery/color/colormap_reference.html). 
-
-
-## *Trajectory2D*.compute_trajectory
-> *Trajectory2D*.**compute_trajectory**(*initial_values*)
-
-Given an initial posotion by `initial_values` (containing 3 coordinates), the method returns a tuple with two lists: positions and difference between following positions. Returns `n_points` points.
-
-
-## *Trajectory2D*.rungekutta_time_independent
-> *Trajectory2D*.**rungekutta_time_independent**(*initial_values*)
-
-Generator that given `initial_values`, returns the next point.
-
-# Defining Range:
+# Defining Range
 
 1. A single number. In this case the range is defined from zero to the given number in both axes.
 
-2. A range, such `[lowerLimit , upperLimit]`. Both axes will take the same limits.
+2. A range, such `[lowerLimit , upperLimit]`.  Both axes will take the same limits.
 
 3. Two ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit]]`
+
+# Examples
+```python
+from phaseportrait import Trajectories2D
+import numpy as np
+
+def dF(x,y,*, w=1, z=1):
+    return w*np.sin(y*y*y), -z*np.exp(x*x)
+
+example = Trajectory2D(dF, n_points=1300, size=2, mark_start_position=True, Title='Just an example')
+example.initial_position(1,1)
+example.add_slider('w', valinterval=[-1,5])
+example.add_slider('z', valinterval=[-1,5])
+example.plot()
+plt.show()
+
+```
+![image](imgs/trj2d_example.png)
