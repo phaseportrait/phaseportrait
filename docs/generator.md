@@ -63,7 +63,7 @@ Saves `self.position` in a convenient way for the type of representation.
 ### *\_Generator\_*._clear_values_
 > *\_Generator\_*.**clear_values**()
 
-Generates from `self.position` its following value
+Clears the data arrays.
 
 **Returns**
 
