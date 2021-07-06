@@ -11,7 +11,7 @@ class Map1D():
     """
     Map1D
     --------
-    Class dedicated to 1 dimension maps `x(t+1) = f(x)`.
+    Class dedicated to 1 dimensional maps `x(t+1) = f(x)`.
     
     Methods
     -------
@@ -165,6 +165,9 @@ class Map1D():
             norm=self._colores_norm, cmap=self._cmap), label=r'$X_{n}$')
         
     def update_dF_args(self):
+        """
+        Updates the internal dF_args attributes to match the sliders.
+        """
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
         
 
