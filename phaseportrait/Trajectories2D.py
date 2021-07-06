@@ -51,9 +51,9 @@ class Trajectory2D(trajectory):
         dF : callable
             A `dF` type function.
             
-        Key Arguments
+        Key Parameters
         -------------
-        RangoRepresentacion : list, optional
+        Range : list, optional
             Ranges if the axis in the main plot, by default None
         dF_args : dict, optional
             If necesary, must contain the kargs for the `dF` function, by default {}

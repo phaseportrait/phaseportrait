@@ -1,5 +1,5 @@
 # RungeKutta
-> *class* phaseportrait.trajectories.**RungeKutta**(portrait, dF, dimension, max_values, *, dt=0.1, dF_args=None, initial_values=None, thermalization=0)
+> *class* phaseportrait.trajectories.**RungeKutta**(*portrait, dF, dimension, max_values, *, dt=0.1, dF_args=None, initial_values=None, thermalization=0*)
 
 **This class is used internally in Trajectories.**
 
@@ -7,6 +7,7 @@ This class is an implementation of [\_Generator\_](generator.md) for a Runge-Kut
 
 
 ### **Parameters**
+
 * **portrait** : 
 
     Class that uses the RungeKutta objects.

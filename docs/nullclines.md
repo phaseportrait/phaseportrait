@@ -2,7 +2,7 @@
 > *class* phaseportrait.**Nullcline2D**(*portrait, function, \*, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='b', bgcolor='w', alpha=0*)
 
 Class dedicated to 2 dimensions phase portraits. 
-Useful where it is necessary to plot nulclines in a plot.
+Useful where it is necessary to plot nullclines in a plot.
 
 Integrated via method `add_nullclines` in [PhasePortrait2D](phaseportrait2d.md).
 
@@ -65,6 +65,7 @@ Integrated via method `add_nullclines` in [PhasePortrait2D](phaseportrait2d.md).
     Opacity of the background, by default 0
     
 # Methods
+
 ### *Nullcline2D*.plot
 > *Nullcline2D*.**plot**(*, axis=None)
 
