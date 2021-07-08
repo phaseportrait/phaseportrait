@@ -1,1 +1,8 @@
-from . import exceptions
+try:
+    __PHASEPORTRAIT_MODULE_IMPORTED__
+except NameError:
+    __PHASEPORTRAIT_MODULE_IMPORTED__= False
+
+if not __PHASEPORTRAIT_MODULE_IMPORTED__:
+    from .exceptions import *
+__PHASEPORTRAIT_MODULE_IMPORTED__ = True

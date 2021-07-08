@@ -28,8 +28,8 @@ share/python-wheels/
 *.egg
 MANIFEST
 #Por si acaso
-retratodefases.egg-info
-retratodefases-exe
+phaseportrait.egg-info
+phaseportrait-exe
 requirements.txt
 setup.py
 
