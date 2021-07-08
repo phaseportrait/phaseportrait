@@ -69,6 +69,7 @@ Adds a slider which can change the value of a parameter in execution time.
 **Parameters**
 
 * param_name : str
+
     The string key of the variable. Must be the same as the key in the `dF` function.
 
 **Key Arguments**

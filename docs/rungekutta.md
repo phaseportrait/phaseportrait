@@ -1,7 +1,7 @@
 # RungeKutta
-> *class* phaseportrait.trajectories.**RungeKutta**(*portrait, dF, dimension, max_values, *, dt=0.1, dF_args=None, initial_values=None, thermalization=0*)
+> *class* phaseportrait.trajectories.**RungeKutta**(*portrait, dF, dimension, max_values, \*, dt=0.1, dF_args=None, initial_values=None, thermalization=0*)
 
-**This class is used internally in Trajectories.**
+**This class is used internally in Trajectories. It is not intended to be used by the user.**
 
 This class is an implementation of [\_Generator\_](generator.md) for a Runge-Kutta 4th order data generator.
 
@@ -158,6 +158,6 @@ Creates an instance of phase-portrait.trajectories.RungeKutta. Computes all the 
 
 # Examples
 
-There are examples of how to implement this class in the folowing files:
+This class is implemented in other classes, check out:
 
-* [`phase-portrait/trajectories/trajectory.py`](trajectory.md)
+* [Trajectory](trajectory.md)

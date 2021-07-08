@@ -1,12 +1,13 @@
 # Map
-> *class* phaseportrait.maps.**Map**(portrait, dF, dimension, max_values, *, dt=0.1, dF_args=None, initial_values=None, thermalization=0)
+> *class* phaseportrait.maps.**Map**(*portrait, dF, dimension, max_values, \*, dt=0.1, dF_args=None, initial_values=None, thermalization=0*)
 
-**This class is used internally in Map1D.**
+**This class is used internally in Map1D. It is not intended to be used by the user.**
 
 This class is an implementation of [\_Generator\_](generator.md) for maps generators.
 
 
 ### **Parameters**
+
 * **portrait** : 
 
     Class that uses the Map objects.
@@ -102,6 +103,7 @@ Clears the data arrays `self.positions`.
     Difference between data values to be considerated equal.
 
 **Returns**
+
 * bool
 
     Whenever data reached a limit cylce.
@@ -166,6 +168,6 @@ Creates an instance of phase-portrait.trajectories.Map. Computes all the data re
 
 # Examples
 
-There are examples of how to implement this class in the folowing files:
+This class is implemented in other classes, check out:
 
-* [`phase-portrait/Map1D.py`](map1d.md)
+* [Map1D](map1d.md)

@@ -12,11 +12,11 @@ Class dedicated to 1 dimensional maps `x(t+1) = f(x)`.
 
 * **Range** : [x_range, y_range]
 
-            Ranges of the axis in the main plot.
+    Ranges of the axis in the main plot.
 
 * **n_points** : int
 
-            Maximum number of points
+    Maximum number of points
 
 ### Key Arguments
 
@@ -181,4 +181,18 @@ Creates a `map` instance and computes it's positions.
 
 * tuple: `(matplotlib.pyplot.figure, matplotlib.pyplot.Axis)`
 
+# Examples
+```py
+def Logistic(x, *, r=1.5):
+    return r*x*(1-x)
+
+# Create an instance of Map1D
+Logistic_Map = Map1D(Logistic, [2,3.9], [0,1], 5000, thermalization=50, size=0.05)
+
+# We want to plot for r in the range 0 < r < 4, every 0.0005
+Logistic_Map.plot_over_variable('r', [0,4], 0.0005)
+
+# Plot
+fig, ax = Logistic_Map.plot()
+```
 ![image](imgs/map_example.png)

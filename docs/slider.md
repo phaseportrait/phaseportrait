@@ -55,3 +55,13 @@ Updates internal dF_args and replots the graphs.
 **Returns**
 
 * None
+
+# Examples
+
+Slider is implemented in several classes via *add_slider* method (tipically), check out:
+
+* [Cobweb](cobweb.md)
+* [Map1D](map1d.md)
+* [PhasePortrait2D](phaseportrait2d.md)
+* [Trajectory2D](trajectory2d.md)
+* [Trajectory3D](trajectory3d.md)

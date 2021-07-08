@@ -1,7 +1,7 @@
 # \_Generator\_
 > *class* phaseportrait.generator_base.**\_Generator\_**(*dF, initial_position, xrange, \*, dF_args={None}, yrange=[], max_steps=100, n_points=100, \*\*kargs*)
 
-**This class is used internally in Maps and Trajectories. We do not recommend beginners using it directly.**
+**This class is used internally in Maps and Trajectories. It is not intended to be used by the user.**
 
 A class used to generate and save data.
 
@@ -179,7 +179,8 @@ Computes the next usable pair of values and saves them.
 
 # Examples
 
-There are examples of how to implement this class in the folowing files:
-* `phase-portrait/maps/map.py`
-* `phase-portrait/trajectories/rungekutta.py`
+This class is implemented in other classes, such as:
+
+* [Map](map.md)
+* [RungeKutta](rungekutta.md)
 

@@ -165,7 +165,7 @@ class trajectory:
         Parameters
         ---------
         args : Union[float, list[2], list[3]], optional
-            Inicial position for the computation.
+            Initial position for the computation.
             If None, a random position is chosen.
             
         Example

@@ -3,7 +3,7 @@
 
 Inherits from parent class [trajectory](trajectory.md).
 
-Computes a trajectory on a 2D system given a [dF](dFfunction.md) consisting of 2 args.
+Computes a trajectory on a 2D system given a [dF](dFfunction.md) function consisting of 2 args.
 
 
 ### **Parameters**
@@ -12,7 +12,7 @@ Computes a trajectory on a 2D system given a [dF](dFfunction.md) consisting of 2
 
     A dF type function.
 
-### Key Arguments
+### **Key Arguments**
 
 * **Range** : list
 

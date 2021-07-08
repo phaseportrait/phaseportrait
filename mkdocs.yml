@@ -1,15 +1,14 @@
 site_name: Phase Portrait
 nav:
-- Home: 'index.md'
-- Getting started: 'getting_started.md'
-- Examples: 
+- Installation : 'installation.md'
+- Examples:
     - '2D phase portraits' : 'phaseportrait2d_examples.md'
     - '2D & 3D trajectories' : 'trajectories_examples.md'
     - '1D maps and cobweb plots' : 'mapsandcobweb_examples.md'
 - Documentation:
     - '1D Maps' : 'map1d.md'
     - 'Cobweb plots' : 'cobweb.md'
-    - 'dF Function' : 'dFfunction.md'
+    - 'dF function' : 'dFfunction.md'
     - 'Generator base' : 'generator.md'
     - 'Map' : 'map.md'
     - 'Nullclines' : 'nullclines.md'
@@ -19,12 +18,11 @@ nav:
     - 'Trajectory' : 'trajectory.md'
     - 'Trajectory2d' : 'trajectory2d.md'
     - 'Trajectory3d' : 'trajectory3d.md'
-- About:
-    - 'License': 'license.md'
-    - 'Contributing' : 'contributing.md'
+- License: 'license.md'
+- Contributing: 'contributing.md'
 theme: flatly
-repo_url: https://github.com/Loracio/phase-portrait/
+repo_url: https://github.com/phaseportrait/phaseportrait/
 site_description: Python package for visualizing non-linear dynamics and chaos
 site_author : Víctor Loras & Unai Lería
 copyright : Copyright © 2021 Víctor Loras, Unai Lería
-site_url : https://loracio.github.io/phase-portrait/
+site_url : https://phaseportrait.github.io/
