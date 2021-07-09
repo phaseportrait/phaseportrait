@@ -35,6 +35,7 @@ Gives the option to represent 3D trajectories given a [dF](dFfunction.md) functi
     Number of times `dF` is aplied between positions saved, by default 1
     
 * **xlabel** : str
+    
     x label of the plot, by default 'X'
     
 * **ylabel** : str
@@ -77,28 +78,60 @@ Inherits methods from parent class [trajectory](trajectory.md), a brief resume i
 3. Three ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit], [zAxisLowerLimit , zAxisUpperLimit]]`
 
 # Examples
+
+### Lorentz attractor: chaos
+
+Two trajectories with similar initial positions under the influence of Lorentz equations.
+
 ```python
 from phaseportrait import Trajectories3D
 
 def Lorenz(x,y,z,*, s=10, r=28, b=8/3):
-    return -s*x+s*y, -x*z+r*x-y, x*y-b*z
+    return  -s*x+s*y, 
+            -x*z+r*x-y, 
+            x*y-b*z
 
-a = Trajectory3D(Lorenz, lines=True, n_points=1300, size=3, mark_start_position=True, Title='Nearby IC on Lorenz attractor')
+a = Trajectory3D(
+    Lorenz, 
+    lines=True, 
+    n_points=1300, 
+    size=3, 
+    mark_start_position=True, 
+    Title='Nearby IC on Lorenz attractor'
+    )
+
 a.initial_position(10,10,10)
 a.initial_position(10,10,10.0001)
 a.plot()
 ```
 ![image](imgs/trj3d_example.png)
 
+
+### Halvorsen attractor
+
+In this example we are interested in seeing the attractor, not trajectories, under the Halvorsen equations.
+
 ```python
 from phaseportrait import Trajectories3D
 
 def Halvorsen(x,y,z, *, s=1.4):
-        delta = (3*s+15)
-        return -s*x+2*y-4*z-y**2+delta , -s*y+2*z-4*x-z**2+delta, -s*z+2*x-4*y-x**2+delta
+    delta = (3*s+15)
+    return  -s*x+2*y-4*z-y**2+delta, 
+            -s*y+2*z-4*x-z**2+delta, 
+            -s*z+2*x-4*y-x**2+delta
 
-    d = Trajectory3D(Halvorsen, dF_args={'s':1.4}, n_points=10000, thermalization=0, numba=True, size=2, mark_start_point=True, Title='Halvorsen attractor')
-    d.initial_position(0,5,10)
-    d.plot()
+d = Trajectory3D(
+    Halvorsen, 
+    dF_args={'s':1.4}, 
+    n_points=10000, 
+    thermalization=0, 
+    numba=True, 
+    size=2, 
+    mark_start_point=True, 
+    Title='Halvorsen attractor'
+    )
+
+d.initial_position(0,5,10)
+d.plot()
 ```
 ![image](imgs/trj3d_example_2.png)
