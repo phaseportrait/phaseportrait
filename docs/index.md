@@ -8,8 +8,8 @@ We want to state that we are self-taught into making this kind of stuff, and we'
 At first, this project was made up in spanish. The spanish version can be found [here](https://github.com/Loracio/retrato-de-fases).
 # Authors
 
-- Víctor Loras Herrero  ([vhloras@gmail.com](mailto:vhloras@gmail.com))
-- Unai Lería Fortea  ([unaileria@gmail.com](mailto:unaileria@gmail.com))
+- Víctor Loras Herrero  ([vhloras@gmail.com](mailto:vhloras@gmail.com)) ([github](https://github.com/Loracio))
+- Unai Lería Fortea ([unaileria@gmail.com](mailto:unaileria@gmail.com)) ([github](https://github.com/QuanticPony))
 
 # Installation
 **Installation via pip:**
@@ -28,6 +28,8 @@ Save and unzip on desired directory.
 
 # Examples of use
 ![image](imgs/ejemplo3D.png)
+![image](imgs/pendulum_example.png) ![image](imgs/damped_pendulum_example.png) 
+![image](imgs/map_example_code.png)
 
 - [examples.ipynb](https://github.com/Loracio/phase-portrait/examples/examples.ipynb):
 Examples showing how to use *PhasePortrait2D* class.
