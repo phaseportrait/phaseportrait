@@ -103,7 +103,10 @@ class PhasePortrait2D:
         color : str
             Matplotlib `Cmap`.
         """
-        self.draw_plot(color=color)
+        if color is not None:
+            self.color = color
+        
+        self.draw_plot(color=self.color)
         self.fig.canvas.draw_idle()
 
         return self.fig, self.ax 
