@@ -183,11 +183,9 @@ Creates a `map` instance and computes it's positions.
 
 # Examples
 
-[More Map1D and Cobweb examples.](mapsandcobweb_examples.md)
+### Logistic map
 
-### Logistic map: classic
-
-Lets represent the Logistic map over the control parameter **r**, in the range `[2, 3.9]`, with an interval of `0.005`.
+Let's represent the Logistic map over the control parameter **r**, in the range `[2, 3.9]`, with an interval of `0.005`.
 
 ```py
 def Logistic(x, *, r=1.5):
@@ -205,4 +203,5 @@ fig, ax = Logistic_Map.plot()
 ```
 ![image](imgs/map_example.png)
 
+* [See more Map1D examples.](mapsandcobweb_examples.md)
 

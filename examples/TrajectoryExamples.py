@@ -9,20 +9,19 @@ of a sudden every example. If that happens, mark as False all examples except th
 
 if True:
     """
-    Example 0: circular motion in 2D.
+    Example 0: 2D trajectory.
     """
 
-    def dFCircle(x,y,*, w=1, z=1):
-        return w*y, -z*x
+    def dF(x,y,*, w=1, z=1):
+        return w*np.sin(y*y*y), -z*np.exp(x*x)
 
-    circle = Trajectory2D(dFCircle, n_points=1300, size=2, mark_start_position=True, Title='Just a circle')
-    circle.initial_position(1,1)
-    circle.initial_position(2,2)
-    circle.add_slider('w', valinterval=[-1,5])
-    circle.add_slider('z', valinterval=[-1,5])
-    circle.plot()
+    example = Trajectory2D(dF, n_points=1300, size=2, mark_start_position=True, Title='Just an example')
+    example.initial_position(1,1)
+    example.add_slider('w', valinterval=[-1,5])
+    example.add_slider('z', valinterval=[-1,5])
+    example.plot()
     plt.show()
-
+    
 if True:
     """
     Example 1: Nearby IC on Lorenz attractor

@@ -1,13 +1,16 @@
 # Installation
-**Installation via pip:**
+**Installing via pip:**
+Phaseportrait releases are available as wheel packages for macOS, Windows and Linux on PyPI. Install it using pip:
+```
+pip install phaseportrait
+```
 
-> $ pip install phaseportrait
+**Installing from source:**
 
-**Installation via git:**
-
-Open a terminal on desired route and type the following
-> $ git clone https://github.com/phaseportrait/phaseportrait
-
+Open a terminal on desired route and type the following:
+```
+git clone https://github.com/phaseportrait/phaseportrait
+```
 **Manual installation**
 
 Visit [phase-portrait](https://github.com/phaseportrait/phaseportrait) webpage on GitHub. Click on green button saying *Code*, and download it in zip format.

@@ -2,6 +2,12 @@ from phaseportrait import *
 import matplotlib.pyplot as plt
 import numpy as np
 
+def dFDampedPendulum(theta, v):
+    return v, -0.75*v-np.sin(theta)
+
+DampedPendulum = PhasePortrait2D(dFDampedPendulum, [[-10,10],[-5, 5]], color='hola',Density=2, Title='Damped pendulum', xlabel=r"$\Theta$", ylabel=r"$\dot{\Theta}$")
+# DampedPendulum.add_nullclines()
+DampedPendulum.plot(color='inferno')
 
 """
 Nullclines example
