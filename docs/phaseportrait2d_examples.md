@@ -186,6 +186,6 @@ slippery_cycle.plot(color='cool')
 
 For more information about nullclines see [documentation](nullclines.md).
 
-## More examples:
+## More examples
 
 * A *Jupyter Notebook* with more examples, with physical or mathematical background can be found [here](https://github.com/phaseportrait/phaseportrait/blob/master/examples/examples.ipynb).

@@ -166,4 +166,4 @@ We've taken a look to the most important arguments in order to visualize traject
 
 # Some more examples
 
-If you want to take a look to some more 'elaborated' plots, we recommend you taking a look to the [following file](https://github.com/phaseportrait/phaseportrait/blob/master/0.1/examples/TrajectoryExamples.py), in which you cand find several famous chaotic attractors.
+If you want to take a look to some more 'elaborated' plots, we recommend you taking a look to the [following file](https://github.com/phaseportrait/phaseportrait/blob/master/examples/TrajectoryExamples.py), in which you cand find several famous chaotic attractors.

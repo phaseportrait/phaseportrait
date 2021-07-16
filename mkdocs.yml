@@ -1,7 +1,7 @@
 site_name: Phase Portrait
 nav:
 - Installation : 'installation.md'
-- Examples:
+- Tutorials:
     - '2D phase portraits' : 'phaseportrait2d_examples.md'
     - '2D & 3D trajectories' : 'trajectories_examples.md'
     - '1D maps and cobweb plots' : 'mapsandcobweb_examples.md'

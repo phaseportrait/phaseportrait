@@ -1,15 +1,17 @@
-from phaseportrait import *
+from phaseportrait import Trajectory2D, Trajectory3D
 from matplotlib import pyplot as plt
 import numpy as np
 
 """
+IMPORTANT:
+
 For each example, 3 or 4 plots will be created. In order to prevent your PC from hyperventillating, be sure that your programming environment doesn't plot all
 of a sudden every example. If that happens, mark as False all examples except the one you want to visualize.
 """
 
 if True:
     """
-    Example 0: 2D trajectory.
+    Example 0: 2D trajectory. It can throw overflow error.
     """
 
     def dF(x,y,*, w=1, z=1):
@@ -102,7 +104,7 @@ if True:
     def Four_wings(x,y,z,*, a=0.2, b=0.01, c=-0.4):
       return a*x+y*z, b*x+c*y-x*z, -z - x*y
     
-    f = Trajectory3D(Four_wings, dF_args={'a':0.2, 'b':0.01, 'c':-0.4}, n_points=10000, runge_kutta_freq=5, size=2, thermalization=2000, Title='Four-Wings attractor')
+    f = Trajectory3D(Four_wings,  n_points=10000, runge_kutta_freq=5, size=2, thermalization=2000, Title='Four-Wings attractor')
     f.add_slider('a', valinit=0.21, valinterval=[0.1,0.3], valstep=0.005)
     f.add_slider('b', valinit=0.01, valinterval=[0,0.3], valstep=0.005)
     f.add_slider('c', valinit=-0.4, valinterval=[-1,0], valstep=0.005)
@@ -117,7 +119,7 @@ if True:
     def Aizawa(x,y,z,*, a=0.95, b=0.7, c=0.6, d=3.5, e=0.25, f=0.1):
         return (z-b)*x - d*y, d*x + (z-b)*y, c + a*z - z*z*z/3 - (x*x + y*y) * (1 + e*z) + f*z*x*x*x
 
-    g = Trajectory3D(Aizawa, dF_args={'a':0.95, 'b':0.7, 'c':0.6, 'd':3.5, 'e':0.25, 'f':0.1}, n_points=10000, size=1, thermalization=2000, Title='Aizawa attractor')
+    g = Trajectory3D(Aizawa, n_points=10000, size=1, thermalization=2000, Title='Aizawa attractor')
     g.thermalize()
     g.add_slider('a', valinit=0.95, valinterval=[0,1], valstep=0.005)
     g.add_slider('b', valinit=0.7, valinterval=[0,1], valstep=0.005)

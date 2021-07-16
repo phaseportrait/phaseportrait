@@ -1,5 +1,6 @@
 # Installation
 **Installing via pip:**
+
 Phaseportrait releases are available as wheel packages for macOS, Windows and Linux on PyPI. Install it using pip:
 ```
 pip install phaseportrait
