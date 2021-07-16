@@ -104,7 +104,7 @@ a.initial_position(10,10,10)
 a.initial_position(10,10,10.0001)
 a.plot()
 ```
-![image](imgs/trj3d_example.png)
+![image](imgs/doc_examples/trj3d_example.png)
 
 
 ### Halvorsen attractor
