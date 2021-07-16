@@ -50,7 +50,7 @@ class Cobweb:
     def __init__(self, dF, initial_position, xrange, *, dF_args={}, yrange=[], max_steps=100, n_points=10000, **kargs):
         
         self.dF = dF
-        self.dF_args = dF_args
+        self.dF_args = dF_args.copy()
         self.initial_position = initial_position 
         self.xrange = xrange
 

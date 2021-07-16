@@ -92,7 +92,7 @@ class trajectory:
         """
 
         self._dimension = dimension
-        self.dF_args = dF_args
+        self.dF_args = dF_args.copy()
         self.dF = dF 
         self.Range = Range
 
@@ -100,7 +100,7 @@ class trajectory:
             if kargs['numba']:
                 from numba import jit
                 self.dF = jit(self.dF, nopython=True)
-                if not dF_args:
+                if not self.dF_args:
                     exceptions.dFArgsRequired()
         except KeyError:
             pass
@@ -126,6 +126,8 @@ class trajectory:
         if not self.size:
             self.size = 0.5
         self.color = kargs.get('color')
+        if self.color is None:
+            self.color =  'viridis'
         self._mark_start_point = kargs.get('mark_start_point')
 
     # This functions must be overwriten on child classes:
@@ -233,9 +235,11 @@ class trajectory:
         
         self._calculate_values(all_initial_conditions=True)
 
-        if color is not None:
-            self.color = color
-        cmap = self.color
+
+        if self.color == 't':
+            cmap = color
+        else:
+            cmap = self.color = color
 
         for trajectory in self.trajectories:
             val = trajectory.positions

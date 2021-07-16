@@ -63,8 +63,7 @@ class PhasePortrait2D:
         color : str, default='rainbow'
             Matplotlib `Cmap`.
         """
-        
-        self.dF_args = dF_args                           # dF function's args
+        self.dF_args = dF_args.copy()                    # dF function's args
         self.dF = dF                                     # Function containing system's equations
         self.Range = Range                               # Range of graphical representation
         

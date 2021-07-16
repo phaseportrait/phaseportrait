@@ -69,7 +69,7 @@ class Map1D():
             Thermalization steps before points saved.
         """
         
-        self.dF_args = dF_args
+        self.dF_args = dF_args.copy()
         self.dF = dF
         self.Range = np.array([x_range, y_range])
         self.n_points = n_points
