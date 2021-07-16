@@ -30,7 +30,7 @@ A class used to represent a Cobweb plot and a time series to study the convergen
     
 * **max_steps** : int, default=100
 
-    Maximun number of points to be represented.
+    Maximum number of points to be represented.
     
 * **n_points** : int, default=10000
 

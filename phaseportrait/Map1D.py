@@ -158,11 +158,20 @@ class Map1D():
             vmin=self.Range[1][0], vmax=self.Range[1][1])
         self.ax.set_xlim(*self.Range[0])
         self.ax.set_ylim(*self.Range[1])
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylabel(self.ylabel)
-        self.ax.grid()
-        self.fig.colorbar(matplotlib.cm.ScalarMappable(
-            norm=self._colores_norm, cmap=self._cmap), label=r'$X_{n}$')
+        try:
+            self.__done
+            
+            self.ax.grid()
+            
+        except AttributeError:
+            self.__done = None
+            
+            self.ax.set_xlabel(self.xlabel)
+            self.ax.set_ylabel(self.ylabel)
+            self.fig.colorbar(matplotlib.cm.ScalarMappable(
+                norm=self._colores_norm, cmap=self._cmap), label=r'$X_{n}$')
+            
+        
         
     def update_dF_args(self):
         """
@@ -188,10 +197,11 @@ class Map1D():
             func.plot()
 
         self.update_dF_args()
+        self._prepare_plot()
         self._compute_data()
 
         if color is not None:
-            self.color = color
+            self._cmap = color
 
         for i in self._range:
             values = self.maps[i].positions

@@ -155,6 +155,7 @@ class Cobweb:
         self.fig['Cobweb'].canvas.draw_idle()
         self.fig['TimeSeries'].canvas.draw_idle()
 
+        return self.fig['Cobweb'], self.ax['TimeSeries'], self.fig['TimeSeries'], self.ax['TimeSeries']
 
     def _create_sliders_plot(self):
         """

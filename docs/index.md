@@ -5,7 +5,13 @@ This idea came while taking a course in non linear dynamics and chaos, during th
 
 We want to state that we are self-taught into making this kind of stuff, and we've tried to make things as *professionally* as possible, any comments about improving our work are welcome!
 
-At first, this project was made up in spanish. The spanish version can be found [here](https://github.com/Loracio/retrato-de-fases).
+At first, this project was made up in spanish. The spanish version can be found [here](https://github.com/phaseportrait/phaseportrait).
+
+
+### **Disclaimer:**
+
+As of today (July 2021), **we've decided to cease our work on this project** (for the moment, as we have to move on other things). Therefore, **this is the 'final' version** of the project, there are no more features incoming. We've tried to leave the code documentated and with good organisation in case someone wants to carry on with some new ideas! Cheers
+
 # Authors
 
 - Víctor Loras Herrero  ([vhloras@gmail.com](mailto:vhloras@gmail.com)) ([github](https://github.com/Loracio))
@@ -31,11 +37,11 @@ Save and unzip on desired directory.
 ![image](imgs/index/pendulum_example.png) ![image](imgs/index/damped_pendulum_example.png) 
 ![image](imgs/index/map_example_code.png)
 
-- [examples.ipynb](https://github.com/phaseportrait/phaseportrait/examples/examples.ipynb):
+- [examples.ipynb](https://github.com/phaseportrait/phaseportrait/tree/master/examples/examples.ipynb):
 Examples showing how to use *PhasePortrait2D* class.
 
-- [sliderExamples.py](https://github.com/phaseportrait/phaseportrait/examples/sliderExamples.py) :
+- [sliderExamples.py](https://github.com/phaseportrait/phaseportrait/tree/master/examples/sliderExamples.py) :
 Examples using the *slider* feature from *PhasePortrait2D* class.
 
-- [TrajectoryExamples.py](https://github.com/phaseportrait/phaseportrait/examples/TrajectoryExamples.py):
+- [TrajectoryExamples.py](https://github.com/phaseportrait/phaseportrait/tree/master/examples/TrajectoryExamples.py):
 Contains examples of 2D and 3D trajectories with and without sliders.
