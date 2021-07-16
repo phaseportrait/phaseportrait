@@ -1,18 +1,6 @@
-from phaseportrait import *
+from phaseportrait import PhasePortrait2D
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-"""
-Nullclines example
-"""
-def dFnull(x,y):
-    return x + np.exp(-y), -y
-
-null = PhasePortrait2D(dFnull, [[-10,10], [-5, 5]])
-null.add_nullclines(precision=0.05)
-null.plot()
-plt.show()
 
 """
 Example 1: sliders for 2 parameters

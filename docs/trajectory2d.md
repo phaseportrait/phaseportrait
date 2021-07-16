@@ -87,4 +87,4 @@ example.plot()
 plt.show()
 
 ```
-![image](imgs/trj2d_example.png)
+![image](imgs/doc_examples/trj2d_example.png)

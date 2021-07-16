@@ -92,7 +92,7 @@ class trajectory:
         """
 
         self._dimension = dimension
-        self.dF_args = dF_args
+        self.dF_args = dF_args.copy()
         self.dF = dF 
         self.Range = Range
 
@@ -100,7 +100,7 @@ class trajectory:
             if kargs['numba']:
                 from numba import jit
                 self.dF = jit(self.dF, nopython=True)
-                if not dF_args:
+                if not self.dF_args:
                     exceptions.dFArgsRequired()
         except KeyError:
             pass
@@ -126,6 +126,8 @@ class trajectory:
         if not self.size:
             self.size = 0.5
         self.color = kargs.get('color')
+        if self.color is None:
+            self.color =  'viridis'
         self._mark_start_point = kargs.get('mark_start_point')
 
     # This functions must be overwriten on child classes:
@@ -165,6 +167,7 @@ class trajectory:
         Parameters
         ---------
         args : Union[float, list[2], list[3]], optional
+        
             Initial position for the computation.
             If None, a random position is chosen.
             
@@ -206,21 +209,23 @@ class trajectory:
             trajectory.compute_all(save_freq=self.runge_kutta_freq)
 
 
-    def plot(self, *args, **kargs):
+    def plot(self, color=None, **kargs):
         """
         Prepares the plots and computes the values.
         
+        Key Arguments
+        -------------
+        color : str
+        
+            Matplotlib `Cmap`.
+            
         Returns
         -------
         tuple(matplotlib Figure, matplotlib Axis)
         
         None 
             If attribute `fig` or `ax` not found.
-        
-        Key Arguments
-        -------------
-        color : str
-            Matplotlib `Cmap`.
+            
         """
 
         self._prepare_plot()
@@ -230,7 +235,11 @@ class trajectory:
         
         self._calculate_values(all_initial_conditions=True)
 
-        cmap = kargs.get('color')
+
+        if self.color == 't':
+            cmap = color
+        else:
+            cmap = self.color = color
 
         for trajectory in self.trajectories:
             val = trajectory.positions
@@ -249,7 +258,6 @@ class trajectory:
                 if self.color == 't':
                     color = np.linspace(0,1, vel.shape[1])
                 else:
-                    cmap = self.color
                     color = norma(vel[:])
                     color /= color.max()
 
@@ -280,15 +288,21 @@ class trajectory:
         Parameters
         ---------
         param_name : str
+        
             Name of the variable. Must be in the `dF` kargs of the `Map1D.dF` function.
         
         Key Arguments
         ------------
         valinit : float, defautl=None
+        
             Initial position of the Slider
+            
         valinterval : Union[float,list], default=10
+        
             Min and max value for the param range.
+            
         valstep : float, default=0.1
+        
             Separation between consecutive values in the param range.
         """ 
         self._create_sliders_plot()
