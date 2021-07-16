@@ -124,6 +124,6 @@ example.add_nullclines()
 example.plot()
 ``` 
 
-![image](imgs/pp2d_example.png)
+![image](imgs/doc_examples/pp2d_example.png)
 
 * [Click here to see more examples.](phaseportrait2d_examples.md)

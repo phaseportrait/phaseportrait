@@ -128,7 +128,7 @@ LogisticCobweb.plot()
 
 This will output the following plots:
 
-![image](imgs/cobweb_exampe.png)
+![image](imgs/doc_examples/cobweb_exampe.png)
 
 * [See more Cobweb examples.](mapsandcobweb_examples.md)
 

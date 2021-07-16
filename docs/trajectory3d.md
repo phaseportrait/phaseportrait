@@ -134,4 +134,4 @@ d = Trajectory3D(
 d.initial_position(0,5,10)
 d.plot()
 ```
-![image](imgs/trj3d_example_2.png)
+![image](imgs/doc_examples/trj3d_example_2.png)

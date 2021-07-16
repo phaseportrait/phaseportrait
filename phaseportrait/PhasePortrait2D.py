@@ -33,7 +33,7 @@ class PhasePortrait2D:
         Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait2D'
-    def __init__(self, dF, Range, *, MeshDim=500, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow'):
+    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow'):
         """
         PhasePortrait2D
         ---------------
@@ -47,7 +47,7 @@ class PhasePortrait2D:
             
         Key Arguments
         -------------
-        MeshDim : int, default=500
+        MeshDim : int, default=30
             Number of elements in the arrows grid.
         dF_args : dict
             If necesary, must contain the kargs for the `dF` function.
@@ -125,7 +125,7 @@ class PhasePortrait2D:
         color : str
             Matplotlib `Cmap`.
         """
-        self.dF_args = {name: slider.value for name, slider in self.sliders.items() if slider.value!= None}
+        self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
 
         try:
             for nullcline in self.nullclines:
@@ -137,6 +137,12 @@ class PhasePortrait2D:
             self._PolarTransformation()
         else:
             self._dX, self._dY = self.dF(self._X, self._Y, **self.dF_args)
+        
+        if utils.is_number(self._dX):
+            self._dX = self._X.copy() * 0 + self._dX
+        if utils.is_number(self._dY):
+            self._dY = self._Y.copy() * 0 + self._dY
+            
         colors = (self._dX**2+self._dY**2)**(0.5)
         colors_norm = mcolors.Normalize(vmin=colors.min(), vmax=colors.max())
         stream = self.ax.streamplot(self._X, self._Y, self._dX, self._dY, color=colors, cmap=color, norm=colors_norm, linewidth=1, density= self.Density)
@@ -156,7 +162,7 @@ class PhasePortrait2D:
         self.nullclines.append(Nullcline2D(self, self.dF, 
                                           precision=precision, offset=offset, density=density, 
                                           xRange=xRange, yRange=yRange, dF_args=dF_args, 
-                                          xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha))
+                                          xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
 
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
@@ -190,7 +196,6 @@ class PhasePortrait2D:
         """
         self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
         self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
-
 
 
     @property

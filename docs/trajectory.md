@@ -61,7 +61,7 @@ Prepares the plots and computes the values.
 
 * color : str
 
-    Matplotlib `Cmap`.
+    Matplotlib `Cmap`. If given `'t'` value, color follows the temporal evolution of the trajectory.  
 
 **Returns**
 

@@ -19,23 +19,23 @@ At first, this project was made up in spanish. The spanish version can be found 
 **Installation via git:**
 
 Open a terminal on desired route and type the following
-> $ git clone https://github.com/Loracio/phase-portrait
+> $ git clone https://github.com/phaseportrait/phaseportrait
 
 **Manual installation**
 
-Visit [phase-portrait](https://github.com/Loracio/phase-portrait) webpage on GitHub. Click on green button saying *Code*, and download it in zip format.
+Visit [phase-portrait](https://github.com/phaseportrait/phaseportrait) webpage on GitHub. Click on green button saying *Code*, and download it in zip format.
 Save and unzip on desired directory.
 
 # Examples of use
-![image](imgs/ejemplo3D.png)
-![image](imgs/pendulum_example.png) ![image](imgs/damped_pendulum_example.png) 
-![image](imgs/map_example_code.png)
+![image](imgs/index/ejemplo3D.png)
+![image](imgs/index/pendulum_example.png) ![image](imgs/index/damped_pendulum_example.png) 
+![image](imgs/index/map_example_code.png)
 
-- [examples.ipynb](https://github.com/Loracio/phase-portrait/examples/examples.ipynb):
+- [examples.ipynb](https://github.com/phaseportrait/phaseportrait/examples/examples.ipynb):
 Examples showing how to use *PhasePortrait2D* class.
 
-- [sliderExamples.py](https://github.com/Loracio/phase-portrait/examples/sliderExamples.py) :
+- [sliderExamples.py](https://github.com/phaseportrait/phaseportrait/examples/sliderExamples.py) :
 Examples using the *slider* feature from *PhasePortrait2D* class.
 
-- [TrajectoryExamples.py](https://github.com/Loracio/phase-portrait/examples/TrajectoryExamples.py):
+- [TrajectoryExamples.py](https://github.com/phaseportrait/phaseportrait/examples/TrajectoryExamples.py):
 Contains examples of 2D and 3D trajectories with and without sliders.
