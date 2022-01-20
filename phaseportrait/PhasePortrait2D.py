@@ -67,14 +67,15 @@ class PhasePortrait2D:
         self.dF = dF                                     # Function containing system's equations
         self.Range = Range                               # Range of graphical representation
         
-        
-        self.L = MeshDim                                                 # Number of points in the meshgrid
+
+        self.MeshDim  = MeshDim
         self.Density = Density                                           # Controls concentration of nearby trajectories
         self.Polar = Polar                                               # If dF expression given in polar coord. mark as True
         self.Title = Title                                               # Title of the plot
         self.xlabel = xlabel                                             # Title on X axis
         self.ylabel = ylabel                                             # Title on Y axis
 
+        self._create_arrays()
 
         # Variables for plotting
         self.fig, self.ax = plt.subplots()
@@ -82,11 +83,13 @@ class PhasePortrait2D:
         self.sliders = {}
         self.nullclines = []
 
-        # Meshgrid 
-        self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.L), np.linspace(*self.Range[1,:], self.L))
+
+
+    def _create_arrays(self):
+        self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.MeshDim), np.linspace(*self.Range[1,:], self.MeshDim))
 
         if self.Polar:   
-            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X) # Cartesian representation to polar representation transform
+            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
 
 
     def plot(self, *, color=None):
@@ -126,11 +129,16 @@ class PhasePortrait2D:
         """
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
 
+        self._create_arrays()
+
         try:
             for nullcline in self.nullclines:
                 nullcline.plot()
         except AttributeError:
             pass
+
+        if color is not None:
+            self.color = color
         
         if self.Polar:
             self._PolarTransformation()
@@ -144,7 +152,7 @@ class PhasePortrait2D:
             
         colors = (self._dX**2+self._dY**2)**(0.5)
         colors_norm = mcolors.Normalize(vmin=colors.min(), vmax=colors.max())
-        stream = self.ax.streamplot(self._X, self._Y, self._dX, self._dY, color=colors, cmap=color, norm=colors_norm, linewidth=1, density= self.Density)
+        stream = self.ax.streamplot(self._X, self._Y, self._dX, self._dY, color=colors, cmap=self.color, norm=colors_norm, linewidth=1, density= self.Density)
         self.ax.set_xlim(self.Range[0,:])
         self.ax.set_ylim(self.Range[1,:])
         x0,x1 = self.ax.get_xlim()
@@ -193,6 +201,9 @@ class PhasePortrait2D:
         """
         Computes the expression of the velocity field if coordinates are given in polar representation.
         """
+        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
+            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+        
         self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
         self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
 
