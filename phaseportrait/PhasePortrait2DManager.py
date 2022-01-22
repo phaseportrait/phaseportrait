@@ -49,7 +49,7 @@ class PhasePortrait2DManager(object):
         
         path = "svg/"
         fig_name = time.strftime('%a%d%b%Y%H%M%SGMT',time.localtime())
-        fig.savefig(path + fig_name +'.svg')
+        fig.savefig(path + fig_name +'.svg', transparent=True)
 
         print(fig_name + '.svg')
         sys.stdout.flush()
