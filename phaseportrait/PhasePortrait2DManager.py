@@ -9,7 +9,8 @@ from . import PhasePortrait2D
 class PhasePortrait2DManager(object):
     @staticmethod
     def plot_from_json(json_str: str) -> str:
-        """Returns a string containing SVG figure path for json given."""
+        """Returns a string containing SVG figure path for given json.
+        For a json example view `phaseportrait/examples/api_examples/phaseportrait2d_example.json`."""
         info = json.loads(json_str)
         
         representation = PhasePortrait2D(lambda x,y:(x,y), [-1,1])
@@ -56,7 +57,8 @@ class PhasePortrait2DManager(object):
     
     @staticmethod
     def json_to_python_code(json_str: str) -> str:
-        """Returns a string containing equivalent Python code for the json given."""
+        """Returns a string containing equivalent Python code for the given json.
+        For a json example view `phaseportrait/examples/api_examples/phaseportrait2d_example.json`."""
         
         info = json.loads(json_str)
         
