@@ -1,12 +1,7 @@
 from phaseportrait import PhasePortrait2D
-# from .Trajectories2D import Trajectory2D
-# from .Trajectories3D import Trajectory3D
-# from .Map1D import Map1D
-# from .Cobweb import Cobweb
 
 import sys
 import re
-import matplotlib.pyplot as plt
 import json
 import time
 
@@ -50,10 +45,12 @@ class PhasePortrait2DManager(object):
         # Plot and save
         fig, ax = representation.plot()
         
-        path = ""
+        path = "svg/"
         fig_name = time.strftime('%a%d%b%Y%H%M%SGMT',time.localtime())
         fig.savefig(path + fig_name +'.svg')
-        return path
+
+        print(fig_name + '.svg')
+        sys.stdout.flush()
     
     
     @staticmethod
@@ -93,12 +90,14 @@ class PhasePortrait2DManager(object):
         
         finisher = '\nphase_diagram.plot()\nplt.show()'
 
-        return "\n".join([header, function, portrait, portrait_kargs, nullcline, finisher])
+        print("\n".join([header, function, portrait, portrait_kargs, nullcline, finisher]))
+        sys.stdout.flush()
 
     @staticmethod
     def echo(self, text) -> str:
         """echo any text"""
-        return text
+        print(text)
+        sys.stdout.flush()
 
 
 # if __name__ == '__main__':
@@ -113,7 +112,7 @@ class PhasePortrait2DManager(object):
 #         o_file.write(code)
 
 
-if __name__ == '__main__':
-    with open("phaseportrait/phaseportrait2d.json", 'r') as file:
-        code = "\n".join(file.readlines())
-        PhasePortrait2DManager.plot_from_json(code)
+# if __name__ == '__main__':
+#     with open("phaseportrait/examples/api_examples/phaseportrait2d_example.json", 'r') as file:
+#         code = "\n".join(file.readlines())
+#         PhasePortrait2DManager.plot_from_json(code)
