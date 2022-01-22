@@ -100,19 +100,9 @@ class PhasePortrait2DManager(object):
         sys.stdout.flush()
 
 
-# if __name__ == '__main__':
-#     api = PhasePortrait2DManager()
-#     code = ''
-    
-#     with open("phaseportrait/phaseportrait2d.json", 'r') as file:
-#         code = "\n".join(file.readlines())
-#         code = api.json_to_python_code(code)
-
-#     with open('prueba.py', 'w') as o_file:
-#         o_file.write(code)
-
-
-# if __name__ == '__main__':
-#     with open("phaseportrait/examples/api_examples/phaseportrait2d_example.json", 'r') as file:
-#         code = "\n".join(file.readlines())
-#         PhasePortrait2DManager.plot_from_json(code)
+if __name__ == '__main__':
+    modes = {
+        '--code' : PhasePortrait2DManager.json_to_python_code,
+        '--plot' : PhasePortrait2DManager.plot_from_json
+    }
+    modes[sys.argv[1]](sys.argv[2])
