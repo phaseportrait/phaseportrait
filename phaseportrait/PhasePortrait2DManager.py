@@ -1,9 +1,10 @@
-from phaseportrait import PhasePortrait2D
-
-import sys
-import re
 import json
+import re
+import sys
 import time
+
+from . import PhasePortrait2D
+
 
 class PhasePortrait2DManager(object):
     @staticmethod
@@ -98,11 +99,3 @@ class PhasePortrait2DManager(object):
         """echo any text"""
         print(text)
         sys.stdout.flush()
-
-
-if __name__ == '__main__':
-    modes = {
-        '--code' : PhasePortrait2DManager.json_to_python_code,
-        '--plot' : PhasePortrait2DManager.plot_from_json
-    }
-    modes[sys.argv[1]](sys.argv[2])
