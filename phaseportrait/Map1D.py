@@ -2,6 +2,7 @@ import matplotlib
 import numpy as np
 import random
 from matplotlib import pyplot as plt
+import threading
 
 from .maps import Map
 from .sliders import Slider
@@ -103,18 +104,28 @@ class Map1D():
 
         self._prepare_plot()
 
+    def _thread_compute_date(self, params):
+        dF_args = self.dF_args.copy()
+        for p in params:
+            dF_args.update({self._param_name: p})
+            self.maps.update({p: Map.instance_and_compute_all(self, self.dF, self.dimension,
+                             self.n_points, dF_args, self._initial_x, thermalization=self.thermalization,
+                             limit_cycle_check=self._limit_cycle_check_first, delta=self._delta_cycle_check, save_freq=self.composition_grade)})
+
     def _compute_data(self):
         self._range = np.arange(
             self._valinterval[0], self._valinterval[1], self._valstep)
 
+        threads_list = []
+        for th in range(8):
+            params = self._range[th::8]
+            t = threading.Thread(target=self._thread_compute_date, args=(params,))
+            t.start()
+            threads_list.append(t)
 
-        dF_args = self.dF_args.copy()
-        for i, param in enumerate(self._range):
-            dF_args.update({self._param_name: param})
+        for t in threads_list:
+            t.join()
 
-            self.maps.update({param: Map.instance_and_compute_all(self, self.dF, self.dimension,
-                             self.n_points, dF_args, self._initial_x, thermalization=self.thermalization,
-                             limit_cycle_check=self._limit_cycle_check_first, delta=self._delta_cycle_check, save_freq=self.composition_grade)})
 
     def plot_over_variable(self, param_name, valinterval, valstep, *, initial_x=None, limit_cycle_check_first=50, delta_cycle_check=0.0001):
         """
