@@ -4,11 +4,14 @@ import time
 
 from . import PhasePortrait2D
 
+<<<<<<< HEAD
 import tornado
 
 from matplotlib.backends.backend_webagg_core import (
     FigureManagerWebAgg, new_figure_manager_given_figure)
 
+=======
+>>>>>>> 1650e030711b64c04624a30303b098506a357c5f
 class PhasePortrait2DManager(object):
     @staticmethod
     def plot_from_json(json_str: str) -> str:
@@ -107,4 +110,9 @@ class PhasePortrait2DManager(object):
     @staticmethod
     def echo(self, text) -> str:
         """echo any text"""
+<<<<<<< HEAD
         return text
+=======
+        return text
+        
+>>>>>>> 1650e030711b64c04624a30303b098506a357c5f
