@@ -1,10 +1,13 @@
 import json
 import re
-import sys
 import time
 
 from . import PhasePortrait2D
 
+import tornado
+
+from matplotlib.backends.backend_webagg_core import (
+    FigureManagerWebAgg, new_figure_manager_given_figure)
 
 class PhasePortrait2DManager(object):
     @staticmethod
@@ -21,7 +24,7 @@ class PhasePortrait2DManager(object):
             function_name = match.group(1)
             match = re.search(r"(\s+)def", info['dF'])
             if match is not None:
-                info['dF'] = info['dF'].replace(match.group(0), "def")
+                info['dF'] = info['dF'].replace(match.group(0), "\ndef")
             del match
             
             exec(info['dF'], globals())
@@ -40,19 +43,21 @@ class PhasePortrait2DManager(object):
                 setattr(representation, k, v)
 
         # Nullcline
-        if nc:=info['nullcline']:
-            representation.add_nullclines(**nc)
-        
+        try:
+            if nc:=info['nullcline']:
+                representation.add_nullclines(**nc)
+        except KeyError:
+            pass
         
         # Plot and save
         fig, ax = representation.plot()
         
-        path = "svg/"
-        fig_name = time.strftime('%a%d%b%Y%H%M%SGMT',time.localtime())
-        fig.savefig(path + fig_name +'.svg', transparent=True)
-
-        print(fig_name + '.svg')
-        sys.stdout.flush()
+        path = info['path']
+        # fig_name = time.strftime('%a%d%b%Y%H%M%SGMT',time.localtime())
+        # fig.savefig(path + fig_name +'.svg', transparent=True)
+        
+        return fig
+        return fig_name + '.svg'
     
     
     @staticmethod
@@ -69,7 +74,7 @@ class PhasePortrait2DManager(object):
 
         function = f"""\n{info['dF']}"""
 
-        portrait = f"""\nphase_diagram = PhasePortrait2D({function_name}, [[{info['Range']['x_min']},{info['Range']['x_max']}],[{info['Range']['y_min']},{info['Range']['y_max']}]],"""
+        portrait = f"""\nphase_diagram = PhasePortrait2D({function_name}, [[{info['Range']['x_min']},{info['Range']['x_max']}],[{info['Range']['y_min']},{info['Range']['y_max']}]]"""
         
         portrait_kargs = ""
         kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xlabel', 'ylabel', 'color']
@@ -77,11 +82,14 @@ class PhasePortrait2DManager(object):
         for k in info.keys():
             if k in kargs:
                 if info[k]:
+                    if first:
+                        portrait += ","
+                        first = False
                     if isinstance(info[k], str):
                         portrait_kargs += f"\t{k} = '{info[k]}',\n"
                     else:
                         portrait_kargs += f"\t{k} = {info[k]},\n"
-                    first = False
+                    
         if first:
             portrait += ')\n'
         else:
@@ -93,11 +101,10 @@ class PhasePortrait2DManager(object):
         
         finisher = '\nphase_diagram.plot()\nplt.show()'
 
-        print("\n".join([header, function, portrait, portrait_kargs, nullcline, finisher]))
-        sys.stdout.flush()
+        return header +"\n\t\n"+ function +"\n\t\n"+ portrait +"\n"+ portrait_kargs +"\n\t\n"+ nullcline +"\n\t\n"+ finisher
+        
 
     @staticmethod
     def echo(self, text) -> str:
         """echo any text"""
-        print(text)
-        sys.stdout.flush()
+        return text

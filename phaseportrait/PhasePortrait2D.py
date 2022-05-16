@@ -2,7 +2,7 @@ from inspect import signature
 
 from .exceptions import exceptions
 from .sliders import sliders
-from .utils import utils
+from .utils import utils, manager
 
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
@@ -82,6 +82,8 @@ class PhasePortrait2D:
         self.color = color
         self.sliders = {}
         self.nullclines = []
+        
+        self.manager = manager.Manager(self)
 
 
 
@@ -206,6 +208,7 @@ class PhasePortrait2D:
         
         self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
         self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
+        
 
 
     @property
