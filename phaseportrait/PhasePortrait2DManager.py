@@ -52,7 +52,7 @@ class PhasePortrait2DManager(object):
         # Plot and save
         fig, ax = representation.plot()
         
-        path = info['path']
+        # path = info['path']
         # fig_name = time.strftime('%a%d%b%Y%H%M%SGMT',time.localtime())
         # fig.savefig(path + fig_name +'.svg', transparent=True)
         

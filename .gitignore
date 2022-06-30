@@ -192,5 +192,7 @@ dkms.conf
 
 # vs code
 pruebas.py
+prueba2.py
+wind.py
 explicacion.drawio
 .vscode

@@ -4,6 +4,6 @@ except NameError:
     __NULLCLINES_IMPORTED__= False
 
 if not __NULLCLINES_IMPORTED__:
-    from .nullclines import Nullcline2D
+    from .nullclines import Nullcline2D#, Nullcline3D
     
 __NULLCLINES_IMPORTED__ = True

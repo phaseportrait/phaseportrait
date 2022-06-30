@@ -5,17 +5,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .exceptions import exceptions
-from .nullclines import Nullcline2D
+# from .nullclines import Nullcline3D
 from .sliders import sliders
 from .streamlines import Streamlines_Velocity_Color_Gradient
 from .utils import manager, utils
 
 
-class PhasePortrait2D:
+class PhasePortrait3D:
     """
-    PhasePortrait2D
+    PhasePortrait3D
     ----------------
-    Makes a phase portrait of a 2D system.
+    Makes a phase portrait of a 3D system.
     
     Methods
     -------    
@@ -32,17 +32,17 @@ class PhasePortrait2D:
         Prepares the plots and computes the values. 
         Returns the axis and the figure.
     """
-    _name_ = 'PhasePortrait2D'
-    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow', xScale='linear', yScale='linear', **kargs):
+    _name_ = 'PhasePortrait3D'
+    def __init__(self, dF, Range, *, MeshDim=6, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = 'Y', zlabel='Z', color='rainbow', xScale='linear', yScale='linear', zScale='linear', **kargs):
         """
-        PhasePortrait2D
+        PhasePortrait3D
         ---------------
         
         Parameters
         ----------
         dF : callable
             A dF type function.
-        Range : [x_range, y_range]
+        Range : [x_range, y_range, z_range]
             Ranges of the axis in the main plot.
             
         Key Arguments
@@ -58,14 +58,18 @@ class PhasePortrait2D:
         Title : str, default='Phase Portrait' 
         xlabel : str, default='X'
             x label of the plot.
-        ylabel : str, default='$\dot{X}$' 
+        ylabel : str, default='Y' 
             y label of the plot.
+        zlabel : str, default='Z' 
+            z label of the plot.
         color : str, default='rainbow'
             Matplotlib `Cmap`.
         xScale : str, default='linear'
             x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         yScale : str, default='linear'
             y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+        zScale : str, default='linear'
+            z axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         """
         self.sliders = {}
         self.nullclines = []
@@ -81,23 +85,27 @@ class PhasePortrait2D:
         self.Title = Title                               # Title of the plot
         self.xlabel = xlabel                             # Title on X axis
         self.ylabel = ylabel                             # Title on Y axis
-
+        self.zlabel = zlabel
+        
         self.xScale = xScale                             # x axis scale
-        self.yScale = yScale                             # x axis scale 
+        self.yScale = yScale                             # x axis scale
+        self.zScale = zScale
 
         self.streamplot_callback = Streamlines_Velocity_Color_Gradient           # TODO: enable different plot options
 
         self._create_arrays()
 
         # Variables for plotting
-        self.fig, self.ax = plt.subplots()
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(projection='3d')
         self.color = color
         self.grid = True
         
         self.streamplot_args = {}
         for k in kargs:
-            if k in ['maxLen', 'detectLoops', 'dr']:
-                self.streamplot_args.update(k, kargs[k])
+            if k in ['maxLen', 'detectLoops', 'dr', 'deltat']:
+                self.streamplot_args.update({k: kargs[k]})
+
         
         self.manager = manager.Manager(self)
   
@@ -105,14 +113,15 @@ class PhasePortrait2D:
     def _create_arrays(self):
         # If scale is log and min range value is 0 or negative the plots is not correct
         _Range = self.Range.copy()
-        for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale], self.Range)):
+        for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale, self.zScale], self.Range)):
             if scale == 'log':
                 for j in range(len(Range)):
-                    if Range[j]<=0:
-                        _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
+                    for k in range(len(Range)):
+                        if Range[j, k]<=0:
+                            _Range[i,j,k] = abs(max(Range))/100 if j==0 else abs(max(Range))
         self.Range = _Range
 
-        self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.MeshDim), np.linspace(*self.Range[1,:], self.MeshDim))
+        self._X, self._Y, self._Z = np.meshgrid(*[np.linspace(*(self.Range[i][:]), self.MeshDim) for i in range(3)])
 
         if self.Polar:   
             self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
@@ -182,9 +191,9 @@ class PhasePortrait2D:
 
 
 
-        stream = self.streamplot_callback(self.dF, self._X, self._Y, 
+        stream = self.streamplot_callback(self.dF, self._X, self._Y, self._Z, 
             spacing=(0, 0), 
-            dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args, deltat=0.01, maxLen=2500)
+            dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args)
 
         try:
             norm = stream._velocity_normalization()
@@ -192,29 +201,32 @@ class PhasePortrait2D:
             norm = None
         cmap = plt.get_cmap(self.color)
                 
-        stream.plot(self.ax, cmap, norm, arrow_width=self.streamplot_args.get('arrow_width', (self.Range[0,1]-self.Range[0,0])/ (2*self.Density*self.MeshDim)))
+        stream.plot(self.ax, cmap, norm, arrow_width=self.streamplot_args.get('arrow_width', (self.Range[0][1]-self.Range[0][0])/ (2*self.Density*self.MeshDim)))
 
         
-        self.ax.set_xlim(self.Range[0,:])
-        self.ax.set_ylim(self.Range[1,:])
-        self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
+        self.ax.set_xlim(self.Range[0])
+        self.ax.set_ylim(self.Range[1])
+        self.ax.set_zlim(self.Range[2])
+        # self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
 
         self.ax.set_title(f'{self.Title}')
         self.ax.set_xlabel(f'{self.xlabel}')
         self.ax.set_ylabel(f'{self.ylabel}')
+        self.ax.set_zlabel(f'{self.zlabel}')
         self.ax.set_xscale(self.xScale)
         self.ax.set_yscale(self.yScale)
+        self.ax.set_zscale(self.zScale)
         self.ax.grid(grid if grid is not None else self.grid)
         
         return stream
 
 
 
-    def add_nullclines(self, *, precision=0.01, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
-        self.nullclines.append(Nullcline2D(self, self.dF, 
-                                          precision=precision, offset=offset, density=density, 
-                                          xRange=xRange, yRange=yRange, dF_args=dF_args, 
-                                          xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
+    # def add_nullclines(self, *, precision=0.01, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+    #     self.nullclines.append(Nullcline3D(self, self.dF, 
+    #                                       precision=precision, offset=offset, density=density, 
+    #                                       xRange=xRange, yRange=yRange, dF_args=dF_args, 
+    #                                       xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
 
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
@@ -246,11 +258,12 @@ class PhasePortrait2D:
         """
         Computes the expression of the velocity field if coordinates are given in polar representation.
         """
+        # TODO: complete
         if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
             self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
         
         self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
-        self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
+        self._dX, self._dY, self._dZ = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
         
 
 
@@ -280,7 +293,11 @@ class PhasePortrait2D:
 
     @Range.setter
     def Range(self, value):
-        self._Range = np.array(utils.construct_interval(value, dim=2))
+        if len(value)==3:
+            if np.array([len(value[i])==2 for i in range(3)]).all():
+                self._Range = value
+                return
+        self._Range = np.array(utils.construct_interval(value, dim=3))
 
     @property
     def dF_args(self):
