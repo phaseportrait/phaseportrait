@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .exceptions import exceptions
-# from .nullclines import Nullcline3D
 from .sliders import sliders
 from .streamlines import Streamlines_Velocity_Color_Gradient
 from .utils import manager, utils
@@ -221,14 +220,6 @@ class PhasePortrait3D:
         return stream
 
 
-
-    # def add_nullclines(self, *, precision=0.01, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
-    #     self.nullclines.append(Nullcline3D(self, self.dF, 
-    #                                       precision=precision, offset=offset, density=density, 
-    #                                       xRange=xRange, yRange=yRange, dF_args=dF_args, 
-    #                                       xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
-
-
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
         """
         Adds a slider which can change the value of a parameter in execution time.
@@ -258,12 +249,16 @@ class PhasePortrait3D:
         """
         Computes the expression of the velocity field if coordinates are given in polar representation.
         """
-        # TODO: complete
-        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
-            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+        # TODO: ckeck if correct
+        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
+            self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
+            self._Phi = np.arccos(self._Z / self._R)
         
-        self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
-        self._dX, self._dY, self._dZ = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
+        self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
+        self._dX, self._dY, self._dZ = \
+            self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
+            self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
+            self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
         
 
 

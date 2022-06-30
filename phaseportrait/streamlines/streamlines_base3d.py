@@ -137,9 +137,13 @@ class Streamlines_base3D:
         if not self.polar:
             u, v, w = self.dF(x,y,z, **self.dF_args)
         else: # TODO: complete
-            R, Theta, Phi = np.sqrt(x*x + y*y + z*z), np.arctan2(y, x), 0 
-            dR, dTheta = self.dF(R, Theta, Phi, **self.dF_args)
-            u, v, w = dR*np.cos(Theta) - R*np.sin(Theta)*dTheta, dR*np.sin(Theta)+R*np.cos(Theta)*dTheta, 0
+            R, Theta = np.sqrt(x*x + y*y + z*z), np.arctan2(y, x)
+            Phi  = np.arccos(z/R) 
+            dR, dTheta, dPhi = self.dF(R, Theta, Phi, **self.dF_args)
+            u, v, w = \
+                dR*np.cos(Theta)*np.sin(Phi) - R*np.sin(Theta)*np.sin(Phi)*dTheta + R*np.cos(Theta)*np.cos(Phi) * dPhi, \
+                dR*np.sin(Theta)*np.sin(Phi) + R*np.cos(Theta)*np.sin(Phi)*dTheta + R*np.sin(Theta)*np.cos(Phi) * dPhi, \
+                dR*np.cos(Phi) - R*np.sin(Phi)*dPhi
         return u, v, w
 
     def _makeHalfStreamline(self, x0, y0, z0, sign):
