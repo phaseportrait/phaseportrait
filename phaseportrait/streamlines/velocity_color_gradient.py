@@ -55,8 +55,6 @@ class Streamlines_Velocity_Color_Gradient:
         else:
             self.proyection="3d"
             self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], spacing, maxLen, detectLoops, deltat, dF_args=dF_args, dr=dr, **kargs)
-            
-        # self.arrowstyle = 
 
 
     def _velocity_normalization(self):
