@@ -17,10 +17,10 @@ To check out *phaseportrait*'s documentation, view some examples and read more a
 </a>
 
 <center>
-<a>https://phaseportrait.github.io/
+<a href="https://phaseportrait.github.io/">
 </a>
 
-<a>https://github.com/phaseportrait/phaseportrait-gui
+<a href="https://github.com/phaseportrait/phaseportrait-gui"
 </a>
 </center>
 
