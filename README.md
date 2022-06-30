@@ -40,7 +40,7 @@ To check out *phaseportrait*'s documentation, view some examples and read more a
 <center><img src="docs/imgs/index/pendulum_example.png" width=60%><img src="docs/imgs/index/damped_pendulum_example.png" width=60%></center>
 </a>
 
-<a>
+<ahref="https://phaseportrait.github.io/phaseportrait3d/">
 <center><img src="docs/imgs/pp3d_examples/example.png"></center>
 </a>
 
