@@ -37,7 +37,7 @@ To check out *phaseportrait*'s documentation, view some examples and read more a
 </a>
 
 <a href="https://phaseportrait.github.io/phaseportrait2d_examples/">
-<center><img src="docs/imgs/index/pendulum_example.png" width=50%><img src="docs/imgs/index/damped_pendulum_example.png" width=50%></center>
+<center><img src="docs/imgs/index/pendulum_example.png" width=60%><img src="docs/imgs/index/damped_pendulum_example.png" width=60%></center>
 </a>
 
 <a>
