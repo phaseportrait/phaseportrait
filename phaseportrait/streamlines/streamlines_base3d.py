@@ -1,6 +1,4 @@
 import numpy as np
-from matplotlib.colors import Normalize
-from matplotlib.collections import LineCollection, PolyCollection
 
 # Adapted from Raymond Speth https://web.mit.edu/speth/Public/streamlines.py with MIT license.
 
@@ -13,7 +11,6 @@ class Streamlines_base3D:
     Integrated in:
         -PhasePortrait3D
     """
-
 
 
     def __init__(
@@ -87,12 +84,10 @@ class Streamlines_base3D:
         # Make the streamlines
         self.streamlines = []
 
-        i = 0
         while not self.used.all():
             nz = np.transpose(np.logical_not(self.used).nonzero())
             # Make a streamline starting at the first unrepresented grid point
             choose = np.random.randint(nz.shape[0])
-
 
             x = nz[choose][0]*self.dx + self.x[0]
             y = nz[choose][1]*self.dy + self.y[0]
@@ -100,20 +95,7 @@ class Streamlines_base3D:
             self.streamlines.append(
                 self._makeStreamline(x, y, z)
             )
-            # self.streamlines.append(
-            #     self._makeStreamline(self.x[nz[0][0]], self.y[nz[0][1]])
-            # )
 
-            # import matplotlib.pyplot as plt
-            # fig, ax = plt.subplots()
-            # ax.plot(self.streamlines[0][0])
-            # ax.plot(self.streamlines[0][1])
-            # ax.plot(self.streamlines[0][2])
-            # plt.show()
-            # plt.close(fig)
-            # i+=1
-            # if i==40:
-            #     break
 
     def _makeStreamline(self, x0, y0, z0):
         """
@@ -134,6 +116,9 @@ class Streamlines_base3D:
     
 
     def _speed(self, x, y, z):
+        """
+        Computes speed in given coordinates
+        """
         if not self.polar:
             u, v, w = self.dF(x,y,z, **self.dF_args)
         else: # TODO: complete
@@ -194,6 +179,7 @@ class Streamlines_base3D:
                 prev_yj = yj
                 prev_zk = zk
 
+                # TODO: Check if necessary.
                 # self.used[
                 #     x_clip(prev_xi - self.spacing[0]): x_clip(prev_xi + self.spacing[0]+1),
                 #     y_clip(prev_yj - self.spacing[1]): y_clip(prev_yj + self.spacing[1]+1)
@@ -224,6 +210,7 @@ class Streamlines_base3D:
                 if persistency <= 0:
                     break
 
+                # TODO: Check if necessary.
                 # self.used[
                 #     x_clip(prev_xi): x_clip(prev_xi + self.spacing[0]+1),
                 #     y_clip(prev_yj): y_clip(prev_yj + self.spacing[1]+1)

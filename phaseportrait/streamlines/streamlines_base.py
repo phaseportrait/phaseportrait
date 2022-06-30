@@ -1,6 +1,4 @@
 import numpy as np
-from matplotlib.colors import Normalize
-from matplotlib.collections import LineCollection, PolyCollection
 
 # Adapted from Raymond Speth https://web.mit.edu/speth/Public/streamlines.py with MIT license.
 
@@ -13,7 +11,6 @@ class Streamlines_base:
     Integrated in:
         -PhasePortrait2D
     """
-
 
 
     def __init__(
@@ -55,6 +52,7 @@ class Streamlines_base:
         self.maxLen = maxLen
         self.deltat = deltat
 
+        # TODO: convert floats to indexes can cause index error: out of range. A smaller delta usually solves it.
         # PP = 0.99999999
         PP = 1
 
@@ -64,8 +62,8 @@ class Streamlines_base:
         ya = np.asanyarray(Y)
         self.x = xa if xa.ndim == 1 else xa[0]
         self.y = ya if ya.ndim == 1 else ya[:, 0]
-        self.dx = PP*(self.x[-1] - self.x[0]) / (self.x.size - 1) / self.density # assume a regular grid
-        self.dy = PP*(self.y[-1] - self.y[0]) / (self.y.size - 1) / self.density # assume a regular grid
+        self.dx = PP*(self.x[-1] - self.x[0]) / (self.x.size - 1) / self.density
+        self.dy = PP*(self.y[-1] - self.y[0]) / (self.y.size - 1) / self.density
         self.dr = (self.x[1]-self.x[0])/self.x.shape[0] * dr/100
 
         self.polar = polar
@@ -77,10 +75,9 @@ class Streamlines_base:
         self.used[:, 0] = True
         self.used[:, -1] = True
 
-        # Make the streamlines
+
         self.streamlines = []
 
-        i = 0
         while not self.used.all():
             nz = np.transpose(np.logical_not(self.used).nonzero())
             # Make a streamline starting at the first unrepresented grid point
@@ -92,20 +89,7 @@ class Streamlines_base:
             self.streamlines.append(
                 self._makeStreamline(x, y)
             )
-            # self.streamlines.append(
-            #     self._makeStreamline(self.x[nz[0][0]], self.y[nz[0][1]])
-            # )
 
-            # import matplotlib.pyplot as plt
-            # fig, ax = plt.subplots()
-            # ax.plot(self.streamlines[0][0])
-            # ax.plot(self.streamlines[0][1])
-            # ax.plot(self.streamlines[0][2])
-            # plt.show()
-            # plt.close(fig)
-            # i+=1
-            # if i==40:
-            #     break
 
     def _makeStreamline(self, x0, y0):
         """
@@ -124,6 +108,9 @@ class Streamlines_base:
         return rx + [x0] + sx, ry + [y0] + sy, rvelocity + [np.sqrt(u*u + v*v)] + svelocity
 
     def _speed(self, x, y):
+        """
+        Computes speed in given coordinates
+        """
         if not self.polar:
             u, v = self.dF(x,y, **self.dF_args)
         else:
@@ -172,6 +159,7 @@ class Streamlines_base:
                 prev_xi = xi
                 prev_yj = yj
 
+                # TODO: Check if necessary.
                 # self.used[
                 #     x_clip(prev_xi - self.spacing[0]): x_clip(prev_xi + self.spacing[0]+1),
                 #     y_clip(prev_yj - self.spacing[1]): y_clip(prev_yj + self.spacing[1]+1)
@@ -199,11 +187,6 @@ class Streamlines_base:
                 persistency -= 1
                 if persistency <= 0:
                     break
-
-                # self.used[
-                #     x_clip(prev_xi): x_clip(prev_xi + self.spacing[0]+1),
-                #     y_clip(prev_yj): y_clip(prev_yj + self.spacing[1]+1)
-                #     ] = True
 
         return sx, sy, svelocity
 
