@@ -202,9 +202,27 @@ class trajectory:
                 thermalization=self.thermalization
                 )
             )
+        
+    
+    def initial_positions(self, positions, **kargs):
+        """
+        Adds initial positions for the computation.
+        Calls `trajectory.initial_position` for each position given.
+        
+        Parameters
+        ---------
+        postitions : list,
+            Initial positions for the computation.
+        """
+        for position in positions:
+            self.initial_position(*position, **kargs)
  
         
     def _calculate_values(self, *args, all_initial_conditions=False, **kargs):
+        if all_initial_conditions:
+            for trajectory in self.trajectories:
+                trajectory.position = trajectory.initial_value.copy()
+        
         for trajectory in self.trajectories:
             trajectory.compute_all(save_freq=self.runge_kutta_freq)
 
