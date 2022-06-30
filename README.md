@@ -16,13 +16,11 @@ To check out *phaseportrait*'s documentation, view some examples and read more a
 </center>
 </a>
 
-<center>
-<a href="https://phaseportrait.github.io/">
-</a>
 
-<a href="https://github.com/phaseportrait/phaseportrait-gui"
-</a>
-</center>
+[Documentation](https://phaseportrait.github.io/)
+
+[Graphical User Interface](https://github.com/phaseportrait/phaseportrait-gui)
+
 
 
 
