@@ -1,7 +1,7 @@
 from inspect import signature
 
-import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 
 from .exceptions import exceptions
@@ -90,7 +90,7 @@ class PhasePortrait3D:
         self.yScale = yScale                             # x axis scale
         self.zScale = zScale
 
-        self.streamplot_callback = Streamlines_Velocity_Color_Gradient           # TODO: enable different plot options
+        self.streamplot_callback = Streamlines_Velocity_Color_Gradient
 
         self._create_arrays()
 
@@ -115,12 +115,20 @@ class PhasePortrait3D:
         for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale, self.zScale], self.Range)):
             if scale == 'log':
                 for j in range(len(Range)):
-                    for k in range(len(Range)):
-                        if Range[j, k]<=0:
-                            _Range[i,j,k] = abs(max(Range))/100 if j==0 else abs(max(Range))
+                    if Range[j]<=0:
+                        _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
         self.Range = _Range
 
-        self._X, self._Y, self._Z = np.meshgrid(*[np.linspace(*(self.Range[i][:]), self.MeshDim) for i in range(3)])
+        
+        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y", "_Z"],[self.xScale, self.yScale, self.zScale], self.Range)):
+            if scale == 'linear':
+                setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
+            if scale == 'log':
+                setattr(self, _P, np.logspace(np.log10(Range[0]), np.log10(Range[1]), self.MeshDim))
+            if scale == 'symlog':
+                setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
+
+        self._X, self._Y, self._Z = np.meshgrid(self._X, self._Y, self._Z)
 
         if self.Polar:   
             self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
@@ -190,8 +198,7 @@ class PhasePortrait3D:
 
 
 
-        stream = self.streamplot_callback(self.dF, self._X, self._Y, self._Z, 
-            spacing=(0, 0), 
+        stream = self.streamplot_callback(self.dF, self._X, self._Y, self._Z,
             dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args)
 
         try:
@@ -200,12 +207,12 @@ class PhasePortrait3D:
             norm = None
         cmap = plt.get_cmap(self.color)
                 
-        stream.plot(self.ax, cmap, norm, arrow_width=self.streamplot_args.get('arrow_width', (self.Range[0][1]-self.Range[0][0])/ (2*self.Density*self.MeshDim)))
+        stream.plot(self.ax, cmap, norm, arrowsize=self.streamplot_args.get('arrow_width', 1))
 
         
-        self.ax.set_xlim(self.Range[0])
-        self.ax.set_ylim(self.Range[1])
-        self.ax.set_zlim(self.Range[2])
+        self.ax.set_xlim3d(self.Range[0])
+        self.ax.set_ylim3d(self.Range[1])
+        self.ax.set_zlim3d(self.Range[2])
         # self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
 
         self.ax.set_title(f'{self.Title}')
@@ -215,6 +222,20 @@ class PhasePortrait3D:
         self.ax.set_xscale(self.xScale)
         self.ax.set_yscale(self.yScale)
         self.ax.set_zscale(self.zScale)
+
+
+        
+
+        def log_tick_formatter(val, pos=None):
+            return r"$10^{{{:.0f}}}$".format(val)
+
+        if self.xScale in ['log', 'symlog']:
+            self.ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+        if self.yScale in ['log', 'symlog']:
+            self.ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+        if self.zScale in ['log', 'symlog']:
+            self.ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+
         self.ax.grid(grid if grid is not None else self.grid)
         
         return stream
@@ -249,7 +270,6 @@ class PhasePortrait3D:
         """
         Computes the expression of the velocity field if coordinates are given in polar representation.
         """
-        # TODO: ckeck if correct
         if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
             self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
             self._Phi = np.arccos(self._Z / self._R)

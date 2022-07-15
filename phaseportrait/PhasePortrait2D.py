@@ -85,7 +85,7 @@ class PhasePortrait2D:
         self.xScale = xScale                             # x axis scale
         self.yScale = yScale                             # x axis scale 
 
-        self.streamplot_callback = Streamlines_Velocity_Color_Gradient           # TODO: enable different plot options
+        self.streamplot_callback = Streamlines_Velocity_Color_Gradient
 
         self._create_arrays()
 
@@ -112,7 +112,17 @@ class PhasePortrait2D:
                         _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
         self.Range = _Range
 
-        self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.MeshDim), np.linspace(*self.Range[1,:], self.MeshDim))
+        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y"],[self.xScale, self.yScale], self.Range)):
+            if scale == 'linear':
+                setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
+            if scale == 'log':
+                setattr(self, _P, np.logspace(np.log10(Range[0]), np.log10(Range[1]), self.MeshDim))
+            if scale == 'symlog':
+                setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
+
+        self._X, self._Y = np.meshgrid(self._X, self._Y)
+
+        # self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.MeshDim), np.linspace(*self.Range[1,:], self.MeshDim))
 
         if self.Polar:   
             self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
@@ -159,6 +169,7 @@ class PhasePortrait2D:
         """
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
 
+        # Re-create arrays in case Range or scale is changed
         self._create_arrays()
 
         try:
@@ -183,7 +194,6 @@ class PhasePortrait2D:
 
 
         stream = self.streamplot_callback(self.dF, self._X, self._Y, 
-            spacing=(0, 0), 
             dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args, deltat=0.01, maxLen=2500)
 
         try:
@@ -192,12 +202,14 @@ class PhasePortrait2D:
             norm = None
         cmap = plt.get_cmap(self.color)
                 
-        stream.plot(self.ax, cmap, norm, arrow_width=self.streamplot_args.get('arrow_width', (self.Range[0,1]-self.Range[0,0])/ (2*self.Density*self.MeshDim)))
+        stream.plot(self.ax, cmap, norm, arrowsize=self.streamplot_args.get('arrow_width', 1))
 
         
         self.ax.set_xlim(self.Range[0,:])
         self.ax.set_ylim(self.Range[1,:])
-        self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
+        # self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
+        # if self.xScale=='linear' or self.yScale != 'linear':
+        self.ax.set_aspect(1)
 
         self.ax.set_title(f'{self.Title}')
         self.ax.set_xlabel(f'{self.xlabel}')
