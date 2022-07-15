@@ -1,12 +1,34 @@
 import numpy as np
+import matplotlib
 from matplotlib.colors import Normalize
 from matplotlib.collections import LineCollection, PatchCollection 
 from matplotlib.patches import ArrowStyle, FancyArrowPatch
 from mpl_toolkits.mplot3d.art3d import Line3DCollection, Patch3DCollection
 from mpl_toolkits.mplot3d import proj3d
 
-from . import Streamlines_base, Streamlines_base3D
-# Adapted from Raymond Speth https://web.mit.edu/speth/Public/streamlines.py with MIT license.
+from .streamlines_base import Streamlines_base, Streamlines_base2D, Streamlines_base3D
+
+class Arrow3D(FancyArrowPatch):
+    """
+    3D FancyArrowPatch proyection
+    """
+    def __init__(self, posA, posB, *args, **kwargs):
+        super().__init__((0,0), (0,0), *args, **kwargs)
+        self._verts3d = [[posA[i], posB[i]] for i in range(len(posA))]
+
+    def do_3d_projection(self, renderer=None):
+        xs3d, ys3d, zs3d = self._verts3d
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
+        self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
+        return np.min(zs)
+
+    # Matplotlib rises error if renderer is not present. If it is, warning is raised. PepeSad
+    # def do_3d_projection(self):
+    #     xs3d, ys3d, zs3d = self._verts3d
+    #     xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
+    #     self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
+    #     return np.min(zs)
+
 
 class Streamlines_Velocity_Color_Gradient:
     """
@@ -21,7 +43,7 @@ class Streamlines_Velocity_Color_Gradient:
 
 
     def __init__(
-        self, dF, X, Y, *Z, spacing=2, maxLen=500, detectLoops=False, deltat=0.01, dF_args=None, dr=0.01, **kargs
+        self, dF, X, Y, *Z, maxLen=500, detectLoops=False, deltat=0.01, dF_args=None, **kargs
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -35,8 +57,6 @@ class Streamlines_Velocity_Color_Gradient:
         
         Key arguments:
         --------    
-        spacing: int, default=2
-            Sets the minimum density of streamlines, in grid points.
         maxLen: int default=500
             The maximum length of an individual streamline segment.
         detectLoops: bool default=False
@@ -46,15 +66,13 @@ class Streamlines_Velocity_Color_Gradient:
             delta time for Euler integrator
         dF_args: dict|None default=None
             dF_args of `dF` function.
-        dr: float default=0.01
-            distance for loop detection.
         """
         if not Z:
             self.proyection="2d"
-            self.stream_base = Streamlines_base(dF, X, Y, spacing, maxLen, detectLoops, deltat, dF_args=dF_args, dr=dr, **kargs)
+            self.stream_base = Streamlines_base2D(dF, X, Y, maxLen, detectLoops, deltat, dF_args=dF_args, **kargs)
         else:
             self.proyection="3d"
-            self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], spacing, maxLen, detectLoops, deltat, dF_args=dF_args, dr=dr, **kargs)
+            self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], maxLen, detectLoops, deltat, dF_args=dF_args, **kargs)
 
 
     def _velocity_normalization(self):
@@ -69,84 +87,57 @@ class Streamlines_Velocity_Color_Gradient:
 
         return Normalize(vmin, vmax)
 
-    def plot(self, ax, cmap, cnorm, arrow_width):
-        n_segments = 0
-        for streamline in self.stream_base.streamlines:
-            x, *_ = streamline
-            n_segments += len(x)
+    def plot(self, ax, cmap, cnorm, *, linewidth=None, arrowsize=1, arrowstyle='-|>'):
+        # n_segments = 0
+        # for streamline in self.stream_base.streamlines:
+        #     x, *_ = streamline
+        #     n_segments += len(x)
 
-        p_arrow = 50/n_segments
+
+
+        if self.proyection == "2d":
+            LineClass = LineCollection
+            ArrowClass = FancyArrowPatch
+        if self.proyection == "3d":
+            LineClass = Line3DCollection
+            ArrowClass = Arrow3D
+
+        if linewidth is None:
+            linewidth = matplotlib.rcParams['lines.linewidth']
+
+        line_kw = {}
+        arrow_kw = dict(arrowstyle=arrowstyle, mutation_scale=10 * arrowsize)
 
         for streamline in self.stream_base.streamlines:
             *coords, v = streamline
             points = np.array(coords).T.reshape(-1 , 1, 2 if self.proyection=="2d" else 3)
             segments = np.concatenate([points[:-1], points[1:]], axis=1)
 
-
-            halflength = int(len(coords[0])/2)
-            # extreme_distance = self._velocity(x[0], y[0], x[-1], y[-1], deltat=1)
+            s = np.sqrt(np.sum(np.square(points), 2))
+            s = np.cumsum(s)
+            n = np.searchsorted(s, s[-1] / 2.)
 
             arrows = []
-            # for j, segment in enumerate(segments):
-            #     # if np.random.random() < p_arrow:
-            #     if j==halflength:
-            #         arrows.append(self._make_triangle(segment[0,0], segment[0,1], segment[1,0], segment[1,1], arrow_width))
+           
+            arrows_C = cmap(cnorm(v[n]))
 
-            #         arrows_C = cmap(cnorm( self._velocity(segment[0,0], segment[0,1], segment[1,0], segment[1,1])))
+            arrow_tail = points[n][0]
+            arrow_head = np.mean(points[n:n + 2], 0)[0]
 
-            segment = segments[halflength]
-            # arrows.append(self._make_triangle(segment[0,0], segment[0,1], segment[1,0], segment[1,1], arrow_width))
-            arrows_C = cmap(cnorm(v[halflength]))
-            
-            segment_length = np.sqrt(np.sum(np.square(segment[1]-segment[0])))
-            width = self.stream_base.Hipot/2*self.stream_base.dr
-            
-            class Arrow3D(FancyArrowPatch):
-                def __init__(self, posA, posB, *args, **kwargs):
-                    super().__init__((0,0), (0,0), *args, **kwargs)
-                    self._verts3d = [[posA[i], posB[i]] for i in range(len(posA))]
-
-                def do_3d_projection(self, renderer=None):
-                    xs3d, ys3d, zs3d = self._verts3d
-                    xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
-                    self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
-                    return np.min(zs)
-            
-            arrowstyle = ArrowStyle.Fancy(head_length=10, head_width=5, tail_width=0.1)
-
-
-            arrows.append(Arrow3D(posA=segment[0,:], posB=segment[1,:], arrowstyle=arrowstyle, color=arrows_C))
-
-
-            
+            arrows.append(ArrowClass(arrow_tail, arrow_head, color=arrows_C, **arrow_kw))
 
             C = cmap(cnorm(v))
 
-            if self.proyection == "2d":
-                line = LineCollection(segments, color=C)
-            if self.proyection == "3d":
-                line = Line3DCollection(segments, color=C)
-                
+            line = LineClass(segments, color=C, **line_kw)
             ax.add_collection(line)
 
-            if arrows:
-                if self.proyection == "2d":
-                    arrow_collection = PatchCollection(arrows, color=arrows_C)
-                    ax.add_collection(arrow_collection)
-                if self.proyection == "3d":
-                    for a in arrows:
-                        ax.add_artist(a)
+            for a in arrows:
+                ax.add_patch(a)
+            # if arrows:
+            #     if self.proyection == "2d":
+            #         arrow_collection = PatchCollection(arrows, color=arrows_C)
+            #         ax.add_collection(arrow_collection)
+            #     if self.proyection == "3d":
+            #         for a in arrows:
+            #             ax.add_patch(a)
                     # arrow_collection = Patch3DCollection(arrows, zs=[a._verts3d[2][0] for a in arrows], color=arrows_C)
-                
-                
-
-
-    def _velocity(self, x,y, x1, y1, *, deltat=None):
-        """ Given 2 points and time delta returns velocity. """
-
-        if deltat is None:
-            deltat = self.deltat
-        dx = x1-x
-        dy = y1-y
-        modulo = np.sqrt(dx*dx + dy*dy)
-        return modulo/deltat
