@@ -10,5 +10,5 @@ if not __PHASEPORTRAIT_MODULE_IMPORTED__:
     from .Trajectories2D import Trajectory2D
     from .Map1D import Map1D
     from .Cobweb import Cobweb
-    from .PhasePortrait2DManager import PhasePortrait2DManager
+    from .PhasePortraitManager import PhasePortrait2DManager
 __PHASEPORTRAIT_MODULE_IMPORTED__ = True
