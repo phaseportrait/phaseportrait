@@ -3,7 +3,7 @@ from matplotlib.colors import Normalize
 from matplotlib.collections import LineCollection, PolyCollection
 from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
-from . import Streamlines_base, Streamlines_base3D
+from .streamlines_base import Streamlines_base, Streamlines_base2D, Streamlines_base3D
 
 class Streamlines_Size_Gradient(Streamlines_base):
     """
