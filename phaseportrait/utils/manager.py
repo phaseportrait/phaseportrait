@@ -1,4 +1,5 @@
 import re
+import matplotlib
 import matplotlib.pyplot as plt
 
 class Manager:
@@ -18,20 +19,31 @@ class Manager:
         # TODO:
             _description_
         """
+        dimension = configuration.get('dimension')
+
 
         if range := configuration.get('Range'):
             self.portrait.Range = [[range['x_min'],range['x_max']],
-                                    [range['y_min'],range['y_max']]]
+                                   [range['y_min'],range['y_max']]]
 
+        if dimension == 3:
+            self.portrait.Range = [[range['x_min'],range['x_max']],
+                                   [range['y_min'],range['y_max']],
+                                   [range['z_min'], range['z_max']]]
         
         # Parameters
-        kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xScale',  'yScale', 'xlabel', 'ylabel', 'color']
+        kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xScale',  'yScale', 'xlabel', 'ylabel', 'color'] + \
+            (['zScale', 'zlabel'] if dimension==3 else [])
+
         for k,v in configuration.items():
             if k in kargs:
                 setattr(self.portrait, k, v)
                 
-        if nc:=configuration.get('nullcline'):
+        # Nullclines not implemented in 3d plot
+        if (nc:=configuration.get('nullcline')) and dimension != 3:
             self.portrait.add_nullclines(**nc)
+        else:
+            self.portrait.nullclines = []
             
         if sls:=configuration.get('sliders'):
             for sl_name in sls:
@@ -39,7 +51,7 @@ class Manager:
                 if slider:=self.portrait.sliders.get(sl_name):
                         slider.update_slider_ends(sls[sl_name]["min"], sls[sl_name]["max"])
                         slider.value = configuration["dF_args"][sl_name]
-                        slider.slider.set_value(configuration["dF_args"][sl_name])
+                        slider.slider.set_val(configuration["dF_args"][sl_name])
                 
                 else:
                     self.portrait.add_slider(sl_name, 
@@ -67,7 +79,7 @@ class Manager:
         # Clean axis and replot
         try:
             self.portrait.ax.cla()
-        except:
+        except Exception as e:
             for ax in self.portrait.ax.values():
                 ax.cla()
                 
@@ -75,6 +87,25 @@ class Manager:
             self.portrait.update_dF_args()
 
         self.portrait.plot()
+
+
+        if configuration.get("Colorbar"):
+            colorbar_ax = self.portrait.colorbar_ax if hasattr(self.portrait, "colorbar_ax") else None
+
+            cb = plt.colorbar(matplotlib.cm.ScalarMappable(
+                    norm=self.portrait.stream._velocity_normalization(), 
+                    cmap=self.portrait.color),
+                ax=self.portrait.ax,
+                cax=colorbar_ax)
+
+            self.portrait.colorbar_ax = cb.ax
+        else:
+            if hasattr(self.portrait, "colorbar_ax"):
+                self.portrait.colorbar_ax.remove()
+                del(self.portrait.colorbar_ax)
+            
+        # self.portrait.fig.tight_layout()
+        self.portrait.fig.subplots_adjust(left=0.2, bottom=0.2, right=1, top=0.9, wspace=0.01, hspace=0.01)
         # plt.show()
         return 0
         
@@ -89,18 +120,19 @@ class Manager:
 
         Returns
         -------
-        # TODO: mensaje de websocket?
             _description_
         """
         
         match = re.search(r"def\s+(\w+)\(", configuration['dF'])
         function_name = match.group(1)
+        dimension = configuration['dimension']
 
         header = f"""from phaseportrait import *\nimport matplotlib.pyplot as plt"""
 
         function = f"""\n{configuration['dF']}"""
 
-        portrait = f"""\nphase_diagram = PhasePortrait2D({function_name}, [[{configuration['Range']['x_min']},{configuration['Range']['x_max']}],[{configuration['Range']['y_min']},{configuration['Range']['y_max']}]]"""
+        # TODO: range in 3d
+        portrait = f"""\nphase_diagram = PhasePortrait{dimension}D({function_name}, [[{configuration['Range']['x_min']},{configuration['Range']['x_max']}],[{configuration['Range']['y_min']},{configuration['Range']['y_max']}]]"""
         
         portrait_kargs = ""
         kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xlabel', 'ylabel', 'color']
@@ -121,8 +153,9 @@ class Manager:
         else:
             portrait_kargs += ')\n'
         
+        
         nullcline = ''
-        if nc := configuration.get('nullcline'):
+        if nc := configuration.get('nullcline') and dimension != 3:
             nullcline = f"\nphase_diagram.add_nullclines(precision={nc['precision']}, offset={nc['offset']})"
         
         finisher = '\nphase_diagram.plot()\nplt.show()'
