@@ -152,7 +152,7 @@ class PhasePortrait3D:
         if grid is not None:
             self.grid = grid
         
-        self.draw_plot(color=self.color, grid=grid)
+        self.stream = self.draw_plot(color=self.color, grid=grid)
         self.fig.canvas.draw_idle()
 
         return self.fig, self.ax 
