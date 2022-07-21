@@ -13,12 +13,12 @@ class Streamlines_base:
         -PhasePorrtait3D
     """
     
-    def _makeStreamline(self, y0):
+    def _makeStreamline(self, y0, *, scypi_odeint=True):
         """
         Compute a streamline extending in both directions from the given point. Using Euler integrator.
         """
-        *s, svelocity = self._makeHalfStreamline(y0, 1)  # forwards
-        *r, rvelocity = self._makeHalfStreamline(y0, -1)  # backwards
+        *s, svelocity = self._makeHalfStreamline(y0, 1, scypi_odeint=scypi_odeint)  # forwards
+        *r, rvelocity = self._makeHalfStreamline(y0, -1, scypi_odeint=scypi_odeint)  # backwards
 
         for _r in r:
             _r.reverse()
@@ -36,7 +36,7 @@ class Streamlines_base:
         if len(y0)==2:
             x, y = y0
             if not self.polar:
-                speed = self.dF(x,y, **self.dF_args)
+                speed = np.array(self.dF(x,y, **self.dF_args))
 
             # Polar coordinates
             else:
@@ -61,7 +61,7 @@ class Streamlines_base:
                 ])
         return speed
 
-    def _makeHalfStreamline(self, y0, sign):
+    def _makeHalfStreamline(self, y0, sign, *, scypi_odeint=True):
         """
         Compute a streamline extending in one direction from the given point. Using Euler integrator.
         """
@@ -69,6 +69,8 @@ class Streamlines_base:
         coords = y0.copy()
         # coords_mask_position = np.asarray(np.rint((coords-self.range_min)/self.delta_coords), int)
         coords_mask_position = self.get_masked_coordinates(*coords)
+
+        # Set prev_coords_mask_position to actual position so backwards trajectory can, at least, start
         prev_coords_mask_position = coords_mask_position.copy()
 
         # Save arrays
@@ -76,12 +78,10 @@ class Streamlines_base:
         svelocity = []
 
         i = 0
-        persistency = 20
+        persistency = 0
 
         while (self.range_min < coords).all() and (coords < self.range_max).all():
 
-            # coords_mask_position = np.asarray(np.rint((coords-self.range_min)/self.delta_coords), int)
-            # coords_mask_position[0] = np.searchsorted(self.x, coords[0])
             coords_mask_position = self.get_masked_coordinates(*coords)
 
             # If mask is False there is not trajectory there yet.
@@ -95,22 +95,30 @@ class Streamlines_base:
             i += 1
 
             # Integration
-            _speed = np.sum(np.square(self._speed(coords)))
-            if _speed == 0:
+            _speed = np.array(self._speed(coords))
+            if np.sum(np.square(_speed)) == 0:
                 break
-            deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
+            # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
+            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)))
 
-            new_coords = integrate.odeint(self._speed, coords, [0,sign*deltat])[1]
-            _speed = np.sqrt(np.sum(np.square(new_coords-coords)))/deltat
+            if scypi_odeint:
+                new_coords = integrate.odeint(self._speed, coords, [0,sign*deltat])[1]
+            else: # Runge Kutta 3rd order. I'm sorry, speed is important sometimes
+                k1 = self._speed(coords)
+                k2 = self._speed(coords + sign*deltat*1/4*k1)
+                k3 = self._speed(coords + sign*deltat*(-1*k1 + 2*k2))
+                new_coords = coords + sign * deltat * ((k1+k3)/6 + 2/3*k2)
+
+            mean_speed = np.sqrt(np.sum(np.square(new_coords-coords)))/deltat
             coords = new_coords
 
             # Save values
             for c, coord in enumerate(coords):
                 s[c].append(coord)
-            svelocity.append(_speed)
+            svelocity.append(mean_speed)
 
 
-            # If 20 iterations in a region with previous trajectory break.
+            # If persistency iterations in a region with previous trajectory break.
             if self.used[tuple(coords_mask_position)] and (prev_coords_mask_position!=coords_mask_position).any():
                 persistency -= 1
                 if persistency <= 0:
@@ -176,8 +184,8 @@ class Streamlines_base2D(Streamlines_base):
         
         self.polar = polar
 
-        # marker for which regions have contours
-        self.used = np.zeros((X.shape[0]*self.density, X.shape[1]*self.density), dtype=bool)
+        # marker for which regions have contours. +1 outside the plot at the far side of every axis. 
+        self.used = np.zeros((1 + X.shape[0]*self.density, 1 + X.shape[1]*self.density), dtype=bool)
         self.used[0] = True
         self.used[-1] = True
         self.used[:, 0] = True
@@ -191,26 +199,27 @@ class Streamlines_base2D(Streamlines_base):
         while not self.used.all():
             nz = np.transpose(np.logical_not(self.used).nonzero())
             # Make a streamline starting at the first unrepresented grid point
-            choose = np.random.randint(nz.shape[0])
+            # choose = np.random.randint(nz.shape[0])
+            choose = 0
 
             x_ind = nz[choose][0]
-            x = self.x[x_ind] + 0.5 * (self.x[x_ind+1]-self.x[x_ind])
+            x = self.x[x_ind-1] + 0.5 * (self.x[x_ind]-self.x[x_ind-1])
             y_ind = nz[choose][1]
-            y = self.y[y_ind] + 0.5 * (self.y[y_ind+1]-self.y[y_ind])
+            y = self.y[y_ind-1] + 0.5 * (self.y[y_ind]-self.y[y_ind-1])
 
 
             # x = nz[choose][0]*self.dx + self.x[0]
             # y = nz[choose][1]*self.dy + self.y[0]
-            self.streamlines.append(
-                self._makeStreamline(np.array([x, y]))
+            self.streamlines.append(#TODO: scypi_odeint as parameter
+                self._makeStreamline(np.array([x, y]), scypi_odeint=False)
             )
 
     def get_masked_coordinates(self, x, y):
         """
         Returns index of position in masked coordinates
         """
-        x_ind = np.searchsorted(self.x, x) - 1
-        y_ind = np.searchsorted(self.y, y) - 1
+        x_ind = np.searchsorted(self.x, x)
+        y_ind = np.searchsorted(self.y, y)
         return np.array([x_ind, y_ind])
 
     def get_delta_coordinates(self, x, y):
@@ -219,8 +228,8 @@ class Streamlines_base2D(Streamlines_base):
         """
         x_mask, y_mask = self.get_masked_coordinates(x, y)
         return np.array([
-            self.x[x_mask+1] - self.x[x_mask], 
-            self.y[y_mask+1] - self.y[y_mask]])
+            self.x[x_mask] - self.x[x_mask-1], 
+            self.y[y_mask] - self.y[y_mask-1]])
 
     @property
     def Range(self):
@@ -286,8 +295,8 @@ class Streamlines_base3D(Streamlines_base):
 
         self.polar = polar
 
-        # marker for which regions have contours
-        self.used = np.zeros((X.shape[0]*self.density, X.shape[1]*self.density, X.shape[2]*self.density), dtype=bool)
+        # marker for which regions have contours. +1 outside the plot at the far side of every axis. 
+        self.used = np.zeros((1 + X.shape[0]*self.density, 1 + X.shape[1]*self.density, 1 + X.shape[2]*self.density), dtype=bool)
         self.used[0] = True
         self.used[-1] = True
         self.used[:, 0] = True
@@ -305,16 +314,17 @@ class Streamlines_base3D(Streamlines_base):
         while not self.used.all():
             nz = np.transpose(np.logical_not(self.used).nonzero())
             # Make a streamline starting at the first unrepresented grid point
-            choose = np.random.randint(nz.shape[0])
+            # choose = np.random.randint(nz.shape[0])
+            choose = 0
 
             x_ind = nz[choose][0]
-            x = self.x[x_ind] + 0.5 * (self.x[x_ind+1]-self.x[x_ind])
+            x = self.x[x_ind-1] + 0.5 * (self.x[x_ind]-self.x[x_ind-1])
             y_ind = nz[choose][1]
-            y = self.y[y_ind] + 0.5 * (self.y[y_ind+1]-self.y[y_ind])
+            y = self.y[y_ind-1] + 0.5 * (self.y[y_ind]-self.y[y_ind-1])
             z_ind = nz[choose][2]
-            z = self.z[z_ind] + 0.5 * (self.z[z_ind+1]-self.z[z_ind])
-            self.streamlines.append(
-                self._makeStreamline(np.array([x, y, z]))
+            z = self.z[z_ind-1] + 0.5 * (self.z[z_ind]-self.z[z_ind-1])
+            self.streamlines.append(#TODO: scypi_odeint as parameter
+                self._makeStreamline(np.array([x, y, z]), scypi_odeint=False)
             )
 
     
@@ -322,9 +332,9 @@ class Streamlines_base3D(Streamlines_base):
         """
         Returns index of position in masked coordinates
         """
-        x_ind = np.searchsorted(self.x, x) - 1
-        y_ind = np.searchsorted(self.y, y) - 1
-        z_ind = np.searchsorted(self.z, z) - 1
+        x_ind = np.searchsorted(self.x, x)# - 1
+        y_ind = np.searchsorted(self.y, y)# - 1
+        z_ind = np.searchsorted(self.z, z)# - 1
         return np.array([x_ind, y_ind, z_ind])
 
     def get_delta_coordinates(self, x, y, z):
@@ -333,9 +343,9 @@ class Streamlines_base3D(Streamlines_base):
         """
         x_mask, y_mask, z_mask = self.get_masked_coordinates(x, y, z)
         return np.array([
-            self.x[x_mask+1] - self.x[x_mask], 
-            self.y[y_mask+1] - self.y[y_mask], 
-            self.z[z_mask+1] - self.z[z_mask]])
+            self.x[x_mask] - self.x[x_mask-1], 
+            self.y[y_mask] - self.y[y_mask-1], 
+            self.z[z_mask] - self.z[z_mask-1]])
 
     @property
     def Range(self):
