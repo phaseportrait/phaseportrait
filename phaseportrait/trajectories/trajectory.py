@@ -187,6 +187,8 @@ class trajectory:
         circle.initial_position(2,2)
         ```
         """
+        if not args:
+            args = np.random.rand(self._dimension)
 
         if len(args) < self._dimension:
             raise InvalidInitialPositions(args, self._dimension)
@@ -265,10 +267,13 @@ class trajectory:
         self._calculate_values(all_initial_conditions=True)
 
 
-        if self.color == 't':
-            cmap = color
-        else:
-            cmap = self.color = color
+        # if self.color == 't':
+        #     cmap = color
+        # else:
+        #     cmap = self.color = color
+        if color is not None:
+            self.color = color
+        cmap = self.color
 
         for trajectory in self.trajectories:
             val = trajectory.positions
