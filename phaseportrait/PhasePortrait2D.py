@@ -99,7 +99,7 @@ class PhasePortrait2D:
         self.streamplot_args = {}
         for k in kargs:
             if k in ['maxLen', 'scypi_odeint']:
-                self.streamplot_args.update(k, kargs[k])
+                self.streamplot_args.update({k: kargs[k]})
         
         self.manager = manager.Manager(self)
   

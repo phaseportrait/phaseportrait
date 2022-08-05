@@ -99,7 +99,9 @@ class Streamlines_base:
             if np.sum(np.square(_speed)) == 0:
                 break
             # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
-            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)))
+            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)+0.001))
+            # if np.isinf(deltat):
+            #     1
 
             if scypi_odeint:
                 new_coords = integrate.odeint(self._speed, coords, [0,sign*deltat])[1]
