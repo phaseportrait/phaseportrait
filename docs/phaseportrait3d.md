@@ -24,16 +24,6 @@ Gives the option to represent a 3D phase portrait given a [dF](dFfunction.md) fu
 
     If necesary, must contain the kargs for the `dF` function.
 
-* **detectLoops** : bool
-
-    If `true` trajectory integration will end when 2 positions closer than `dr`% of lattice side length.
-
-* **dr** : float
-
-    Percentage of lattice length used in loop detection. Only used when `detectLoops==True`.
-
-* **deltat** : float, default=
-
 * **maxLen** : int
     
     Max number of points in every trajectory.

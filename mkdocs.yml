@@ -13,6 +13,7 @@ nav:
     - 'Map' : 'map.md'
     - 'Nullclines' : 'nullclines.md'
     - 'PhasePortrait2d' : 'phaseportrait2d.md'
+    - 'PhasePortrait3d' : 'phaseportrait3d.md'
     - 'Runge Kutta' : 'rungekutta.md'
     - 'Slider' : 'slider.md'
     - 'Trajectory' : 'trajectory.md'
