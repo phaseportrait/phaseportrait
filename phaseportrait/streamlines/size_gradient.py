@@ -18,7 +18,7 @@ class Streamlines_Size_Gradient(Streamlines_base):
 
 
     def __init__(
-        self, dF, X, Y, *Z, spacing=2, maxLen=500, detectLoops=False, deltat=0.01, dF_args=None, dr=0.01, **kargs
+        self, dF, X, Y, *Z, maxLen=500, dF_args=None, **kargs
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -32,27 +32,18 @@ class Streamlines_Size_Gradient(Streamlines_base):
         
         Key arguments:
         --------
-        spacing: int, default=2
-            Sets the minimum density of streamlines, in grid points.
         maxLen: int default=500
             The maximum length of an individual streamline segment.
-        detectLoops: bool default=False
-            Determines whether an attempt is made to stop extending a given streamline before reaching 
-            maxLen points if it forms a closed loop or reaches a velocity node.
-        deltat: float default=0.01
-            delta time for Euler integrator
         dF_args: dict|None default=None
             dF_args of `dF` function.
-        dr: float default=0.01
-            distance for loop detection.
         """
 
         if not Z:
             self.proyection="2d"
-            self.stream_base = Streamlines_base(dF, X, Y, spacing, maxLen, detectLoops, deltat, dF_args=dF_args, dr=dr, **kargs)
+            self.stream_base = Streamlines_base(dF, X, Y, maxLen, dF_args=dF_args, **kargs)
         else:
             self.proyection="3d"
-            self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], spacing, maxLen, detectLoops, deltat, dF_args=dF_args, dr=dr, **kargs)
+            self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], maxLen, dF_args=dF_args, **kargs)
             
 
     def plot(self, ax, cmap, cnorm, arrow_width):

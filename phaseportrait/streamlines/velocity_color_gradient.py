@@ -43,7 +43,7 @@ class Streamlines_Velocity_Color_Gradient:
 
 
     def __init__(
-        self, dF, X, Y, *Z, maxLen=500, detectLoops=False, deltat=0.01, dF_args=None, **kargs
+        self, dF, X, Y, *Z, maxLen=500, dF_args=None, **kargs
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -59,20 +59,15 @@ class Streamlines_Velocity_Color_Gradient:
         --------    
         maxLen: int default=500
             The maximum length of an individual streamline segment.
-        detectLoops: bool default=False
-            Determines whether an attempt is made to stop extending a given streamline before reaching 
-            maxLen points if it forms a closed loop or reaches a velocity node.
-        deltat: float default=0.01
-            delta time for Euler integrator
         dF_args: dict|None default=None
             dF_args of `dF` function.
         """
         if not Z:
             self.proyection="2d"
-            self.stream_base = Streamlines_base2D(dF, X, Y, maxLen, detectLoops, deltat, dF_args=dF_args, **kargs)
+            self.stream_base = Streamlines_base2D(dF, X, Y, maxLen, dF_args=dF_args, **kargs)
         else:
             self.proyection="3d"
-            self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], maxLen, detectLoops, deltat, dF_args=dF_args, **kargs)
+            self.stream_base = Streamlines_base3D(dF, X, Y, Z[0], maxLen, dF_args=dF_args, **kargs)
 
 
     def _velocity_normalization(self):

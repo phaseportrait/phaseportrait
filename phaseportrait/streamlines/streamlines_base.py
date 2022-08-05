@@ -139,7 +139,7 @@ class Streamlines_base2D(Streamlines_base):
 
 
     def __init__(
-        self, dF, X, Y, maxLen=2500, detectLoops=False, deltat=0.01, *, dF_args=None, polar=False, density=1
+        self, dF, X, Y, maxLen=500, deltat=0.01, *, dF_args=None, polar=False, density=1, scypi_odeint=False
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -150,17 +150,18 @@ class Streamlines_base2D(Streamlines_base):
 
         X and Y: 1D or 2D arrays
             arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
-        maxLen: int default=500
+        maxLen: int, default=500
             The maximum length of an individual streamline segment.
-        detectLoops: bool default=False
-            Determines whether an attempt is made to stop extending a given streamline before reaching 
-            maxLen points if it forms a closed loop or reaches a velocity node.
-        deltat: float default=0.01
-        polar: bool default=false
+        polar: bool, default=false
+            Whether to use polar coordinates or not.
+        density: int, default=1
+            Density of mask grid. Used for making the stream lines not collide.
+        scypi_odeint: bool, default=False
+            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
 
         Key arguments:
         --------
-        dF_args: dict|None default=None
+        dF_args: dict|None, default=None
             dF_args of `dF` function.
         """
         super().__init__()
@@ -169,7 +170,6 @@ class Streamlines_base2D(Streamlines_base):
         self.dF = dF
         self.dF_args = dF_args if dF_args is not None else  {}
 
-        self.detectLoops = detectLoops
         self.maxLen = maxLen
         self.deltat = deltat
 
@@ -179,8 +179,6 @@ class Streamlines_base2D(Streamlines_base):
         ya = np.asanyarray(Y)
         self.x = xa if xa.ndim == 1 else xa[0]
         self.y = ya if ya.ndim == 1 else ya[:, 0]
-        # self.dx = (self.x[-1] - self.x[0]) / (self.x.size - 1) / self.density
-        # self.dy = (self.y[-1] - self.y[0]) / (self.y.size - 1) / self.density
         
         self.polar = polar
 
@@ -210,8 +208,8 @@ class Streamlines_base2D(Streamlines_base):
 
             # x = nz[choose][0]*self.dx + self.x[0]
             # y = nz[choose][1]*self.dy + self.y[0]
-            self.streamlines.append(#TODO: scypi_odeint as parameter
-                self._makeStreamline(np.array([x, y]), scypi_odeint=False)
+            self.streamlines.append(
+                self._makeStreamline(np.array([x, y]), scypi_odeint=scypi_odeint)
             )
 
     def get_masked_coordinates(self, x, y):
@@ -248,7 +246,7 @@ class Streamlines_base3D(Streamlines_base):
 
 
     def __init__(
-        self, dF, X, Y, Z, maxLen=2500, detectLoops=False, deltat=0.01, *, dF_args=None, polar=False, dr=1, density=1
+        self, dF, X, Y, Z, maxLen=2500, *, dF_args=None, polar=False, density=1, scypi_odeint=False
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -260,27 +258,23 @@ class Streamlines_base3D(Streamlines_base):
             arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
         maxLen: int default=500
             The maximum length of an individual streamline segment.
-        detectLoops: bool default=False
-            Determines whether an attempt is made to stop extending a given streamline before reaching 
-            maxLen points if it forms a closed loop or reaches a velocity node.
-        deltat: float default=0.01
         polar: bool default=false
+            Whether to use polar coordinates or not.
+        density: int, default=1
+            Density of mask grid. Used for making the stream lines not collide.
+        scypi_odeint: bool, default=False
+            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
 
         Key arguments:
         --------
         dF_args: dict|None default=None
             dF_args of `dF` function.
-
-        dr: float default=1
-            distance for loop detection in % of X and Y grid distance.
         """
         super().__init__()
         self.dF = dF
         self.dF_args = dF_args if dF_args is not None else  {}
 
-        self.detectLoops = detectLoops
         self.maxLen = maxLen
-        self.deltat = deltat
 
         self.dimension = 3
 
@@ -323,8 +317,8 @@ class Streamlines_base3D(Streamlines_base):
             y = self.y[y_ind-1] + 0.5 * (self.y[y_ind]-self.y[y_ind-1])
             z_ind = nz[choose][2]
             z = self.z[z_ind-1] + 0.5 * (self.z[z_ind]-self.z[z_ind-1])
-            self.streamlines.append(#TODO: scypi_odeint as parameter
-                self._makeStreamline(np.array([x, y, z]), scypi_odeint=False)
+            self.streamlines.append(
+                self._makeStreamline(np.array([x, y, z]), scypi_odeint=scypi_odeint)
             )
 
     
@@ -332,9 +326,9 @@ class Streamlines_base3D(Streamlines_base):
         """
         Returns index of position in masked coordinates
         """
-        x_ind = np.searchsorted(self.x, x)# - 1
-        y_ind = np.searchsorted(self.y, y)# - 1
-        z_ind = np.searchsorted(self.z, z)# - 1
+        x_ind = np.searchsorted(self.x, x)
+        y_ind = np.searchsorted(self.y, y)
+        z_ind = np.searchsorted(self.z, z)
         return np.array([x_ind, y_ind, z_ind])
 
     def get_delta_coordinates(self, x, y, z):
