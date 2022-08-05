@@ -116,11 +116,11 @@ class Manager:
         Parameters
         ----------
         configuration : dict
-            For more information check api examples
+            For more information check api examples.
 
         Returns
         -------
-            _description_
+        str: Equivalent code in Python.
         """
         
         match = re.search(r"def\s+(\w+)\(", configuration['dF'])
@@ -131,11 +131,10 @@ class Manager:
 
         function = f"""\n{configuration['dF']}"""
 
-        # TODO: range in 3d
-        portrait = f"""\nphase_diagram = PhasePortrait{dimension}D({function_name}, [[{configuration['Range']['x_min']},{configuration['Range']['x_max']}],[{configuration['Range']['y_min']},{configuration['Range']['y_max']}]]"""
+        portrait = f"""\nphase_diagram = PhasePortrait{dimension}D({function_name}, [[{configuration['Range']['x_min']},{configuration['Range']['x_max']}],[{configuration['Range']['y_min']},{configuration['Range']['y_max']}],[{configuration['Range']['z_min']},{configuration['Range']['z_max']}]]"""
         
         portrait_kargs = ""
-        kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xlabel', 'ylabel', 'color']
+        kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xlabel', 'ylabel', 'zlabel', 'xScale', 'yScale', 'zScale', 'color']
         first = True
         for k in configuration.keys():
             if k in kargs:
