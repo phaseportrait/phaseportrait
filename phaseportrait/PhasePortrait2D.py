@@ -66,6 +66,8 @@ class PhasePortrait2D:
             x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         yScale : str, default='linear'
             y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+        scypi_odeint : bool, default=False
+            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
         """
         self.sliders = {}
         self.nullclines = []
@@ -96,7 +98,7 @@ class PhasePortrait2D:
         
         self.streamplot_args = {}
         for k in kargs:
-            if k in ['maxLen', 'detectLoops', 'dr']:
+            if k in ['maxLen', 'scypi_odeint']:
                 self.streamplot_args.update(k, kargs[k])
         
         self.manager = manager.Manager(self)
@@ -180,21 +182,10 @@ class PhasePortrait2D:
 
         if color is not None:
             self.color = color
-        
-        # if self.Polar:
-        #     self._PolarTransformation()
-        # else:
-        #     self._dX, self._dY = self.dF(self._X, self._Y, **self.dF_args)
-        
-        # if utils.is_number(self._dX):
-        #     self._dX = self._X.copy() * 0 + self._dX
-        # if utils.is_number(self._dY):
-        #     self._dY = self._Y.copy() * 0 + self._dY
-
-
+    
 
         stream = self.streamplot_callback(self.dF, self._X, self._Y, 
-            dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args, deltat=0.01, maxLen=2500)
+            dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args)
 
         try:
             norm = stream._velocity_normalization()
@@ -254,15 +245,15 @@ class PhasePortrait2D:
 
         self.sliders[param_name].slider.on_changed(self.sliders[param_name])
     
-    def _PolarTransformation(self):
-        """
-        Computes the expression of the velocity field if coordinates are given in polar representation.
-        """
-        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
-            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+    # def _PolarTransformation(self):
+    #     """
+    #     Computes the expression of the velocity field if coordinates are given in polar representation.
+    #     """
+    #     if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
+    #         self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
         
-        self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
-        self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
+    #     self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
+    #     self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
         
 
 

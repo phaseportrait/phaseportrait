@@ -69,6 +69,8 @@ class PhasePortrait3D:
             y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         zScale : str, default='linear'
             z axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+        scypi_odeint : bool, default=False
+            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
         """
         self.sliders = {}
         self.nullclines = []
@@ -102,7 +104,7 @@ class PhasePortrait3D:
         
         self.streamplot_args = {}
         for k in kargs:
-            if k in ['maxLen', 'detectLoops', 'dr', 'deltat']:
+            if k in ['maxLen', 'scypi_odeint']:
                 self.streamplot_args.update({k: kargs[k]})
 
         
@@ -266,19 +268,19 @@ class PhasePortrait3D:
 
         self.sliders[param_name].slider.on_changed(self.sliders[param_name])
     
-    def _PolarTransformation(self):
-        """
-        Computes the expression of the velocity field if coordinates are given in polar representation.
-        """
-        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
-            self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
-            self._Phi = np.arccos(self._Z / self._R)
+    # def _PolarTransformation(self):
+    #     """
+    #     Computes the expression of the velocity field if coordinates are given in polar representation.
+    #     """
+    #     if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
+    #         self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
+    #         self._Phi = np.arccos(self._Z / self._R)
         
-        self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
-        self._dX, self._dY, self._dZ = \
-            self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
-            self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
-            self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
+    #     self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
+    #     self._dX, self._dY, self._dZ = \
+    #         self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
+    #         self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
+    #         self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
         
 
 
