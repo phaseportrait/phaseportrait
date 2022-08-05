@@ -122,6 +122,19 @@ class Trajectory3D(trajectory):
         self.ax['Z'].add_collection(linez)
 
 
+
+        self.ax['3d'].plot(*[[val_init[i],val[i,0]] for i in range(3)], '-', linewidth=self.size, color=C[0])
+        self.ax['X'].plot([val_init[1],val[1,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        self.ax['Y'].plot([val_init[0],val[0,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        self._update_3d_lims()
+
+    def _update_3d_lims(self):
+        self.ax['3d'].set_xlim(self.ax['Y'].get_xlim())
+        self.ax['3d'].set_ylim(self.ax['Z'].get_xlim())
+        self.ax['3d'].set_zlim(self.ax['X'].get_ylim())
+
+
     def _scatter_start_point(self, val_init):
         self.ax['3d'].scatter3D(*val_init, s=self.size*2, c=[0])
         self.ax['X'].scatter(val_init[1], val_init[2], s=self.size*2, c=[0])
@@ -134,6 +147,7 @@ class Trajectory3D(trajectory):
         self.ax['X'].scatter(val[1,:], val[2,:], s=self.size, c=color, cmap=cmap)
         self.ax['Y'].scatter(val[0,:], val[2,:], s=self.size, c=color, cmap=cmap)
         self.ax['Z'].scatter(val[0,:], val[1,:], s=self.size, c=color, cmap=cmap)
+        self._update_3d_lims()
 
 
     def _prepare_plot(self, grid=False):

@@ -101,8 +101,8 @@ class Trajectory2D(trajectory):
         C = plt.get_cmap(self.color)(cnorm(vel_))
         
         linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C, label=label)
-        
         self.ax['Z'].add_collection(linez)
+        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
         # self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")
 
 
