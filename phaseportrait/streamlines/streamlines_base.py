@@ -80,7 +80,7 @@ class Streamlines_base:
         i = 0
         persistency = 0
 
-        while (self.range_min < coords).all() and (coords < self.range_max).all():
+        while True:
 
             coords_mask_position = self.get_masked_coordinates(*coords)
 
@@ -114,6 +114,10 @@ class Streamlines_base:
             mean_speed = np.sqrt(np.sum(np.square(new_coords-coords)))/deltat
             coords = new_coords
 
+            # Break if out at lims
+            if not ( (self.range_min < coords).all() and (coords < self.range_max).all() ):
+                break
+            
             # Save values
             for c, coord in enumerate(coords):
                 s[c].append(coord)
