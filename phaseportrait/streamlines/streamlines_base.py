@@ -153,9 +153,10 @@ class Streamlines_base2D(Streamlines_base):
 
         Parameters
         --------
-
+        dF: callable
+            A dF type funcion. Computes the derivatives of given coordinates.
         X and Y: 1D or 2D arrays
-            arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            Arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
         maxLen: int, default=500
             The maximum length of an individual streamline segment.
         polar: bool, default=false

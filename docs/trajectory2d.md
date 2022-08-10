@@ -53,6 +53,10 @@ Inherits methods from parent class [trajectory](trajectory.md), a brief resume i
 * [initial_position](../trajectory/#methods) :
 
     Adds a trajectory with the given initial position.
+
+* [initial_positions](../trajectory/#methods) :
+
+    Adds multiple trajectories with the given initial positions.
     
 * [plot](../trajectory/#methods) : 
 
