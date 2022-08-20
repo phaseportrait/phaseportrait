@@ -7,7 +7,7 @@ description = """ A python package for visualizing non-linear dynamics and chaos
 
 def setup_package():
     metadata = dict(
-        name="phaserportrait",
+        name="phaseportrait",
         maintainer="Víctor Loras & Unai Lería",
         maintainer_email="vhloras@gmail.com",
         description=description,
