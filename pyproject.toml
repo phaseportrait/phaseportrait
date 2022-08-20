@@ -1,0 +1,27 @@
+[build-system]
+# Minimum requirements for the build system to execute.
+requires = [
+    "setuptools==59.2.0",
+]
+
+[project]
+name = "phaseportrait"
+version = "1.1.0"
+authors = [
+    {name = "Víctor Loras"  , email = "vhloras@gmail.com"}, 
+    {name =  "Unai Lería"   , email =  "unaileria@gmail.com"},
+]
+description = "A python package for visualizing non-linear dynamics and chaos. (2D phase portraits, 3D chaotic trajectories, Maps, Cobweb plots...)"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Documentation" = "https://phaseportrait.github.io/"
+"Source Code" = "https://github.com/phaseportrait/phaseportrait"
+"GUI" = "https://github.com/phaseportrait/phaseportrait-gui"
