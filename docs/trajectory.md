@@ -36,18 +36,33 @@ Sets the thermalization steps if given and executes self.initial_position method
 * None
 
 ### *trajectory*.initial_position
-> *trajectory*.**initial_position**()
+> *trajectory*.**initial_position**(*\*position*)
 
 Adds a initial position for the computation.
 More than one can be added.
 
 **Parameters**
 
-* args : Union[float, list[2], list[3]], optional
+* position : Union[float, list[2], list[3]], optional
 
     Initial position for the computation.
     If None, a random position is chosen.
 
+**Returns**
+
+* None
+
+### *trajectory*.initial_positions
+> *trajectory*.**initial_positions**(*\*positions*)
+
+Adds initial positions for the computation.
+
+**Parameters**
+
+* positions : list, optional
+
+    Initial positiond for the computation. Must be iterable.
+    
 **Returns**
 
 * None

@@ -64,8 +64,6 @@ class Nullcline2D():
         self.ycolor = to_hex(ycolor)
         self.bgcolor = bgcolor
         self.density = density
-        self.xRange = xRange if xRange is not None else self.portrait.Range[0,:]
-        self.yRange = yRange if yRange is not None else self.portrait.Range[1,:]
         self.alpha = alpha
         self.polar = polar
         
@@ -97,8 +95,8 @@ class Nullcline2D():
         if axis is None:
             axis = self.portrait.ax
         
-        _x = np.linspace(*self.xRange, self.density)
-        _y = np.linspace(*self.yRange, self.density)
+        _x = np.linspace(*self.portrait.Range[0,:], self.density)
+        _y = np.linspace(*self.portrait.Range[1,:], self.density)
         
         _xdF = np.zeros([self.density, self.density])
         _ydF = np.zeros([self.density, self.density])

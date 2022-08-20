@@ -101,6 +101,8 @@ class RungeKutta(_Generator_):
         k3 = np.array(self.dF(*(self.position+0.5*k2*self.dt), **self.dF_args))
         k4 = np.array(self.dF(*(self.position+k3*self.dt), **self.dF_args))
         self.velocity = 1/6*(k1+2*k2+2*k3+k4)
+        if (self.velocity == 0).all():
+            self.flag_stop = True
         self.position += self.velocity*self.dt
     
     

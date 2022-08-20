@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.collections import LineCollection
+from matplotlib.colors import Colormap, Normalize
 
 from .trajectories import trajectory
 
@@ -86,8 +89,21 @@ class Trajectory2D(trajectory):
         }
 
 
-    def _plot_lines(self, val, val_init):
-        self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")
+    def _plot_lines(self, val, vel, val_init, *, cnorm=None):
+        label = f"({','.join(tuple(map(str, val_init)))})"
+
+        val_ = val.T.reshape(-1, 1, 2)
+        segments = np.concatenate([val_[:-1], val_[1:]], axis=1)
+
+        vel_ = np.sqrt(np.sum(np.square(vel), axis=0))
+        if cnorm is None:
+            cnorm = Normalize(vel_.min(), vel_.max())
+        C = plt.get_cmap(self.color)(cnorm(vel_))
+        
+        linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C, label=label)
+        self.ax['Z'].add_collection(linez)
+        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        # self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")
 
 
     def _scatter_start_point(self, val_init):
@@ -98,7 +114,7 @@ class Trajectory2D(trajectory):
         self.ax['Z'].scatter(val[0,:], val[1,:], s=self.size, c=color, cmap=cmap)
 
 
-    def _prepare_plot(self):
+    def _prepare_plot(self, grid=False):
         for coord, r0, r1, x_label, y_label in [
             ('Z', 0, 1, self.xlabel, self.ylabel),
         ]:
@@ -109,4 +125,4 @@ class Trajectory2D(trajectory):
                 self.ax[coord].set_ylim(self.Range[r1,:])
             self.ax[coord].set_xlabel(f'{x_label}')
             self.ax[coord].set_ylabel(f'{y_label}')
-            self.ax[coord].grid()
+            self.ax[coord].grid(grid)

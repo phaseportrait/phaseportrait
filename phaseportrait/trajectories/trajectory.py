@@ -8,6 +8,10 @@ from ..sliders import sliders
 from ..utils import utils
 from . import RungeKutta
 
+class InvalidInitialPositions(Exception):
+    def __init__(self, position, req_dim) -> None:
+        super().__init__(f"{position} is length {len(position)}!={req_dim}, not equal to dimension required.")
+
 class trajectory:
     """
     trajectory
@@ -77,7 +81,7 @@ class trajectory:
             Step of 'time' in the Runge-Kutta method.
         runge_kutta_freq : int
             Number of times `dF` is aplied between positions saved.
-        lines : bool
+        lines : bool, defaullt=True
             Must be `True` if method _plot_lines is used.
         Titulo : str
             Title of the plot.
@@ -117,7 +121,7 @@ class trajectory:
         self.sliders = {}
         self.sliders_fig = False
 
-        self.lines = kargs.get('lines')
+        self.lines = kargs.get('lines', True)
 
         self.thermalization = kargs.get('thermalization')
         if not self.thermalization:
@@ -183,6 +187,11 @@ class trajectory:
         circle.initial_position(2,2)
         ```
         """
+        if not args:
+            args = np.random.rand(self._dimension)
+
+        if len(args) < self._dimension:
+            raise InvalidInitialPositions(args, self._dimension)
 
         flag = False
         for trajectory in self.trajectories:
@@ -202,22 +211,44 @@ class trajectory:
                 thermalization=self.thermalization
                 )
             )
+        
+    
+    def initial_positions(self, *positions, **kargs):
+        """
+        Adds initial positions for the computation.
+        Calls `trajectory.initial_position` for each position given.
+        
+        Parameters
+        ---------
+        postitions : list,
+            Initial positions for the computation.
+        """
+        for position in zip(*positions):
+            if len(position) < self._dimension:
+                raise InvalidInitialPositions(position, self._dimension)
+            self.initial_position(*position, **kargs)
  
         
     def _calculate_values(self, *args, all_initial_conditions=False, **kargs):
+        if all_initial_conditions:
+            for trajectory in self.trajectories:
+                trajectory.position = trajectory.initial_value.copy()
+        
         for trajectory in self.trajectories:
             trajectory.compute_all(save_freq=self.runge_kutta_freq)
 
 
-    def plot(self, color=None, **kargs):
+    def plot(self, color=None, labels=False, grid=False, **kargs):
         """
         Prepares the plots and computes the values.
         
         Key Arguments
         -------------
         color : str
-        
             Matplotlib `Cmap`.
+
+        labels : str
+            Label the initial positions
             
         Returns
         -------
@@ -228,7 +259,7 @@ class trajectory:
             
         """
 
-        self._prepare_plot()
+        self._prepare_plot(grid=grid)
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
         for trajectory in self.trajectories:
             trajectory.dF_args = self.dF_args
@@ -236,10 +267,13 @@ class trajectory:
         self._calculate_values(all_initial_conditions=True)
 
 
-        if self.color == 't':
-            cmap = color
-        else:
-            cmap = self.color = color
+        # if self.color == 't':
+        #     cmap = color
+        # else:
+        #     cmap = self.color = color
+        if color is not None:
+            self.color = color
+        cmap = self.color
 
         for trajectory in self.trajectories:
             val = trajectory.positions
@@ -247,7 +281,7 @@ class trajectory:
             val_init = trajectory.initial_value
             
             if self.lines:
-                self._plot_lines(val, val_init)
+                self._plot_lines(val, vel, val_init)
                     
             else:
                 def norma(v):
@@ -267,7 +301,7 @@ class trajectory:
                 self._scatter_start_point(val_init)
                 
         for fig in self.fig.values():
-            if self.lines:
+            if self.lines and labels:
                 fig.legend()
             fig.canvas.draw_idle()
         try:

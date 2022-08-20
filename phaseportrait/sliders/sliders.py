@@ -85,3 +85,17 @@ class Slider():
             self.portrait.update_dF_args()
 
         self.portrait.plot()
+        
+    def update_slider_ends(self, valmin, valmax):
+        """
+        Updates slider min and max values
+
+        Parameters
+        ----------
+        valmin : float
+            Min slider value
+        valmax : float
+            Max slider value
+        """
+        self.slider.valmin = valmin
+        self.slider.valmax = valmax

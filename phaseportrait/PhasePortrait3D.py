@@ -1,21 +1,20 @@
 from inspect import signature
 
-import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 
 from .exceptions import exceptions
-from .nullclines import Nullcline2D
 from .sliders import sliders
 from .streamlines import Streamlines_Velocity_Color_Gradient
 from .utils import manager, utils
 
 
-class PhasePortrait2D:
+class PhasePortrait3D:
     """
-    PhasePortrait2D
+    PhasePortrait3D
     ----------------
-    Makes a phase portrait of a 2D system.
+    Makes a phase portrait of a 3D system.
     
     Methods
     -------    
@@ -32,17 +31,17 @@ class PhasePortrait2D:
         Prepares the plots and computes the values. 
         Returns the axis and the figure.
     """
-    _name_ = 'PhasePortrait2D'
-    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow', xScale='linear', yScale='linear', **kargs):
+    _name_ = 'PhasePortrait3D'
+    def __init__(self, dF, Range, *, MeshDim=6, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = 'Y', zlabel='Z', color='rainbow', xScale='linear', yScale='linear', zScale='linear', **kargs):
         """
-        PhasePortrait2D
+        PhasePortrait3D
         ---------------
         
         Parameters
         ----------
         dF : callable
             A dF type function.
-        Range : [x_range, y_range]
+        Range : [x_range, y_range, z_range]
             Ranges of the axis in the main plot.
             
         Key Arguments
@@ -58,14 +57,18 @@ class PhasePortrait2D:
         Title : str, default='Phase Portrait' 
         xlabel : str, default='X'
             x label of the plot.
-        ylabel : str, default='$\dot{X}$' 
+        ylabel : str, default='Y' 
             y label of the plot.
+        zlabel : str, default='Z' 
+            z label of the plot.
         color : str, default='rainbow'
             Matplotlib `Cmap`.
         xScale : str, default='linear'
             x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         yScale : str, default='linear'
             y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+        zScale : str, default='linear'
+            z axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         scypi_odeint : bool, default=False
             Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
         """
@@ -83,16 +86,19 @@ class PhasePortrait2D:
         self.Title = Title                               # Title of the plot
         self.xlabel = xlabel                             # Title on X axis
         self.ylabel = ylabel                             # Title on Y axis
-
+        self.zlabel = zlabel
+        
         self.xScale = xScale                             # x axis scale
-        self.yScale = yScale                             # x axis scale 
+        self.yScale = yScale                             # x axis scale
+        self.zScale = zScale
 
         self.streamplot_callback = Streamlines_Velocity_Color_Gradient
 
         self._create_arrays()
 
         # Variables for plotting
-        self.fig, self.ax = plt.subplots()
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(projection='3d')
         self.color = color
         self.grid = True
         
@@ -100,6 +106,7 @@ class PhasePortrait2D:
         for k in kargs:
             if k in ['maxLen', 'scypi_odeint']:
                 self.streamplot_args.update({k: kargs[k]})
+
         
         self.manager = manager.Manager(self)
   
@@ -107,14 +114,15 @@ class PhasePortrait2D:
     def _create_arrays(self):
         # If scale is log and min range value is 0 or negative the plots is not correct
         _Range = self.Range.copy()
-        for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale], self.Range)):
+        for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale, self.zScale], self.Range)):
             if scale == 'log':
                 for j in range(len(Range)):
                     if Range[j]<=0:
                         _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
         self.Range = _Range
 
-        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y"],[self.xScale, self.yScale], self.Range)):
+        
+        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y", "_Z"],[self.xScale, self.yScale, self.zScale], self.Range)):
             if scale == 'linear':
                 setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
             if scale == 'log':
@@ -122,9 +130,7 @@ class PhasePortrait2D:
             if scale == 'symlog':
                 setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
 
-        self._X, self._Y = np.meshgrid(self._X, self._Y)
-
-        # self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.MeshDim), np.linspace(*self.Range[1,:], self.MeshDim))
+        self._X, self._Y, self._Z = np.meshgrid(self._X, self._Y, self._Z)
 
         if self.Polar:   
             self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
@@ -171,7 +177,6 @@ class PhasePortrait2D:
         """
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
 
-        # Re-create arrays in case Range or scale is changed
         self._create_arrays()
 
         try:
@@ -182,9 +187,20 @@ class PhasePortrait2D:
 
         if color is not None:
             self.color = color
-    
+        
+        # if self.Polar:
+        #     self._PolarTransformation()
+        # else:
+        #     self._dX, self._dY = self.dF(self._X, self._Y, **self.dF_args)
+        
+        # if utils.is_number(self._dX):
+        #     self._dX = self._X.copy() * 0 + self._dX
+        # if utils.is_number(self._dY):
+        #     self._dY = self._Y.copy() * 0 + self._dY
 
-        stream = self.streamplot_callback(self.dF, self._X, self._Y, 
+
+
+        stream = self.streamplot_callback(self.dF, self._X, self._Y, self._Z,
             dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args)
 
         try:
@@ -196,28 +212,35 @@ class PhasePortrait2D:
         stream.plot(self.ax, cmap, norm, arrowsize=self.streamplot_args.get('arrow_width', 1))
 
         
-        self.ax.set_xlim(self.Range[0,:])
-        self.ax.set_ylim(self.Range[1,:])
+        self.ax.set_xlim3d(self.Range[0])
+        self.ax.set_ylim3d(self.Range[1])
+        self.ax.set_zlim3d(self.Range[2])
         # self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
-        # if self.xScale=='linear' or self.yScale != 'linear':
-        self.ax.set_aspect(1)
 
         self.ax.set_title(f'{self.Title}')
         self.ax.set_xlabel(f'{self.xlabel}')
         self.ax.set_ylabel(f'{self.ylabel}')
+        self.ax.set_zlabel(f'{self.zlabel}')
         self.ax.set_xscale(self.xScale)
         self.ax.set_yscale(self.yScale)
+        self.ax.set_zscale(self.zScale)
+
+
+        
+
+        def log_tick_formatter(val, pos=None):
+            return r"$10^{{{:.0f}}}$".format(val)
+
+        if self.xScale in ['log', 'symlog']:
+            self.ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+        if self.yScale in ['log', 'symlog']:
+            self.ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+        if self.zScale in ['log', 'symlog']:
+            self.ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+
         self.ax.grid(grid if grid is not None else self.grid)
         
         return stream
-
-
-
-    def add_nullclines(self, *, precision=0.01, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
-        self.nullclines.append(Nullcline2D(self, self.dF, 
-                                          precision=precision, offset=offset, density=density, 
-                                          xRange=xRange, yRange=yRange, dF_args=dF_args, 
-                                          xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
 
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
@@ -249,11 +272,15 @@ class PhasePortrait2D:
     #     """
     #     Computes the expression of the velocity field if coordinates are given in polar representation.
     #     """
-    #     if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
-    #         self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+    #     if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
+    #         self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
+    #         self._Phi = np.arccos(self._Z / self._R)
         
-    #     self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
-    #     self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
+    #     self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
+    #     self._dX, self._dY, self._dZ = \
+    #         self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
+    #         self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
+    #         self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
         
 
 
@@ -283,7 +310,11 @@ class PhasePortrait2D:
 
     @Range.setter
     def Range(self, value):
-        self._Range = np.array(utils.construct_interval(value, dim=2))
+        if len(value)==3:
+            if np.array([len(value[i])==2 for i in range(3)]).all():
+                self._Range = value
+                return
+        self._Range = np.array(utils.construct_interval(value, dim=3))
 
     @property
     def dF_args(self):
