@@ -1,7 +1,11 @@
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.collections import LineCollection
+from matplotlib.colors import Colormap, Normalize
+from mpl_toolkits.mplot3d.art3d import Line3DCollection, Patch3DCollection
 
 from .trajectories import trajectory
- 
+
 
 class Trajectory3D(trajectory):
     """
@@ -95,18 +99,47 @@ class Trajectory3D(trajectory):
         }
 
 
-    def _plot_lines(self, val, val_init):
-        self.ax['3d'].plot3D(*val[:,1:], label=f"({','.join(tuple(map(str, val_init)))})")
-        self.ax['X'].plot(val[1,1:], val[2,1:], label=f"({','.join(tuple(map(str, val_init)))})")
-        self.ax['Y'].plot(val[0,1:], val[2,1:], label=f"({','.join(tuple(map(str, val_init)))})")
-        self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")
+    def _plot_lines(self, val, vel, val_init, *, cnorm=None):
+        label = f"({','.join(tuple(map(str, val_init)))})"
+
+        val_ = val.T.reshape(-1, 1, 3)
+        segments = np.concatenate([val_[:-1], val_[1:]], axis=1)
+
+        vel_ = np.sqrt(np.sum(np.square(vel), axis=0))
+        if cnorm is None:
+            cnorm = Normalize(vel_.min(), vel_.max())
+        C = plt.get_cmap(self.color)(cnorm(vel_))
+        line3d = Line3DCollection(segments, linewidth=self.size, color=C, label=label)
+        linex = LineCollection(segments[:,:,(1,2)], linewidth=self.size, color=C, label=label)
+        liney = LineCollection(segments[:,:,(0,2)], linewidth=self.size, color=C, label=label)
+        linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C, label=label)
+
+        
+
+        self.ax['3d'].add_collection(line3d)
+        self.ax['X'].add_collection(linex)
+        self.ax['Y'].add_collection(liney)
+        self.ax['Z'].add_collection(linez)
+
+
+
+        self.ax['3d'].plot(*[[val_init[i],val[i,0]] for i in range(3)], '-', linewidth=self.size, color=C[0])
+        self.ax['X'].plot([val_init[1],val[1,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        self.ax['Y'].plot([val_init[0],val[0,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        self._update_3d_lims()
+
+    def _update_3d_lims(self):
+        self.ax['3d'].set_xlim(self.ax['Y'].get_xlim())
+        self.ax['3d'].set_ylim(self.ax['Z'].get_xlim())
+        self.ax['3d'].set_zlim(self.ax['X'].get_ylim())
 
 
     def _scatter_start_point(self, val_init):
-        self.ax['3d'].scatter3D(*val_init, s=self.size+1, c=[0])
-        self.ax['X'].scatter(val_init[1], val_init[2], s=self.size+1, c=[0])
-        self.ax['Y'].scatter(val_init[0], val_init[2], s=self.size+1, c=[0])
-        self.ax['Z'].scatter(val_init[0], val_init[1], s=self.size+1, c=[0])
+        self.ax['3d'].scatter3D(*val_init, s=self.size*2, c=[0])
+        self.ax['X'].scatter(val_init[1], val_init[2], s=self.size*2, c=[0])
+        self.ax['Y'].scatter(val_init[0], val_init[2], s=self.size*2, c=[0])
+        self.ax['Z'].scatter(val_init[0], val_init[1], s=self.size*2, c=[0])
 
 
     def _scatter_trajectory(self, val, color, cmap):
@@ -114,9 +147,10 @@ class Trajectory3D(trajectory):
         self.ax['X'].scatter(val[1,:], val[2,:], s=self.size, c=color, cmap=cmap)
         self.ax['Y'].scatter(val[0,:], val[2,:], s=self.size, c=color, cmap=cmap)
         self.ax['Z'].scatter(val[0,:], val[1,:], s=self.size, c=color, cmap=cmap)
+        self._update_3d_lims()
 
 
-    def _prepare_plot(self):
+    def _prepare_plot(self, grid=False):
         self.ax['3d'].set_title(f'{self.Title}')
         if self.Range is not None:
             self.ax['3d'].set_xlim(self.Range[0,:])
@@ -125,7 +159,7 @@ class Trajectory3D(trajectory):
         self.ax['3d'].set_xlabel(f'{self.xlabel}')
         self.ax['3d'].set_ylabel(f'{self.ylabel}')
         self.ax['3d'].set_zlabel(f'{self.zlabel}')
-        self.ax['3d'].grid()
+        self.ax['3d'].grid(grid)
 
         for coord, r0, r1, title, x_label, y_label in [
             ('X', 1, 2, 'YZ', self.ylabel, self.zlabel),
@@ -139,4 +173,4 @@ class Trajectory3D(trajectory):
                 self.ax[coord].set_ylim(self.Range[r1,:])
             self.ax[coord].set_xlabel(f'{x_label}')
             self.ax[coord].set_ylabel(f'{y_label}')
-            self.ax[coord].grid()
+            self.ax[coord].grid(grid)

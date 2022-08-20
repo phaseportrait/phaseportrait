@@ -72,6 +72,9 @@ class _Generator_():
             self.initial_value = np.array(tuple(map(float, initial_values)))
 
         self.position = self.initial_value.copy()
+
+        # Flag activated when generation termination is needed.
+        self.flag_stop = False
         
 
     # Methods to be overwritten by child classes
@@ -184,5 +187,6 @@ class _Generator_():
         """
 
         for j in range(self.save_freq):
-            self._next()
+            if not self.flag_stop:
+                self._next()
         self.save(index)
