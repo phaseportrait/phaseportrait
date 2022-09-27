@@ -3,48 +3,9 @@
 To check out *phaseportrait*'s documentation, view some examples and read more about it, check our website or try our Graphical User Interface:
 
 
-
-<a href="https://phaseportrait.github.io/">
-<center>
-<img src="img/duckduck.png" width=40%>
-</img>
-<!-- </center> -->
-</a>
-<a href="https://github.com/phaseportrait/phaseportrait-gui">
-<!-- <center> -->
-<img src="img/duckduck_son.png" width=30%>
-</center>
-</a>
-
-
 [Documentation](https://phaseportrait.github.io/)
 
 [Graphical User Interface](https://github.com/phaseportrait/phaseportrait-gui)
-
-
-
-
-
-
-
-
-
-# Examples of use
-<a href="https://phaseportrait.github.io/trajectories_examples/">
-<center><img src="imgs/trj_examples/Figure_7.png"></center>
-</a>
-
-<a href="https://phaseportrait.github.io/phaseportrait2d_examples/">
-<center><img src="imgs/index/pendulum_example.png" width=60%><img src="imgs/index/damped_pendulum_example.png" width=60%></center>
-</a>
-
-<a href="https://phaseportrait.github.io/phaseportrait3d/">
-<center><img src="imgs/pp3d_examples/example.png"></center>
-</a>
-
-<a href="https://phaseportrait.github.io/mapsandcobweb_examples/">
-<center><img src="imgs/index/map_example_code.png"></center>
-</a>
 
 
 # Installation

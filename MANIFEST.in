@@ -1,0 +1,4 @@
+include README_no_imgs.md
+include README.md
+recursive-include docs *
+recursive-include examples *

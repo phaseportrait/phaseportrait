@@ -1,27 +1,44 @@
 [build-system]
 # Minimum requirements for the build system to execute.
-requires = [
-    "setuptools==59.2.0",
-]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "phaseportrait"
-version = "1.1.0"
+version = "1.1.2"
+requires-python = ">=3.8"
+
+description = "A python package for visualizing non-linear dynamics and chaos. (2D phase portraits, 3D chaotic trajectories, Maps, Cobweb plots...)"
+
 authors = [
     {name = "Víctor Loras"  , email = "vhloras@gmail.com"}, 
-    {name =  "Unai Lería"   , email =  "unaileria@gmail.com"},
-]
-description = "A python package for visualizing non-linear dynamics and chaos. (2D phase portraits, 3D chaotic trajectories, Maps, Cobweb plots...)"
-readme = "README.md"
-license = { file="LICENSE" }
-requires-python = ">=3.8"
+    {name =  "Unai Lería"   , email =  "unaileria@gmail.com"}]
+
+maintainers = [
+    {name = "Víctor Loras"  , email = "vhloras@gmail.com"}, 
+    {name =  "Unai Lería"   , email =  "unaileria@gmail.com"}] 
+
+
+readme = "README_no_imgs.md"
+license = { text="MIT license" }
+
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-]
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Visualization"]
+
+dependencies = ['numpy', 'matplotlib', 'scipy']
 
 [project.urls]
 "Documentation" = "https://phaseportrait.github.io/"
-"Source Code" = "https://github.com/phaseportrait/phaseportrait"
+"GitHub" = "https://github.com/phaseportrait/phaseportrait"
 "GUI" = "https://github.com/phaseportrait/phaseportrait-gui"

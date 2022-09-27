@@ -22,7 +22,7 @@ nav:
     - 'Trajectory3d' : 'trajectory3d.md'
 - License: 'license.md'
 - Contributing: 'contributing.md'
-theme: flatly
+theme: readthedocs
 repo_url: https://github.com/phaseportrait/phaseportrait/
 site_description: Python package for visualizing non-linear dynamics and chaos
 site_author : Víctor Loras & Unai Lería
