@@ -1,5 +1,6 @@
 from inspect import signature
 
+import matplotlib.cm as mplcm
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
@@ -52,7 +53,7 @@ class PhasePortrait2D:
         dF_args : dict
             If necesary, must contain the kargs for the `dF` function.
         Density : float, default=1
-            Number of elements in the arrows grid plot.
+            [Deprecated] Number of elements in the arrows grid plot.
         Polar : bool, default=False
             Whether to use polar coordinates or not.
         Title : str, default='Phase Portrait' 
@@ -74,8 +75,7 @@ class PhasePortrait2D:
         
         self.dF_args = dF_args.copy()                    # dF function's args
         self.dF = dF                                     # Function containing system's equations
-        self.Range = Range                               # Range of graphical representation
-        
+            
 
         self.MeshDim  = MeshDim
         self.Density = Density                           # Controls concentration of nearby trajectories
@@ -86,10 +86,10 @@ class PhasePortrait2D:
 
         self.xScale = xScale                             # x axis scale
         self.yScale = yScale                             # x axis scale 
+        
+        self.Range = Range                               # Range of graphical representation
 
         self.streamplot_callback = Streamlines_Velocity_Color_Gradient
-
-        self._create_arrays()
 
         # Variables for plotting
         self.fig, self.ax = plt.subplots()
@@ -106,13 +106,13 @@ class PhasePortrait2D:
 
     def _create_arrays(self):
         # If scale is log and min range value is 0 or negative the plots is not correct
-        _Range = self.Range.copy()
+        _Range = self.Range.copy().astype(np.float64)
         for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale], self.Range)):
             if scale == 'log':
                 for j in range(len(Range)):
                     if Range[j]<=0:
                         _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
-        self.Range = _Range
+        self._Range = _Range
 
         for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y"],[self.xScale, self.yScale], self.Range)):
             if scale == 'linear':
@@ -147,12 +147,37 @@ class PhasePortrait2D:
             self.color = color
         if grid is not None:
             self.grid = grid
-        
+            
         self.stream = self.draw_plot(color=self.color, grid=grid)
+        
+        if hasattr(self, "colorbar_ax"):
+            cb = plt.colorbar(mplcm.ScalarMappable(
+                    norm=self.stream._velocity_normalization(), 
+                    cmap=self.color),
+                ax=self.ax,
+                cax=self.colorbar_ax)
+            
+            self.colorbar_ax = cb.ax
+            
         self.fig.canvas.draw_idle()
 
         return self.fig, self.ax 
+    
+    def colorbar(self, toggle=True):
+        """
+        Adds a colorbar for speed.
         
+        Parameters
+        -------
+        toggle: bool, default=True
+            If `True` colorbar is visible.
+        """
+        if (not hasattr(self, "colorbar_ax")) and toggle:
+            self.colorbar_ax = None
+        else:
+            if hasattr(self, "colorbar_ax"):
+                self.colorbar_ax.remove()
+                del(self.colorbar_ax)
 
     def draw_plot(self, *, color=None, grid=None):
         """
@@ -182,7 +207,7 @@ class PhasePortrait2D:
 
         if color is not None:
             self.color = color
-    
+
 
         stream = self.streamplot_callback(self.dF, self._X, self._Y, 
             dF_args=self.dF_args, polar=self.Polar, **self.streamplot_args)
@@ -245,15 +270,15 @@ class PhasePortrait2D:
 
         self.sliders[param_name].slider.on_changed(self.sliders[param_name])
     
-    # def _PolarTransformation(self):
-    #     """
-    #     Computes the expression of the velocity field if coordinates are given in polar representation.
-    #     """
-    #     if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
-    #         self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+    def _PolarTransformation(self):
+        """
+        Computes the expression of the velocity field if coordinates are given in polar representation.
+        """
+        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
+            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
         
-    #     self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
-    #     self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
+        self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
+        self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
         
 
 
@@ -284,6 +309,7 @@ class PhasePortrait2D:
     @Range.setter
     def Range(self, value):
         self._Range = np.array(utils.construct_interval(value, dim=2))
+        self._create_arrays()
 
     @property
     def dF_args(self):

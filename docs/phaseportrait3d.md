@@ -31,7 +31,7 @@ Gives the option to represent a 3D phase portrait given a [dF](dFfunction.md) fu
 
 * **Density** : float, default=1
 
-    Number of elements in the arrows grid plot.
+    [Deprecated] Number of elements in the arrows grid plot.
 
 * **Polar** : bool, default=False
 
@@ -107,6 +107,22 @@ Adds a slider which can change the value of a parameter in execution time.
 * valstep : float, default=10
 
     Precision in the slider.
+
+**Returns**
+
+* None
+
+### *PhasePortrait3D*.colorbar
+> *PhasePortrait3D*.**colorbar**(*toggle=True*)
+
+
+Adds a colorbar for speed.
+
+**Parameters**
+
+* toggle : bool, default=True
+
+    If `True` colorbar is visible.
 
 **Returns**
 

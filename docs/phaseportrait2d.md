@@ -26,7 +26,7 @@ Gives the option to represent a 2D phase portrait given a [dF](dFfunction.md) fu
 
 * **Density** : float, default=1
 
-    Number of elements in the arrows grid plot.
+    [Deprecated] Number of elements in the arrows grid plot.
 
 * **Polar** : bool, default=False
 
@@ -99,6 +99,24 @@ Plots nullclines of the system given by dF function. For more info, see [Nullcli
 **Returns**
 
 * None
+
+
+### *PhasePortrait2D*.colorbar
+> *PhasePortrait2D*.**colorbar**(*toggle=True*)
+
+
+Adds a colorbar for speed.
+
+**Parameters**
+
+* toggle : bool, default=True
+
+    If `True` colorbar is visible.
+
+**Returns**
+
+* None
+
 
 # Defining Range
 

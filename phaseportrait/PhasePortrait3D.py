@@ -1,5 +1,6 @@
 from inspect import signature
 
+import matplotlib.cm as mplcm
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import numpy as np
@@ -51,7 +52,7 @@ class PhasePortrait3D:
         dF_args : dict
             If necesary, must contain the kargs for the `dF` function.
         Density : float, default=1
-            Number of elements in the arrows grid plot.
+            [Deprecated] Number of elements in the arrows grid plot.
         Polar : bool, default=False
             Whether to use polar coordinates or not.
         Title : str, default='Phase Portrait' 
@@ -77,7 +78,6 @@ class PhasePortrait3D:
         
         self.dF_args = dF_args.copy()                    # dF function's args
         self.dF = dF                                     # Function containing system's equations
-        self.Range = Range                               # Range of graphical representation
         
 
         self.MeshDim  = MeshDim
@@ -89,8 +89,9 @@ class PhasePortrait3D:
         self.zlabel = zlabel
         
         self.xScale = xScale                             # x axis scale
-        self.yScale = yScale                             # x axis scale
-        self.zScale = zScale
+        self.yScale = yScale                             # y axis scale
+        self.zScale = zScale                             # z axis scale
+        self.Range = Range                               # Range of graphical representation
 
         self.streamplot_callback = Streamlines_Velocity_Color_Gradient
 
@@ -155,9 +156,35 @@ class PhasePortrait3D:
             self.grid = grid
         
         self.stream = self.draw_plot(color=self.color, grid=grid)
+        
+        if hasattr(self, "colorbar_ax"):
+            cb = plt.colorbar(mplcm.ScalarMappable(
+                norm=self.stream._velocity_normalization(), 
+                cmap=self.color),
+            ax=self.ax,
+            cax=self.colorbar_ax)
+            
+            self.colorbar_ax = cb.ax
+        
         self.fig.canvas.draw_idle()
 
         return self.fig, self.ax 
+    
+    def colorbar(self, toggle=True):
+        """
+        Adds a colorbar for speed.
+        
+        Parameters
+        -------
+        toggle: bool, default=True
+            If `True` colorbar is visible.
+        """
+        if (not hasattr(self, "colorbar_ax")) and toggle:
+            self.colorbar_ax = None
+        else:
+            if hasattr(self, "colorbar_ax"):
+                self.colorbar_ax.remove()
+                del(self.colorbar_ax)
         
 
     def draw_plot(self, *, color=None, grid=None):
@@ -268,19 +295,19 @@ class PhasePortrait3D:
 
         self.sliders[param_name].slider.on_changed(self.sliders[param_name])
     
-    # def _PolarTransformation(self):
-    #     """
-    #     Computes the expression of the velocity field if coordinates are given in polar representation.
-    #     """
-    #     if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
-    #         self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
-    #         self._Phi = np.arccos(self._Z / self._R)
+    def _PolarTransformation(self):
+        """
+        Computes the expression of the velocity field if coordinates are given in polar representation.
+        """
+        if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
+            self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
+            self._Phi = np.arccos(self._Z / self._R)
         
-    #     self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
-    #     self._dX, self._dY, self._dZ = \
-    #         self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
-    #         self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
-    #         self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
+        self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
+        self._dX, self._dY, self._dZ = \
+            self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
+            self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
+            self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
         
 
 
@@ -315,6 +342,7 @@ class PhasePortrait3D:
                 self._Range = value
                 return
         self._Range = np.array(utils.construct_interval(value, dim=3))
+        self._create_arrays()
 
     @property
     def dF_args(self):
