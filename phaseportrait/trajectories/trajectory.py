@@ -223,7 +223,8 @@ class trajectory:
         postitions : list,
             Initial positions for the computation.
         """
-        for position in zip(*positions):
+        positions_standar = np.array(positions).reshape(-1, self._dimension)
+        for position in positions_standar:
             if len(position) < self._dimension:
                 raise InvalidInitialPositions(position, self._dimension)
             self.initial_position(*position, **kargs)
