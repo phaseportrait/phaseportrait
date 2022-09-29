@@ -25,6 +25,8 @@ class Streamlines_base:
         rvelocity.reverse()
 
         speed = self._speed(y0)
+        if np.isnan(speed).any() or np.isinf(speed).any():
+            return None
 
         return *[r[i] + [y0[i]] + s[i] for i in range(len(y0))],  rvelocity + [np.sqrt(np.sum(np.square(speed)))] + svelocity
     
@@ -80,7 +82,7 @@ class Streamlines_base:
         i = 0
         persistency = 0
 
-        while True:
+        while (self.range_min < coords).all() and (coords < self.range_max).all():
 
             coords_mask_position = self.get_masked_coordinates(*coords)
 
@@ -96,15 +98,18 @@ class Streamlines_base:
 
             # Integration
             _speed = np.array(self._speed(coords))
-            if np.sum(np.square(_speed)) == 0:
-                break
+            if np.sum(np.square(_speed)) == 0 or \
+                np.isnan(_speed).any() or \
+                np.isinf(_speed).any():
+                    break
+
             # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
-            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)+0.001))
-            # if np.isinf(deltat):
-            #     1
+            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)))
+            if np.isnan(deltat) or np.isinf(deltat):
+                print(deltat, self.get_delta_coordinates(*coords), _speed)
 
             if scypi_odeint:
-                new_coords = integrate.odeint(self._speed, coords, [0,sign*deltat])[1]
+                new_coords = integrate.odeint(self._speed, coords, [0.1*i*sign*deltat for i in range(4)])[-1]
             else: # Runge Kutta 3rd order. I'm sorry, speed is important sometimes
                 k1 = self._speed(coords)
                 k2 = self._speed(coords + sign*deltat*1/4*k1)
@@ -114,10 +119,6 @@ class Streamlines_base:
             mean_speed = np.sqrt(np.sum(np.square(new_coords-coords)))/deltat
             coords = new_coords
 
-            # Break if out at lims
-            if not ( (self.range_min < coords).all() and (coords < self.range_max).all() ):
-                break
-            
             # Save values
             for c, coord in enumerate(coords):
                 s[c].append(coord)
@@ -184,6 +185,8 @@ class Streamlines_base2D(Streamlines_base):
 
         xa = np.asanyarray(X)
         ya = np.asanyarray(Y)
+        if np.isnan(xa).any() or np.isnan(ya).any():
+            raise Exception("Invalid range. Chech limits and scales.")
         self.x = xa if xa.ndim == 1 else xa[0]
         self.y = ya if ya.ndim == 1 else ya[:, 0]
         
