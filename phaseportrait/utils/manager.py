@@ -29,13 +29,18 @@ class Manager:
             if k in kargs:
                 setattr(self.portrait, k, v)
                 
-        if range := configuration.get('Range'):
-            self.portrait.Range = [[range['x_min'],range['x_max']],
-                                   [range['y_min'],range['y_max']]]
-        if dimension == 3:
-            self.portrait.Range = [[range['x_min'],range['x_max']],
-                                   [range['y_min'],range['y_max']],
-                                   [range['z_min'], range['z_max']]]
+        range = configuration.get('Range')
+        try:
+            if range:
+                if dimension == 2:
+                    self.portrait.Range = [[range['x_min'],range['x_max']],
+                                        [range['y_min'],range['y_max']]]
+                if dimension == 3:
+                    self.portrait.Range = [[range['x_min'],range['x_max']],
+                                        [range['y_min'],range['y_max']],
+                                        [range['z_min'], range['z_max']]]
+        except TypeError:
+            return 1
                 
         # Nullclines not implemented in 3d plot
         if (nc:=configuration.get('nullcline')) and dimension != 3:
