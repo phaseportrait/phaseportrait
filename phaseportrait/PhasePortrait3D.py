@@ -98,7 +98,12 @@ class PhasePortrait3D:
         self._create_arrays()
 
         # Variables for plotting
-        self.fig = plt.figure()
+        self.fig = kargs.get('fig', None)
+        if self.fig:
+            self.fig.gca().remove()
+        else:
+            self.fig = plt.figure()
+            
         self.ax = self.fig.add_subplot(projection='3d')
         self.color = color
         self.grid = True

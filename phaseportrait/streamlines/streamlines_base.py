@@ -98,13 +98,14 @@ class Streamlines_base:
 
             # Integration
             _speed = np.array(self._speed(coords))
-            if np.sum(np.square(_speed)) == 0 or \
+            if (_speed == 0).all() or \
                 np.isnan(_speed).any() or \
                 np.isinf(_speed).any():
                     break
 
             # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
-            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)))
+            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.max(np.abs(_speed))))
+
             if np.isnan(deltat) or np.isinf(deltat):
                 print(deltat, self.get_delta_coordinates(*coords), _speed)
 

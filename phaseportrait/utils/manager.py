@@ -91,12 +91,12 @@ class Manager:
 
 
         colorbar_check = configuration.get("Colorbar", False)
-        self.portrait.colorbar(colorbar_check)
+        self.portrait.colorbar(toggle=colorbar_check)
                 
         self.portrait.plot()
             
-        # self.portrait.fig.tight_layout()
-        self.portrait.fig.subplots_adjust(left=0.2, bottom=0.2, right=1, top=0.9, wspace=0.01, hspace=0.01)
+        self.portrait.fig.tight_layout()
+        # self.portrait.fig.subplots_adjust(left=0.2, bottom=0.2, right=1, top=0.9, wspace=0.01, hspace=0.01)
         return 0
         
         

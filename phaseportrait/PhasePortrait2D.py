@@ -92,7 +92,12 @@ class PhasePortrait2D:
         self.streamplot_callback = Streamlines_Velocity_Color_Gradient
 
         # Variables for plotting
-        self.fig, self.ax = plt.subplots()
+        self.fig = kargs.get('fig', None)
+        if self.fig:
+            self.ax = self.fig.gca()
+        else:
+            self.fig, self.ax = plt.subplots()
+            
         self.color = color
         self.grid = True
         
