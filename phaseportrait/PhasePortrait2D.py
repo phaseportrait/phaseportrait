@@ -230,7 +230,7 @@ class PhasePortrait2D:
         self.ax.set_ylim(self.Range[1,:])
         # self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
         # if self.xScale=='linear' or self.yScale != 'linear':
-        self.ax.set_aspect(1)
+        # self.ax.set_aspect(1)
 
         self.ax.set_title(f'{self.Title}')
         self.ax.set_xlabel(f'{self.xlabel}')
@@ -243,9 +243,9 @@ class PhasePortrait2D:
 
 
 
-    def add_nullclines(self, *, precision=0.01, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
         self.nullclines.append(Nullcline2D(self, self.dF, 
-                                          precision=precision, offset=offset, density=density, 
+                                          precision=precision, xprecision=xprecision, yprecision=yprecision, offset=offset, density=density, 
                                           xRange=xRange, yRange=yRange, dF_args=dF_args, 
                                           xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
 
