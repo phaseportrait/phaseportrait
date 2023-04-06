@@ -228,9 +228,6 @@ class PhasePortrait2D:
         
         self.ax.set_xlim(self.Range[0,:])
         self.ax.set_ylim(self.Range[1,:])
-        # self.ax.set_aspect(abs(self.Range[0,1]-self.Range[0,0])/abs(self.Range[1,1]-self.Range[1,0]))
-        # if self.xScale=='linear' or self.yScale != 'linear':
-        # self.ax.set_aspect(1)
 
         self.ax.set_title(f'{self.Title}')
         self.ax.set_xlabel(f'{self.xlabel}')
