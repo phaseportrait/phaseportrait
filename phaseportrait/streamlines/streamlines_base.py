@@ -12,13 +12,23 @@ class Streamlines_base:
         -PhasePortrait2D
         -PhasePorrtait3D
     """
+
+    def __init__(self, odeint_method="scipy") -> None:
+        if odeint_method == "scipy":
+            self._integration_method = self._scipy_odeint
+        elif odeint_method == "euler":
+            self._integration_method = self._euler_odeint
+        elif odeint_method == "rungekutta3":
+            self._integration_method = self._runge_kutta_3rd_odeint
+        else:
+            raise NameError(f"Integration method {odeint_method} is not in [scipy, euler or rungekutta3]")
     
-    def _makeStreamline(self, y0, *, scypi_odeint=True):
+    def _makeStreamline(self, y0):
         """
         Compute a streamline extending in both directions from the given point. Using Euler integrator.
         """
-        *s, svelocity = self._makeHalfStreamline(y0, 1, scypi_odeint=scypi_odeint)  # forwards
-        *r, rvelocity = self._makeHalfStreamline(y0, -1, scypi_odeint=scypi_odeint)  # backwards
+        *s, svelocity = self._makeHalfStreamline(y0, 1)  # forwards
+        *r, rvelocity = self._makeHalfStreamline(y0, -1)  # backwards
 
         for _r in r:
             _r.reverse()
@@ -30,40 +40,52 @@ class Streamlines_base:
 
         return *[r[i] + [y0[i]] + s[i] for i in range(len(y0))],  rvelocity + [np.sqrt(np.sum(np.square(speed)))] + svelocity
     
+    def _speed_2d_no_polar(self, y0, *args, **kargs):
+        return np.array(self.dF(*y0, **self.dF_args))
+    
+    def _speed_2d_polar(self, y0, *args, **kargs):
+        R, Theta = np.sqrt(np.sum(np.square(y0))), np.arctan2(y0[1], y0[0])
+        dR, dTheta = self.dF(R, Theta, **self.dF_args)
+        return np.array([dR*np.cos(Theta) - R*np.sin(Theta)*dTheta, dR*np.sin(Theta)+R*np.cos(Theta)*dTheta])
+
+    def _speed_3d_no_polar(self, y0, *args, **kargs):
+        return np.array(self.dF(*y0, **self.dF_args))
+    
+    def _speed_3d_polar(self, y0, *args, **kargs):
+        R, Theta = np.sqrt(np.sum(np.square(y0))), np.arctan2(y0[1], y0[0])
+        Phi  = np.arccos(y0[2]/R) 
+        dR, dTheta, dPhi = self.dF(R, Theta, Phi, **self.dF_args)
+        return np.array([\
+            dR*np.cos(Theta)*np.sin(Phi) - R*np.sin(Theta)*np.sin(Phi)*dTheta + R*np.cos(Theta)*np.cos(Phi) * dPhi, \
+            dR*np.sin(Theta)*np.sin(Phi) + R*np.cos(Theta)*np.sin(Phi)*dTheta + R*np.sin(Theta)*np.cos(Phi) * dPhi, \
+            dR*np.cos(Phi) - R*np.sin(Phi)*dPhi
+        ])
 
     def _speed(self, y0, *args, **kwargs):
         """
         Computes speed in given coordinates
         """
-        if len(y0)==2:
-            x, y = y0
-            if not self.polar:
-                speed = np.array(self.dF(x,y, **self.dF_args))
+        ...
 
-            # Polar coordinates
-            else:
-                R, Theta = np.sqrt(x**2 + y**2), np.arctan2(y, x)
-                dR, dTheta = self.dF(R, Theta, **self.dF_args)
-                speed = np.array([dR*np.cos(Theta) - R*np.sin(Theta)*dTheta, dR*np.sin(Theta)+R*np.cos(Theta)*dTheta])
-        
-        if len(y0)==3:
-            x, y, z = y0
-            if not self.polar:
-                speed = np.array(self.dF(x,y,z, **self.dF_args))
 
-            # Spherical coordinates
-            else:
-                R, Theta = np.sqrt(x*x + y*y + z*z), np.arctan2(y, x)
-                Phi  = np.arccos(z/R) 
-                dR, dTheta, dPhi = self.dF(R, Theta, Phi, **self.dF_args)
-                speed = np.array([\
-                    dR*np.cos(Theta)*np.sin(Phi) - R*np.sin(Theta)*np.sin(Phi)*dTheta + R*np.cos(Theta)*np.cos(Phi) * dPhi, \
-                    dR*np.sin(Theta)*np.sin(Phi) + R*np.cos(Theta)*np.sin(Phi)*dTheta + R*np.sin(Theta)*np.cos(Phi) * dPhi, \
-                    dR*np.cos(Phi) - R*np.sin(Phi)*dPhi
-                ])
-        return speed
+    def _scipy_odeint(self, coords, sign, deltat):
+        return integrate.odeint(self._speed, coords, [0.1*i*sign*deltat for i in range(4)])[-1]
+    
+    def _euler_odeint(self, coords, sign, deltat):
+        return coords + self._speed(coords) * deltat * sign
+    
+    def _runge_kutta_3rd_odeint(self, coords, sign, deltat):
+        k1 = self._speed(coords)
+        k2 = self._speed(coords + sign*deltat*1/4*k1)
+        k3 = self._speed(coords + sign*deltat*(-1*k1 + 2*k2))
+        return coords + sign * deltat * ((k1+k3)/6 + 2/3*k2)
+    
+    def _integration_method(self, coords, sign, deltat):
+        """Function responsible to integrate the function the given delta time
+        """
+        ...
 
-    def _makeHalfStreamline(self, y0, sign, *, scypi_odeint=True):
+    def _makeHalfStreamline(self, y0, sign):
         """
         Compute a streamline extending in one direction from the given point. Using Euler integrator.
         """
@@ -83,6 +105,9 @@ class Streamlines_base:
         persistency = 0
 
         while (self.range_min < coords).all() and (coords < self.range_max).all():
+            if i > self.maxLen / 2:
+                break
+            i += 1
 
             coords_mask_position = self.get_masked_coordinates(*coords)
 
@@ -92,31 +117,21 @@ class Streamlines_base:
 
                 self.used[tuple(prev_coords_mask_position)] = True
 
-            if i > self.maxLen / 2:
-                break
-            i += 1
-
             # Integration
-            _speed = np.array(self._speed(coords))
+            _speed = self._speed(coords)
             if (_speed == 0).all() or \
                 np.isnan(_speed).any() or \
                 np.isinf(_speed).any():
                     break
 
             # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
-            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.max(np.abs(_speed))))
+            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)))
 
             if np.isnan(deltat) or np.isinf(deltat):
                 print(deltat, self.get_delta_coordinates(*coords), _speed)
 
-            if scypi_odeint:
-                new_coords = integrate.odeint(self._speed, coords, [0.1*i*sign*deltat for i in range(4)])[-1]
-            else: # Runge Kutta 3rd order. I'm sorry, speed is important sometimes
-                k1 = self._speed(coords)
-                k2 = self._speed(coords + sign*deltat*1/4*k1)
-                k3 = self._speed(coords + sign*deltat*(-1*k1 + 2*k2))
-                new_coords = coords + sign * deltat * ((k1+k3)/6 + 2/3*k2)
-
+            new_coords = self._integration_method(coords, sign, deltat)
+            
             mean_speed = np.sqrt(np.sum(np.square(new_coords-coords)))/deltat
             coords = new_coords
 
@@ -147,7 +162,7 @@ class Streamlines_base2D(Streamlines_base):
 
 
     def __init__(
-        self, dF, X, Y, maxLen=500, deltat=0.01, *, dF_args=None, polar=False, density=1, scypi_odeint=False
+        self, dF, X, Y, maxLen=500, deltat=0.01, *, dF_args=None, polar=False, density=1, odeint_method="scipy"
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -165,15 +180,15 @@ class Streamlines_base2D(Streamlines_base):
             Whether to use polar coordinates or not.
         density: int, default=1
             Density of mask grid. Used for making the stream lines not collide.
-        scypi_odeint: bool, default=False
-            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
+        odeint_method: str, default="scipy"
+            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
 
         Key arguments:
         --------
         dF_args: dict|None, default=None
             dF_args of `dF` function.
         """
-        super().__init__()
+        super().__init__(odeint_method=odeint_method)
 
         self.dimension = 2
         self.dF = dF
@@ -192,6 +207,7 @@ class Streamlines_base2D(Streamlines_base):
         self.y = ya if ya.ndim == 1 else ya[:, 0]
         
         self.polar = polar
+        self._speed = self._speed_2d_no_polar if not polar else self._speed_2d_polar
 
         # marker for which regions have contours. +1 outside the plot at the far side of every axis. 
         self.used = np.zeros((1 + X.shape[0]*self.density, 1 + X.shape[1]*self.density), dtype=bool)
@@ -220,7 +236,7 @@ class Streamlines_base2D(Streamlines_base):
             # x = nz[choose][0]*self.dx + self.x[0]
             # y = nz[choose][1]*self.dy + self.y[0]
             self.streamlines.append(
-                self._makeStreamline(np.array([x, y]), scypi_odeint=scypi_odeint)
+                self._makeStreamline(np.array([x, y]))
             )
 
     def get_masked_coordinates(self, x, y):
@@ -257,7 +273,7 @@ class Streamlines_base3D(Streamlines_base):
 
 
     def __init__(
-        self, dF, X, Y, Z, maxLen=2500, *, dF_args=None, polar=False, density=1, scypi_odeint=False
+        self, dF, X, Y, Z, maxLen=2500, *, dF_args=None, polar=False, density=1, odeint_method="scipy"
     ):
         """
         Compute a set of streamlines given velocity function `dF`.
@@ -273,15 +289,15 @@ class Streamlines_base3D(Streamlines_base):
             Whether to use polar coordinates or not.
         density: int, default=1
             Density of mask grid. Used for making the stream lines not collide.
-        scypi_odeint: bool, default=False
-            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
+        odeint_method: str, default="scipy"
+            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
 
         Key arguments:
         --------
         dF_args: dict|None default=None
             dF_args of `dF` function.
         """
-        super().__init__()
+        super().__init__(odeint_method=odeint_method)
         self.dF = dF
         self.dF_args = dF_args if dF_args is not None else  {}
 
@@ -299,6 +315,7 @@ class Streamlines_base3D(Streamlines_base):
         self.z = za if za.ndim == 1 else za[0,0,:]
 
         self.polar = polar
+        self._speed = self._speed_3d_no_polar if not polar else self._speed_3d_polar
 
         # marker for which regions have contours. +1 outside the plot at the far side of every axis. 
         self.used = np.zeros((1 + X.shape[0]*self.density, 1 + X.shape[1]*self.density, 1 + X.shape[2]*self.density), dtype=bool)
@@ -329,7 +346,7 @@ class Streamlines_base3D(Streamlines_base):
             z_ind = nz[choose][2]
             z = self.z[z_ind-1] + 0.5 * (self.z[z_ind]-self.z[z_ind-1])
             self.streamlines.append(
-                self._makeStreamline(np.array([x, y, z]), scypi_odeint=scypi_odeint)
+                self._makeStreamline(np.array([x, y, z]))
             )
 
     

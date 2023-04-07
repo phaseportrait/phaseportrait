@@ -67,8 +67,8 @@ class PhasePortrait2D:
             x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
         yScale : str, default='linear'
             y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
-        scypi_odeint : bool, default=False
-            Use scipy.odeint for integration. If `False` Runge-Kutta 3rd order is used.
+        odeint_method: str, default="scipy"
+            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
         """
         self.sliders = {}
         self.nullclines = []
@@ -103,7 +103,7 @@ class PhasePortrait2D:
         
         self.streamplot_args = {}
         for k in kargs:
-            if k in ['maxLen', 'scypi_odeint']:
+            if k in ['maxLen', 'odeint_method']:
                 self.streamplot_args.update({k: kargs[k]})
         
         self.manager = manager.Manager(self)
