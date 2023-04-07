@@ -33,7 +33,8 @@ class PhasePortrait3D:
         Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait3D'
-    def __init__(self, dF, Range, *, MeshDim=6, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = 'Y', zlabel='Z', color='rainbow', xScale='linear', yScale='linear', zScale='linear', **kargs):
+    def __init__(self, dF, Range, *, MeshDim=6, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = 'Y', 
+                 zlabel='Z', color='rainbow', xScale='linear', yScale='linear', zScale='linear', maxLen=500, odeint_method="scipy", **kargs):
         """
         PhasePortrait3D
         ---------------
@@ -108,10 +109,7 @@ class PhasePortrait3D:
         self.color = color
         self.grid = True
         
-        self.streamplot_args = {}
-        for k in kargs:
-            if k in ['maxLen', 'odeint_method']:
-                self.streamplot_args.update({k: kargs[k]})
+        self.streamplot_args = {"maxLen": maxLen, "odeint_method": odeint_method}
 
         
         self.manager = manager.Manager(self)

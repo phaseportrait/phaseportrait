@@ -34,7 +34,8 @@ class PhasePortrait2D:
         Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait2D'
-    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", color='rainbow', xScale='linear', yScale='linear', **kargs):
+    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", 
+                 color='rainbow', xScale='linear', yScale='linear', maxLen=500, odeint_method="scipy", **kargs):
         """
         PhasePortrait2D
         ---------------
@@ -101,10 +102,7 @@ class PhasePortrait2D:
         self.color = color
         self.grid = True
         
-        self.streamplot_args = {}
-        for k in kargs:
-            if k in ['maxLen', 'odeint_method']:
-                self.streamplot_args.update({k: kargs[k]})
+        self.streamplot_args = {"maxLen": maxLen, "odeint_method": odeint_method}
         
         self.manager = manager.Manager(self)
   
@@ -240,11 +238,12 @@ class PhasePortrait2D:
 
 
 
-    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
-        self.nullclines.append(Nullcline2D(self, self.dF, 
+    def add_nullclines(self, *, use_contours=True, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+        self.nullclines.append(Nullcline2D(self, self.dF, use_contours=use_contours,
                                           precision=precision, xprecision=xprecision, yprecision=yprecision, offset=offset, density=density, 
                                           xRange=xRange, yRange=yRange, dF_args=dF_args, 
                                           xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
+            
 
 
     def add_slider(self, param_name, *, valinit=None, valstep=0.1, valinterval=10):
