@@ -14,63 +14,68 @@ from .utils import manager, utils
 
 class PhasePortrait2D:
     """
-    PhasePortrait2D
-    ----------------
-    Makes a phase portrait of a 2D system.
-    
-    Methods
-    -------    
-    draw_plot : 
-        Draws the streamplot. Is internaly used by method `plot`.
-        
-    add_function : 
-        Adds a function to the `dF` plot.
-    
-    add_slider :
-        Adds a `Slider` for the `dF` function.
+Makes a phase portrait of a 2D system.
 
-    plot :
-        Prepares the plots and computes the values. 
-        Returns the axis and the figure.
+Examples
+-------
+```python
+from phaseportrait import PhasePortrait2D
+
+def dF(r, θ, *, μ=0.5,η=0):
+    return μ*r*(1 - r*r), 1+η*θ
+
+
+example = PhasePortrait2D(dF, [-3, 3], Density=2, Polar=True, Title='Limit cycle')
+example.add_slider('μ', valinit=0.5)
+example.add_slider('η', valinit=0.0)
+example.add_nullclines()
+example.plot()
+``` 
+* [Click here to see more examples.](phaseportrait2d_examples.md)
+
+![image](../../imgs/doc_examples/pp2d_example.png)
+
+Defining Range
+-------
+
+1. A single number. In this case the range is defined from zero to the given number in both axes.
+
+2. A range, such `[lowerLimit , upperLimit]`.  Both axes will take the same limits.
+
+3. Two ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit]]`
+
+Methods
+-------    
+* draw_plot: Draws the streamplot. Is internaly used by method `plot`.
+    
+* add_function:  Adds a function to the `dF` plot.
+
+* add_slider: Adds a `Slider` for the `dF` function.
+
+* plot: Prepares the plots and computes the values. Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait2D'
     def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", 
                  color='rainbow', xScale='linear', yScale='linear', maxLen=500, odeint_method="scipy", **kargs):
-        """
-        PhasePortrait2D
-        ---------------
-        
-        Parameters
-        ----------
-        dF : callable
-            A dF type function.
-        Range : [x_range, y_range]
-            Ranges of the axis in the main plot.
-            
-        Key Arguments
-        -------------
-        MeshDim : int, default=30
-            Number of elements in the arrows grid.
-        dF_args : dict
-            If necesary, must contain the kargs for the `dF` function.
-        Density : float, default=1
-            [Deprecated] Number of elements in the arrows grid plot.
-        Polar : bool, default=False
-            Whether to use polar coordinates or not.
-        Title : str, default='Phase Portrait' 
-        xlabel : str, default='X'
-            x label of the plot.
-        ylabel : str, default='$\dot{X}$' 
-            y label of the plot.
-        color : str, default='rainbow'
-            Matplotlib `Cmap`.
-        xScale : str, default='linear'
-            x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
-        yScale : str, default='linear'
-            y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
-        odeint_method: str, default="scipy"
-            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
-        """
+        """PhasePortrait2D
+
+        Args:
+            dF (callable): A dF type function.
+            Range ([x_range, y_range]): Ranges of the axis in the main plot.
+            MeshDim (int, optional): Number of elements in the arrows grid. Defaults to 30.
+            dF_args (dict, optional): If necesary, must contain the kargs for the `dF` function. Defaults to {}.
+            Density (int, optional): [Deprecated] Number of elements in the arrows grid plot. Defaults to 1.
+            Polar (bool, optional): Whether to use polar coordinates or not. Defaults to False.
+            Title (str, optional): title of the plot. Defaults to 'Phase Portrait'.
+            xlabel (str, optional): x label of the plot. Defaults to 'X'.
+            ylabel (regexp, optional): y label of the plot. Defaults to r"$\dot{X}$".
+            color (str, optional): Matplotlib `Cmap`. Defaults to 'rainbow'.
+            xScale (str, optional): x axis scale. Can be `linear`, `log`, `symlog`, `logit`. Defaults to 'linear'.
+            yScale (str, optional): y axis scale. Can be `linear`, `log`, `symlog`, `logit`. Defaults to 'linear'.
+            maxLen (int, optional): Max integrations per line of streamlines. Defaults to 500.
+            odeint_method (str, optional): Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available. Defaults to "scipy".
+        """        
+
         self.sliders = {}
         self.nullclines = []
         
@@ -238,8 +243,8 @@ class PhasePortrait2D:
 
 
 
-    def add_nullclines(self, *, use_contours=True, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
-        self.nullclines.append(Nullcline2D(self, self.dF, use_contours=use_contours,
+    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+        self.nullclines.append(Nullcline2D(self, self.dF,
                                           precision=precision, xprecision=xprecision, yprecision=yprecision, offset=offset, density=density, 
                                           xRange=xRange, yRange=yRange, dF_args=dF_args, 
                                           xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))

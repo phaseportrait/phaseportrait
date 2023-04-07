@@ -5,7 +5,7 @@ from ..generators_base import _Generator_
 
 class Map(_Generator_):
     """
-    This class is an implementation of \_Generator\_ for maps generators.
+    This class is an implementation of _Generator_ for maps generators.
     """
     def __init__(self, portrait, dF, dimension, max_values, *, dF_args=None, initial_values=None, thermalization=0, **kargs):
         """

@@ -4,7 +4,7 @@ from ..generators_base import _Generator_
 
 class RungeKutta(_Generator_):
     """
-    This class is an implementation of \_Generator\_ for a Runge-Kutta 4th order data generator.
+    This class is an implementation of _Generator_ for a Runge-Kutta 4th order data generator.
     """
     def __init__(self, portrait, dF, dimension, max_values, *, dt=0.1, dF_args=None, initial_values=None, thermalization=0):
         """
