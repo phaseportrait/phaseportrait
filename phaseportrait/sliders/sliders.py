@@ -11,22 +11,16 @@ class Slider():
     Internal class. Manages sliders.
     
     Integrated via method `add_slider` in:
-        -Map1D
-        
-        -Cobweb
-        
-        -PhasePortrait2D
-        
-        -PhasePotrait3D
-        
-        -Trajectory2D
-        
-        -Trajectory3D
+    - Map1D
+    - Cobweb
+    - PhasePortrait2D
+    - PhasePotrait3D
+    - Trajectory2D
+    - Trajectory3D
     
     Methods
     -------
-    __call__ :
-        Updates internal dF_args and replots the graphs.
+    * __call__ :  Updates internal dF_args and replots the graphs.
     """
     def __init__(self, portrait, param_name, valinit=None, valstep=0.1, valinterval=[]):
         """

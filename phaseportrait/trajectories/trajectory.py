@@ -17,42 +17,21 @@ class trajectory:
     trajectory
     ----------
     Base class of trajectory classes: 
-        -Trajectory2D
-        
-        -Trajectory3D
+    - Trajectory2D
+    - Trajectory3D
         
     Methods
-    -------
-    _prepare_plot :
-        Prepares the plots.
-        
-    _scatter_start_point :
-        Scatter all the start points.
-        
-    _scatter_trajectory :
-        Scatter all the trajectories.
-        
-    _plot_lines :
-        Plots the lines of all the trajectories.
-        
-    _create_sliders_plot :
-        Creates the sliders plot.
-        
-    thermalize : 
-        Adds thermalization steps and random initial position.
-        
-    initial_position :
-        Adds a trajectory with the given initial position.
-        
-    plot : 
-        Prepares the plots and computes the values. 
-        Returns the axis and the figure.
-        
-    add_slider :
-        Adds a `Slider` for the `dF` function.
-        
-    _calculate_values : 
-        Computes the trajectories.
+    -------    
+    * _prepare_plot: Prepares the plots.
+    * _scatter_start_point: Scatter all the start points.
+    * _scatter_trajectory: Scatter all the trajectories.
+    * _plot_lines: Plots the lines of all the trajectories.
+    * _create_sliders_plot: Creates the sliders plot.
+    * thermalize: Adds thermalization steps and random initial position.
+    * initial_position: Adds a trajectory with the given initial position.
+    * plot: Prepares the plots and computes the values. Returns the axis and the figure.
+    * add_slider: Adds a `Slider` for the `dF` function.
+    * _calculate_values: Computes the trajectories.
     """
 
     _name_ = 'trajectory'
@@ -61,38 +40,20 @@ class trajectory:
         """
         Creates an instance of trajectory
         
-        Parameters
-        ----------
-        dF : callable
-            A dF type function.
-        dimension :
-            The number of dimensions in which the trajectory is calculated.
-            Must equal `dF` return lengh.
-        
-        Key Parameters
-        -----
-        Range : Union[float,list], default=None
-            Range of every coordinate in the graphs.
-        dF_args : dict
-            If necesary, must contain the kargs for the `dF` function.
-        n_points : int, default=10000    
-            Number of positions to be saved for every trajectory.
-        runge_kutta_step : float, default=0.1
-            Step of 'time' in the Runge-Kutta method.
-        runge_kutta_freq : int
-            Number of times `dF` is aplied between positions saved.
-        lines : bool, defaullt=True
-            Must be `True` if method _plot_lines is used.
-        Titulo : str
-            Title of the plot.
-        color : str
-            Matplotlib `Cmap`.
-        size : float
-            Size of the scattered points.
-        thermalization : int
-            Thermalization steps before points saved.
-        mark_start_point : bool
-            Marks the start position if True.
+        Args:
+            dF (callable) : A dF type function.
+            dimension : The number of dimensions in which the trajectory is calculated. Must equal `dF` return lengh.
+            Range (Union[float,list], default=None) : Range of every coordinate in the graphs.
+            dF_args (dict) : If necesary, must contain the kargs for the `dF` function.
+            n_points (int, default=10000    ) : Number of positions to be saved for every trajectory.
+            runge_kutta_step (float, default=0.1) : Step of 'time' in the Runge-Kutta method.
+            runge_kutta_freq (int) : Number of times `dF` is aplied between positions saved.
+            lines (bool, defaullt=True) : Must be `True` if method _plot_lines is used.
+            Titulo (str) : Title of the plot.
+            color (str) : Matplotlib `Cmap`.
+            size (float) : Size of the scattered points.
+            thermalization (int) : Thermalization steps before points saved.
+            mark_start_point (bool) : Marks the start position if True.
         """
 
         self._dimension = dimension
@@ -152,7 +113,7 @@ class trajectory:
         """
         Shortcut to:
         
-        ```
+        ```py
         self.thermalization = thermalization_steps
         self.initial_position()
         ```
@@ -168,14 +129,10 @@ class trajectory:
         Adds a initial position for the computation.
         More than one can be added.
         
-        Parameters
-        ---------
-        args : Union[float, list[2], list[3]], optional
-        
-            Initial position for the computation.
-            If None, a random position is chosen.
+        Args:
+            args (Union[float, list[2], list[3]], optional) : Initial position for the computation. If None, a random position is chosen.
             
-        Example
+        Example:
         -------
         This example generates 2 circles with diferent radius. 
         ```
@@ -218,10 +175,8 @@ class trajectory:
         Adds initial positions for the computation.
         Calls `trajectory.initial_position` for each position given.
         
-        Parameters
-        ---------
-        postitions : list,
-            Initial positions for the computation.
+        Args:
+            postitions (list,list[list]): Initial positions for the computation.
         """
         positions_standar = np.array(positions).reshape(-1, self._dimension)
         for position in positions_standar:
@@ -243,21 +198,12 @@ class trajectory:
         """
         Prepares the plots and computes the values.
         
-        Key Arguments
-        -------------
-        color : str
-            Matplotlib `Cmap`.
-
-        labels : str
-            Label the initial positions
+        Args:
+            color (str) : Matplotlib `Cmap`.
+            labels (str) : Label the initial positions
             
-        Returns
-        -------
-        tuple(matplotlib Figure, matplotlib Axis)
-        
-        None 
-            If attribute `fig` or `ax` not found.
-            
+        Returns: 
+            (tuple(matplotlib Figure, matplotlib Axis)): 
         """
 
         self._prepare_plot(grid=grid)
@@ -320,25 +266,11 @@ class trajectory:
         """
         Adds a `Slider` for the `dF` function.
     
-        Parameters
-        ---------
-        param_name : str
-        
-            Name of the variable. Must be in the `dF` kargs of the `Map1D.dF` function.
-        
-        Key Arguments
-        ------------
-        valinit : float, defautl=None
-        
-            Initial position of the Slider
-            
-        valinterval : Union[float,list], default=10
-        
-            Min and max value for the param range.
-            
-        valstep : float, default=0.1
-        
-            Separation between consecutive values in the param range.
+        Args:
+            param_name (str) : Name of the variable. Must be in the `dF` kargs of the `Map1D.dF` function.
+            valinit (float, defautl=None): Initial position of the Slider
+            valinterval (Union[float,list], default=10): Min and max value for the param range.
+            valstep (float, default=0.1): Separation between consecutive values in the param range.
         """ 
         self._create_sliders_plot()
         self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})

@@ -16,63 +16,38 @@ class PhasePortrait3D:
     PhasePortrait3D
     ----------------
     Makes a phase portrait of a 3D system.
-    
-    Methods
-    -------    
-    draw_plot : 
-        Draws the streamplot. Is internaly used by method `plot`.
-        
-    add_function : 
-        Adds a function to the `dF` plot.
-    
-    add_slider :
-        Adds a `Slider` for the `dF` function.
 
-    plot :
-        Prepares the plots and computes the values. 
-        Returns the axis and the figure.
+    Examples
+    -------
+    ![image](../../imgs/doc_examples/pp3d_example.png)
+
+    Methods 
+    -----
+    * draw_plot : Draws the streamplot. Is intenally used by method `plot`.
+    * add_function : Adds a function to the `dF` plot.
+    * add_slider : Adds a `Slider` for the `dF` function.
+    * plot : Prepares the plots and computes the values. Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait3D'
     def __init__(self, dF, Range, *, MeshDim=6, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = 'Y', 
                  zlabel='Z', color='rainbow', xScale='linear', yScale='linear', zScale='linear', maxLen=500, odeint_method="scipy", **kargs):
-        """
-        PhasePortrait3D
-        ---------------
+        """ PhasePortrait3D
         
-        Parameters
-        ----------
-        dF : callable
-            A dF type function.
-        Range : [x_range, y_range, z_range]
-            Ranges of the axis in the main plot.
-            
-        Key Arguments
-        -------------
-        MeshDim : int, default=30
-            Number of elements in the arrows grid.
-        dF_args : dict
-            If necesary, must contain the kargs for the `dF` function.
-        Density : float, default=1
-            [Deprecated] Number of elements in the arrows grid plot.
-        Polar : bool, default=False
-            Whether to use polar coordinates or not.
-        Title : str, default='Phase Portrait' 
-        xlabel : str, default='X'
-            x label of the plot.
-        ylabel : str, default='Y' 
-            y label of the plot.
-        zlabel : str, default='Z' 
-            z label of the plot.
-        color : str, default='rainbow'
-            Matplotlib `Cmap`.
-        xScale : str, default='linear'
-            x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
-        yScale : str, default='linear'
-            y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
-        zScale : str, default='linear'
-            z axis scale. Can be `linear`, `log`, `symlog`, `logit`.
-        odeint_method: str, default="scipy"
-            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
+        Args:
+            dF (callable): A dF type function.
+            Range ([x_range, y_range, z_range]): Ranges of the axis in the main plot.
+            MeshDim (int, default=30): Number of elements in the arrows grid.
+            dF_args (dict): If necesary, must contain the kargs for the `dF` function.
+            Density (float, default=1): [Deprecated] Number of elements in the arrows grid plot.
+            Polar (bool, default=False): Whether to use polar coordinates or not.
+            Title (str, default='Phase Portrait' ): xlabel (str, default='X'): x label of the plot.
+            ylabel (str, default='Y' ): y label of the plot.
+            zlabel (str, default='Z' ): z label of the plot.
+            color (str, default='rainbow'): Matplotlib `Cmap`.
+            xScale (str, default='linear'): x axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+            yScale (str, default='linear'): y axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+            zScale (str, default='linear'): z axis scale. Can be `linear`, `log`, `symlog`, `logit`.
+            odeint_method (str, default="scipy"): Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
         """
         self.sliders = {}
         self.nullclines = []
@@ -144,14 +119,11 @@ class PhasePortrait3D:
         """
         Prepares the plots and computes the values.
         
-        Returns
-        -------
-        tuple(matplotlib Figure, matplotlib Axis)
-        
-        Key Arguments
-        -------------
-        color : str
-            Matplotlib `Cmap`.
+        Args: 
+            color (str): Matplotlib `Cmap`.
+
+        Returns:
+            (tuple(matplotlib Figure, matplotlib Axis)):
         """
         if color is not None:
             self.color = color
@@ -177,10 +149,8 @@ class PhasePortrait3D:
         """
         Adds a colorbar for speed.
         
-        Parameters
-        -------
-        toggle: bool, default=True
-            If `True` colorbar is visible.
+        Args:
+            toggle (bool, default=True): If `True` colorbar is visible.
         """
         if (not hasattr(self, "colorbar_ax")) and toggle:
             self.colorbar_ax = None
@@ -192,18 +162,14 @@ class PhasePortrait3D:
 
     def draw_plot(self, *, color=None, grid=None):
         """
-        Draws the streamplot. Is internaly used by method `plot`.
+        Draws the streamplot. Is intenally used by method `plot`.
         
-        Returns
-        -------
-        matplotlib.Streamplot
+        Args:
+            color (str, default='viridis'): Matplotlib `Cmap`.
+            grid (bool, default=True): Show grid lines.
         
-        Key Arguments
-        -------------
-        color : str, default='viridis'
-            Matplotlib `Cmap`.
-        grid : bool, default=True
-            Show grid lines.
+        Returns:
+            (matplotlib.Streamplot):
         """
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
 
@@ -277,19 +243,11 @@ class PhasePortrait3D:
         """
         Adds a slider which can change the value of a parameter in execution time.
 
-        Parameters
-        ----------
-        param_name : str
-            It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
-
-        valinit : numeric, optional
-            Initial value of *param_name* variable. Default value is 0.5.
-
-        valstep : numeric, optional
-            Slider step value. Default value is 0.1.
-
-        valinterval : numeric or list, optional
-            Slider range. Default value is [-10, 10].
+        Args:
+            param_name (str): It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
+            valinit (float, optional): Initial value of *param_name* variable. Default value is 0.5.
+            valstep (float, optional): Slider step value. Default value is 0.1.
+            valinterval (float|list[float], optional): Slider range. Default value is [-10, 10].
         """
         
         self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})

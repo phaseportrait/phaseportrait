@@ -93,7 +93,7 @@ Adds a slider for changing initial value on a cobweb plot.
 
 **Key Arguments**
 
-* valinit : numeric
+* valinit : float
 
     Initial position. Default value is the same as initial position given when initializing Cobweb object.
 
@@ -128,7 +128,7 @@ LogisticCobweb.plot()
 
 This will output the following plots:
 
-![image](imgs/doc_examples/cobweb_exampe.png)
+![image](../../imgs/doc_examples/cobweb_exampe.png)
 
 * [See more Cobweb examples.](mapsandcobweb_examples.md)
 

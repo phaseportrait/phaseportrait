@@ -9,15 +9,11 @@ class Manager:
     def plot_update(self, configuration):
         """Updates the plot with the new configuration configuration
 
-        Parameters
-        ----------
-        configuration : dict
-            For more information check api examples
+        Args:
+            configuration (dict): For more information check api examples
 
-        Returns
-        -------
-        # TODO:
-            _description_
+        Returns:
+            (int): 0 if successfull. 1 otherwise.
         """
         dimension = configuration.get('dimension')
         
@@ -103,14 +99,11 @@ class Manager:
     def equivalent_code(self, configuration):
         """Returns equivalent code of given configuration
 
-        Parameters
-        ----------
-        configuration : dict
-            For more information check api examples
+        Args:
+            configuration (dict): For more information check api examples
 
-        Returns
-        -------
-            _description_
+        Returns:
+            (str): equivalent code to the given configuration
         """
         
         match = re.search(r"def\s+(\w+)\(", configuration['dF'])

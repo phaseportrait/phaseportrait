@@ -201,7 +201,7 @@ Logistic_Map.plot_over_variable('r', [2,3.9], 0.005,
 
 fig, ax = Logistic_Map.plot()
 ```
-![image](imgs/doc_examples/map_example.png)
+![image](../../imgs/doc_examples/map_example.png)
 
 * [See more Map1D examples.](mapsandcobweb_examples.md)
 

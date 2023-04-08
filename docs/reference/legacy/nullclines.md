@@ -95,5 +95,5 @@ example.add_nullclines(precision=0.05)
 example.plot()
 ```
 
-![image](imgs/doc_examples/nullclines_example.png)
+![image](../../imgs/doc_examples/nullclines_example.png)
 

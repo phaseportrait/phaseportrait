@@ -9,8 +9,8 @@ class Streamlines_base:
     Creates trajectories given a `dF` function. Using Scipy.integrate.odeint integrator.
     
     Integrated in:
-        -PhasePortrait2D
-        -PhasePorrtait3D
+    - PhasePortrait2D
+    - PhasePorrtait3D
     """
 
     def __init__(self, odeint_method="scipy") -> None:
@@ -167,26 +167,15 @@ class Streamlines_base2D(Streamlines_base):
         """
         Compute a set of streamlines given velocity function `dF`.
 
-
-        Parameters
-        --------
-        dF: callable
-            A dF type funcion. Computes the derivatives of given coordinates.
-        X and Y: 1D or 2D arrays
-            Arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
-        maxLen: int, default=500
-            The maximum length of an individual streamline segment.
-        polar: bool, default=false
-            Whether to use polar coordinates or not.
-        density: int, default=1
-            Density of mask grid. Used for making the stream lines not collide.
-        odeint_method: str, default="scipy"
-            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
-
-        Key arguments:
-        --------
-        dF_args: dict|None, default=None
-            dF_args of `dF` function.
+        Args:
+            dF (callable) : A dF type funcion. Computes the derivatives of given coordinates.
+            X (list, list[list]) : Arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            Y (list, list[list]) : Arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            maxLen (int, default=500) : The maximum length of an individual streamline segment.
+            polar (bool, default=false) : Whether to use polar coordinates or not.
+            density (int, default=1) : Density of mask grid. Used for making the stream lines not collide.
+            odeint_method (str, default="scipy") : Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
+            dF_args (dict|None, default=None) : dF_args of `dF` function.
         """
         super().__init__(odeint_method=odeint_method)
 
@@ -278,24 +267,15 @@ class Streamlines_base3D(Streamlines_base):
         """
         Compute a set of streamlines given velocity function `dF`.
 
-
-        Parameters
-        --------
-        X, Y and Z: 1D or 2D arrays
-            arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
-        maxLen: int default=500
-            The maximum length of an individual streamline segment.
-        polar: bool default=false
-            Whether to use polar coordinates or not.
-        density: int, default=1
-            Density of mask grid. Used for making the stream lines not collide.
-        odeint_method: str, default="scipy"
-            Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
-
-        Key arguments:
-        --------
-        dF_args: dict|None default=None
-            dF_args of `dF` function.
+        Args:
+            X (list, list[list]): arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            Y (list, list[list]): arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            Z (list, list[list]): arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            maxLen (int default=500) : The maximum length of an individual streamline segment.
+            polar (bool default=false) : Whether to use polar coordinates or not.
+            density (int, default=1) : Density of mask grid. Used for making the stream lines not collide.
+            odeint_method (str, default="scipy") : Selects integration method, by default uses scipy.odeint. `euler` and `rungekutta3` are also available.
+            dF_args (dict|None default=None) : dF_args of `dF` function.
         """
         super().__init__(odeint_method=odeint_method)
         self.dF = dF

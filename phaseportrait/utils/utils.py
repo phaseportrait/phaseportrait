@@ -3,55 +3,41 @@ from ..exceptions import exceptions
 def is_number(x):
     """Checks if `x` is a number
 
-    Parameters
-    ----------
-    x : 
-        The object.
+    Args:
+        x (Object) :  The object.
 
-    Returns
-    -------
-    bool
-        Whether is a number or not.
+    Returns:
+        (bool): Whether is a number or not.
     """
-    
     return isinstance(x, (float,int))
 
 def is_range(U):
     """Checks if `x` is a list or a tuple
 
-    Parameters
-    ----------
-    U :
-        The object.
+    Args:
+        U (Object): The object.
 
-    Returns
-    -------
-    bool
-        Whether is a collection of elements or not.
+    Returns:
+        (bool): Whether is a collection of elements or not.
     """
     return isinstance(U, (list,tuple))
 
 def construct_interval_1d(var):
     """Creates an 1d interval from a variable
     
-    Parameters
-    ----------
-    var : float, list
-        Element from which a 1d interval is created
-        It supports:
-        * number
-        * [number, number]
+    Args:
+        var (float, list):
+            Element from which a 1d interval is created
+            It supports:
+            * number
+            * [number, number]
 
-    Returns
-    -------
-    list
-        1d interval: []
+    Returns:
+        (list): 1d interval []
         
 
-    Raises
-    ------
-    exceptions.RangoInvalid
-        If the parameter given is not a number nor a list or tuple.
+    Raises:
+        (exceptions.RangoInvalid): If the parameter given is not a number nor a list or tuple.
     """
     try:
         if is_number(var):
@@ -66,27 +52,22 @@ def construct_interval_1d(var):
 def construct_interval_2d(var):
     """Creates an 2d interval from a variable
 
-    Parameters
-    ----------
-    var : float, list
-        Element from which a 1d interval is created
-        It supports:
-        * number
-        * [number, number]
-        * [[number, number], number]
-        * [[number, number],[number, number]]
-        
-        And all the permutations.
+    Args:
+        var (float, list):
+            Element from which a 1d interval is created
+            It supports:
+            * number
+            * [number, number]
+            * [[number, number], number]
+            * [[number, number],[number, number]]
+            
+            And all the permutations.
 
-    Returns
-    -------
-    list
-        2d interval: [[],[]]
+    Returns:
+        (list[list]): 2d interval [[],[]]
 
-    Raises
-    ------
-    exceptions.RangoInvalid
-        If the parameter given is not a number nor a list or tuple.
+    Raises:
+        (phaseportrait.exceptions.exceptions.RangoInvalid): If the parameter given is not a number nor a list or tuple.
     """
     try:
         [a,b],[c,d] = var
@@ -117,28 +98,23 @@ def construct_interval_2d(var):
 def construct_interval_3d(var, *, depth=0):
     """Creates an 3d interval from a variable
 
-    Parameters
-    ----------
-    var : float, list
-        Element from which a 1d interval is created
-        It supports:
-        * number
-        * [number, number, number]
-        * [[number, number], number, number]
-        * [[number, number], [number, number], number]
-        * [[number, number],[number, number], [number, number]]
-        
-        And all the permutations.
+    Args:
+        var (float, list):
+            Element from which a 1d interval is created
+            It supports:
+            * number
+            * [number, number, number]
+            * [[number, number], number, number]
+            * [[number, number], [number, number], number]
+            * [[number, number],[number, number], [number, number]]
+            
+            And all the permutations.
 
-    Returns
-    -------
-    list
-        3d interval: [[],[],[]]
+    Returns:
+        (list): 3d interval: [[],[],[]]
 
-    Raises
-    ------
-    exceptions.RangoInvalid
-        If the parameter given is not a number nor a list or tuple.
+    Raises:
+        (exceptions.RangoInvalid): If the parameter given is not a number nor a list or tuple.
     """
     try:
         if is_number(var):
@@ -158,19 +134,13 @@ def construct_interval_3d(var, *, depth=0):
 def construct_interval(var, *, dim=None, depth=0):
     """Construct intervals from `var` for `dim` dimensions.
 
-    Parameters
-    ----------
-    var : 
-        Element from which a 1d interval is created
-    dim : int, optional
-        Dimension of the requested interval, by default None
-    depth : int, optional
-        Used for `dim==3` by default 0
+    Args:
+        var (Object):  Element from which a 1d interval is created
+        dim (int, optional): Dimension of the requested interval, by default None
+        depth (int, optional): Used for `dim==3` by default 0
 
-    Returns
-    -------
-    list
-        `dim` dimensional interval.
+    Returns:
+        (list): `dim` dimensional interval.
     """
     if not dim:
         dim = len(var) 

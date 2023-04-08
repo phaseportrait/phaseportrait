@@ -158,4 +158,4 @@ example.plot(color='viridis', grid=True)
 plt.show()
 ``` 
 
-![image](imgs/pp3d_examples/example.png)
+![image](../../imgs/pp3d_examples/example.png)

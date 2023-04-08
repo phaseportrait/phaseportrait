@@ -15,23 +15,12 @@ class Map1D():
     Class dedicated to 1 dimensional maps `x(t+1) = f(x)`.
     
     Methods
-    -------
-    plot_over_variable : 
-        Creates every `map` instance.
-            
-    plot_trajectory : 
-        Creates a `map` instance and computes it's positions.
-        Returns : `plt.Figure` , `plt.Axis`
-        
-    add_function : 
-        Adds a function to the `dF` plot.
-    
-    add_slider :
-        Adds a `Slider` for the `dF` function.
-
-    plot :
-        Prepares the plots and computes the values. 
-        Returns the axis and the figure.
+    -------    
+    * plot_over_variable : Creates every `map` instance.
+    * plot_trajectory : Creates a `map` instance and computes it's positions.
+    * add_function : Adds a function to the `dF` plot.
+    * add_slider : Adds a `Slider` for the `dF` function.
+    * plot : Prepares the plots and computes the values. 
     """
     
     _name_ = 'Map1D'
@@ -41,33 +30,18 @@ class Map1D():
         Map1D
         --------
         
-        Parameters
-        ----------
-        dF : callable
-            A dF type function.
-        Range : [x_range, y_range]
-            Ranges of the axis in the main plot.
-        n_points : int
-            Maximum number of points
-        
-        Key Arguments
-        -----
-        dF_args : dict
-            If necesary, must contain the kargs for the `dF` function.
-        composition_grade : int
-            Number of times `dF` is applied between positions saved.
-        Title : str
-            Title of the plot.
-        xlabel : str
-            x label of the plot.
-        ylabel : str
-            y label of the plot.
-        color : str
-            Matplotlib `Cmap`.
-        size : float
-            Size of the scattered points.
-        thermalization : int
-            Thermalization steps before points saved.
+        Args:
+            dF (callable) : A dF type function.
+            Range ([x_range, y_range]) : Ranges of the axis in the main plot.
+            n_points (int) : Maximum number of points
+            dF_args (dict) : If necesary, must contain the kargs for the `dF` function.
+            composition_grade (int) : Number of times `dF` is applied between positions saved.
+            Title (str) : Title of the plot.
+            xlabel (str) : x label of the plot.
+            ylabel (str) : y label of the plot.
+            color (str) : Matplotlib `Cmap`.
+            size (float) : Size of the scattered points.
+            thermalization (int) : Thermalization steps before points saved.
         """
         
         self.dF_args = dF_args.copy()
@@ -129,26 +103,15 @@ class Map1D():
 
     def plot_over_variable(self, param_name, valinterval, valstep, *, initial_x=None, limit_cycle_check_first=50, delta_cycle_check=0.0001):
         """
-        plot_over_variable : 
         Creates every `map` instance.
     
-        Parameters
-        ---------
-        param_name : str
-            Name of the variable. Must be in the `dF` kargs.
-        valinterval : list
-            Min and max value for the param range.
-        valstep : float
-            Separation between consecutive values in the param range.
-            
-        Key Arguments
-        ------------
-        initial_x : float
-            Initial x position of every data series.
-        limit_cycle_check_first : int
-            Number of points saved before checking for repeated elemets.
-        delta_cycle_check : float
-            Diference between two positions to be considerated identical.
+        Args:
+            param_name (str) : Name of the variable. Must be in the `dF` kargs.
+            valinterval (list) : Min and max value for the param range.
+            valstep (float) : Separation between consecutive values in the param range.
+            initial_x (float) : Initial x position of every data series.
+            limit_cycle_check_first (int) : Number of points saved before checking for repeated elemets.
+            delta_cycle_check (float) : Diference between two positions to be considerated identical.
         """
         
         self._param_name = param_name
@@ -195,14 +158,11 @@ class Map1D():
         """
         Prepares the plots and computes the values.
         
-        Returns
-        -------
-        tuple(matplotlib Figure, matplotlib Axis)
-        
-        Key Arguments
-        -------------
-        color : str
-            Matplotlib `Cmap`.
+        Args:
+            color (str) : Matplotlib `Cmap`.
+       
+        Returns: 
+            (tuple[matplotlib Figure, matplotlib Axis]):
         """
         for func in self.functions:
             func.plot()
@@ -230,19 +190,11 @@ class Map1D():
         """
         Adds a `Slider` for the `dF` function.
     
-        Parameters
-        ---------
-        param_name : str
-            Name of the variable. Must be in the `dF` kargs of the `Map1D.dF` function.
-        
-        Key Arguments
-        ------------
-        valinit : float, defautl=None
-            Initial position of the Slider
-        valinterval : Union[float,list], default=10
-            Min and max value for the param range.
-        valstep : float, default=0.1
-            Separation between consecutive values in the param range.
+        Args:
+            param_name (str) : Name of the variable. Must be in the `dF` kargs of the `Map1D.dF` function.
+            valinit (float, defautl=None) : Initial position of the Slider
+            valinterval (Union[float,list], default=10) : Min and max value for the param range.
+            valstep (float, default=0.1) : Separation between consecutive values in the param range.
         """ 
         self.sliders.update({param_name: Slider(
             self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})
@@ -266,26 +218,17 @@ class Map1D():
     def plot_trajectory(self, n_points, *, dF_args=None, initial_x=None, color='b', save_freq=1, thermalization=0):
         """
         Creates a `map` instance and computes it's positions.
+              
+        Args:
+            n_points (int) : Number of points to be calculated.
+            dF_args (dict) : If necesary, must contain the kargs for the `dF` function. By default takes the dF_args of the `Map1D` instance.
+            initial_x (float) : Initial position of the trajectory.
+            color (str) : String  matplotlib color identifier.
+            save_freq (int) : Number of times `dF` is aplied before a position is saved.
+            thermalization (int) : Thermalization steps before points saved.
         
-        Returns : `plt.Figure` , `plt.Axis`
-        
-        Parameters
-        ----------
-        n_points : int
-            Number of points to be calculated.
-            
-        Key Arguments
-        -----
-        dF_args : dict
-            If necesary, must contain the kargs for the `dF` function. By default takes the dF_args of the `Map1D` instance.
-        initial_x : float
-            Initial position of the trajectory.
-        color : str
-            String  matplotlib color identifier.
-        save_freq : int
-            Number of times `dF` is aplied before a position is saved.
-        thermalization : int
-            Thermalization steps before points saved.
+        Returns:
+            (`plt.Figure`, `plt.Axis`):   
         """
         try:
             if self._param_name:

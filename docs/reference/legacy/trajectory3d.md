@@ -108,7 +108,7 @@ a.initial_position(10,10,10)
 a.initial_position(10,10,10.0001)
 a.plot()
 ```
-![image](imgs/doc_examples/trj3d_example.png)
+![image](../../imgs/doc_examples/trj3d_example.png)
 
 
 ### Halvorsen attractor
@@ -138,4 +138,4 @@ d = Trajectory3D(
 d.initial_position(0,5,10)
 d.plot()
 ```
-![image](imgs/doc_examples/trj3d_example_2.png)
+![image](../../imgs/doc_examples/trj3d_example_2.png)

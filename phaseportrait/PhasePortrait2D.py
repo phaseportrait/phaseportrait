@@ -14,48 +14,45 @@ from .utils import manager, utils
 
 class PhasePortrait2D:
     """
-Makes a phase portrait of a 2D system.
+    Makes a phase portrait of a 2D system.
 
-Examples
--------
-```python
-from phaseportrait import PhasePortrait2D
+    Examples
+    -------
+    ```py
+    from phaseportrait import PhasePortrait2D
 
-def dF(r, θ, *, μ=0.5,η=0):
-    return μ*r*(1 - r*r), 1+η*θ
+    def dF(r, θ, *, μ=0.5,η=0):
+        return μ*r*(1 - r*r), 1+η*θ
 
 
-example = PhasePortrait2D(dF, [-3, 3], Density=2, Polar=True, Title='Limit cycle')
-example.add_slider('μ', valinit=0.5)
-example.add_slider('η', valinit=0.0)
-example.add_nullclines()
-example.plot()
-``` 
-* [Click here to see more examples.](phaseportrait2d_examples.md)
+    example = PhasePortrait2D(dF, [-3, 3], Density=2, Polar=True, Title='Limit cycle')
+    example.add_slider('μ', valinit=0.5)
+    example.add_slider('η', valinit=0.0)
+    example.add_nullclines()
+    example.plot()
+    ``` 
+    * [Click here to see more examples.](../legacy/phaseportrait2d_examples.md)
 
-![image](../../imgs/doc_examples/pp2d_example.png)
+    ![image](../../imgs/doc_examples/pp2d_example.png)
 
-Defining Range
--------
+    Defining Range
+    -------
 
-1. A single number. In this case the range is defined from zero to the given number in both axes.
+    1. A single number. In this case the range is defined from zero to the given number in both axes.
 
-2. A range, such `[lowerLimit , upperLimit]`.  Both axes will take the same limits.
+    2. A range, such `[lowerLimit , upperLimit]`.  Both axes will take the same limits.
 
-3. Two ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit]]`
+    3. Two ranges, such that `[[xAxisLowerLimit , xAxisUpperLimit], [yAxisLowerLimit , yAxisUpperLimit]]`
 
-Methods
--------    
-* draw_plot: Draws the streamplot. Is internaly used by method `plot`.
-    
-* add_function:  Adds a function to the `dF` plot.
-
-* add_slider: Adds a `Slider` for the `dF` function.
-
-* plot: Prepares the plots and computes the values. Returns the axis and the figure.
+    Methods
+    -------    
+    * draw_plot: Draws the streamplot. Is internaly used by method `plot`.
+    * add_function:  Adds a function to the `dF` plot.
+    * add_slider: Adds a `Slider` for the `dF` function.
+    * plot: Prepares the plots and computes the values. Returns the axis and the figure.
     """
     _name_ = 'PhasePortrait2D'
-    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = r"$\dot{X}$", 
+    def __init__(self, dF, Range, *, MeshDim=30, dF_args={}, Density = 1, Polar = False, Title = 'Phase Portrait', xlabel = 'X', ylabel = "$\\dot{X}$", 
                  color='rainbow', xScale='linear', yScale='linear', maxLen=500, odeint_method="scipy", **kargs):
         """PhasePortrait2D
 
@@ -139,17 +136,14 @@ Methods
 
 
     def plot(self, *, color=None, grid=None):
-        """
-        Prepares the plots and computes the values.
-        
-        Returns
-        -------
-        tuple(matplotlib Figure, matplotlib Axis)
-        
-        Key Arguments
-        -------------
-        color : str
-            Matplotlib `Cmap`.
+        """Prepares th plots and computes the values
+
+        Args:
+            color (str, optional): Matplotlib `Cmap`. Defaults to None.
+            grid (bool, optional): Overrides general configuration of grid. Defaults to None.
+
+        Returns:
+            (Figure, Axes): returns the figure and axes in which the streamplot was drawn.
         """
         if color is not None:
             self.color = color
@@ -172,13 +166,10 @@ Methods
         return self.fig, self.ax 
     
     def colorbar(self, toggle=True):
-        """
-        Adds a colorbar for speed.
-        
-        Parameters
-        -------
-        toggle: bool, default=True
-            If `True` colorbar is visible.
+        """Adds a colrobar for speed.
+
+        Args:
+            toggle (bool, optional): If `True` colorbar is visible. Defaults to True.
         """
         if (not hasattr(self, "colorbar_ax")) and toggle:
             self.colorbar_ax = None
@@ -188,19 +179,14 @@ Methods
                 del(self.colorbar_ax)
 
     def draw_plot(self, *, color=None, grid=None):
-        """
-        Draws the streamplot. Is internaly used by method `plot`.
-        
-        Returns
-        -------
-        matplotlib.Streamplot
-        
-        Key Arguments
-        -------------
-        color : str, default='viridis'
-            Matplotlib `Cmap`.
-        grid : bool, default=True
-            Show grid lines.
+        """Draws the streamplot. Is internaly uesd by method `plot`.
+
+        Args:
+            color (str, optional): Matplotlib `Cmap`.. Defaults to None.
+            grid (bool, optional): Overrides general configuration of grid. Defaults to None.
+
+        Returns:
+            (matplotlib.Streamplot): Streamplot drawn.
         """
         self.dF_args.update({name: slider.value for name, slider in self.sliders.items() if slider.value!= None})
 
@@ -243,7 +229,23 @@ Methods
 
 
 
-    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, offset=0., density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+        """Adds nullclines for both axis.
+
+        Args:
+            precision (float, optional): Precision if not specific axis precision is specified. Defaults to 0.01.
+            xprecision (float, optional): Precision for x axis nullcline. Defaults to None.
+            yprecision (float, optional): Precision for y axis nullcline. Defaults to None.
+            offset (float, optional): Specifies the value in which the countours will be drawn. Defaults to 0.
+            density (int, optional): Density of grid used in interpolation. Defaults to 50.
+            xRange (list[float], optional): Range of x nullcline, by default global range. Defaults to None.
+            yRange (list[float], optional): Range of y nullcline, by default global range. Defaults to None.
+            dF_args (dict, optional): Overrides general `dFargs` if is not None. Defaults to None.
+            xcolor (str, optional): Color for x nullcline. Defaults to 'r'.
+            ycolor (str, optional): Color for y nullcline. Defaults to 'g'.
+            bgcolor (str, optional): Color for background. Defaults to 'w'.
+            alpha (int, optional): Alpha of nullclines and background. Defaults to 0.
+        """        
         self.nullclines.append(Nullcline2D(self, self.dF,
                                           precision=precision, xprecision=xprecision, yprecision=yprecision, offset=offset, density=density, 
                                           xRange=xRange, yRange=yRange, dF_args=dF_args, 
@@ -255,19 +257,11 @@ Methods
         """
         Adds a slider which can change the value of a parameter in execution time.
 
-        Parameters
-        ----------
-        param_name : str
-            It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
-
-        valinit : numeric, optional
-            Initial value of *param_name* variable. Default value is 0.5.
-
-        valstep : numeric, optional
-            Slider step value. Default value is 0.1.
-
-        valinterval : numeric or list, optional
-            Slider range. Default value is [-10, 10].
+        Args:
+            param_name (str): It takes the name of the parameter on which the slider will be defined. Must be the same as the one appearing as karg in the `dF` function.
+            valinit (float, optional): Initial value of *param_name* variable. Default value is 0.5.   
+            valstep (flaot, optional): Slider step value. Default value is 0.1.
+            valinterval : (float|list[float], optional): Slider range. Default value is [-10, 10].
         """
         
         self.sliders.update({param_name: sliders.Slider(self, param_name, valinit=valinit, valstep=valstep, valinterval=valinterval)})

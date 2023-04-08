@@ -192,8 +192,8 @@ class PhasePortrait3DManager(object):
             portrait_kargs += ')\n'
         
         nullcline = ''
-        # if nc := info.get('nullcline'):
-        #     nullcline = f"\nphase_diagram.add_nullclines(precision={nc['precision']}, offset={nc['offset']})"
+        if nc := info.get('nullcline'):
+            nullcline = f"\nphase_diagram.add_nullclines(precision={nc['precision']}, offset={nc['offset']})"
         
         finisher = '\nphase_diagram.plot()\nplt.show()'
 

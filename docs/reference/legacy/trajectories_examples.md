@@ -27,7 +27,7 @@ circle.initial_position(1,0)
 circle.plot()
 ```
 
-![image](imgs/trj_examples/Figure_1.png)
+![image](../../imgs/trj_examples/Figure_1.png)
 
 
 
@@ -44,7 +44,7 @@ circles.initial_position(-3,0)
 circles.plot()
 ```
 
-![image](imgs/trj_examples/Figure_2.png)
+![image](../../imgs/trj_examples/Figure_2.png)
 
 If you want to diferenciate between multiple trajectories use karg `lines=True`, as in the following:
 
@@ -58,7 +58,7 @@ chaos.initial_position(10,10,10)
 chaos.initial_position(10,10,10.0001)
 chaos.plot()
 ```
-![image](imgs/trj_examples/Figure_4.png)
+![image](../../imgs/trj_examples/Figure_4.png)
 
 ## Ranges, title, labels and colormaps
 
@@ -83,7 +83,7 @@ example.initial_position(1,0)
 example.plot()
 ```
 
-![image](imgs/trj_examples/Figure_3.png)
+![image](../../imgs/trj_examples/Figure_3.png)
 
 Colormap expresses the velocity of the trajectory, it can be changed with `color` kwarg. Default colormap is `'viridis'`, in which purple-shifted colors indicate less velocity than yellow-shifted colors. A list with accepted values can be found [here](https://matplotlib.org/stable/gallery/color/colormap_reference.html). 
 
@@ -101,7 +101,7 @@ Lorentz_plot = Trajectory3D(Lorenz, dF_args={'s':10, 'r':28, 'b':8/3}, color='t'
 Lorentz_plot.initial_position(10,10,10)
 Lorentz_plot.plot()
 ```
-![image](imgs/trj_examples/Figure_5.png)
+![image](../../imgs/trj_examples/Figure_5.png)
 
 
 ## Thermalization
@@ -130,7 +130,7 @@ attractor1.thermalize(thermalization_steps=1000)
 attractor1.plot(color='inferno')
 ```
 
-![image](imgs/trj_examples/Figure_6.png)
+![image](../../imgs/trj_examples/Figure_6.png)
 
 
 ## Sliders
@@ -154,7 +154,7 @@ attractor2.add_slider('f', valinit=0.1, valinterval=[0,1], valstep=0.005)
 attractor2.plot()
 ```
 
-![image](imgs/trj_examples/Figure_7.png)
+![image](../../imgs/trj_examples/Figure_7.png)
 
 
 We've taken a look to the most important arguments in order to visualize trajectories. Nevertheless, trajectory classes have more features that can be seen by taking a look into the docs:

@@ -30,7 +30,7 @@ LogisticCobweb = Cobweb(Logistic, 0.1, [0,1], yrange=[0,1])
 fig1, ax1, fig2, ax2 = LogisticCobweb.plot()
 ```
 
-![image](imgs/map&cobweb_examples/Figure_1.png)
+![image](../../imgs/map&cobweb_examples/Figure_1.png)
 
 We can use returned objects to change plot's properties, such as title, xlabel, ylabel... We can also pass `Title`, `xlabel` and `ylabel` as key arguments when creating the *Cobweb* object instance for changing the cobweb plot's labels, but not the time series plot.
 
@@ -71,7 +71,7 @@ fig1, ax1, fig2, ax2 = LogisticCobweb.plot()
 
 ax2.set_title('Logistic map time series')
 ```
-![image](imgs/map&cobweb_examples/Figure_2.png)
+![image](../../imgs/map&cobweb_examples/Figure_2.png)
 
 # Map1D plots
 
@@ -98,7 +98,7 @@ Log1.plot_over_variable('r', [2,3.9], 0.005)
 
 fig, ax = Log1.plot()
 ```
-![image](imgs/map&cobweb_examples/Figure_11.png)
+![image](../../imgs/map&cobweb_examples/Figure_11.png)
 
 As you can see, this is a mess. That happended because the first steps are not in a stable cycle, and must be deleted.
 
@@ -113,7 +113,7 @@ Log2.plot_over_variable('r', [2,3.9], 0.005)
 
 fig, ax = Log2.plot()
 ```
-![image](imgs/map&cobweb_examples/Figure_12.png)
+![image](../../imgs/map&cobweb_examples/Figure_12.png)
 
 Note: in some cases the graph is very dependant of the initial position. In the method `plot_over_variable` there is a karg for specifying the initial position: `plot_over_variable(initial_x=... )`.
 
@@ -133,7 +133,7 @@ Log3.plot_over_variable('r', [2,3.9], 0.005)
 fig, ax = Log3.plot()
 ```
 
-![image](imgs/map&cobweb_examples/Figure_13.png)
+![image](../../imgs/map&cobweb_examples/Figure_13.png)
 
 ## Time series
 
@@ -145,7 +145,7 @@ Log4.plot_trajectory(100, dF_args={'r':3.40, 'p':1.35}, initial_x=0.5)
 fig, ax = Log4.plot()
 ```
 
-![image](imgs/map&cobweb_examples/Figure_14.png)
+![image](../../imgs/map&cobweb_examples/Figure_14.png)
 
 # Some more examples
 
