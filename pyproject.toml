@@ -1,11 +1,11 @@
 [build-system]
 # Minimum requirements for the build system to execute.
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "phaseportrait"
-version = "1.1.2"
+version = "1.2.0"
 requires-python = ">=3.8"
 
 description = "A python package for visualizing non-linear dynamics and chaos. (2D phase portraits, 3D chaotic trajectories, Maps, Cobweb plots...)"

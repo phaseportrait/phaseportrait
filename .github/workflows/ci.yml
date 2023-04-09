@@ -1,0 +1,81 @@
+name: PyPi and Docs
+
+on:
+  push:
+    branches: 
+    - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-pypi:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: master
+        token: ${{ github.token }}
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        python -m pip install --upgrade pip
+        pip install build
+
+    - name: Build package
+      run: python -m build
+
+    - name: Publish package to PyPi
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        repository_url: https://upload.pypi.org/legacy/ 
+
+
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: master
+        token: ${{ github.token }}
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        python -m pip install --upgrade pip
+        pip install build
+        pip install mkdocs
+        pip install mkdocstrings[python]>=0.18
+        pip install mkdocs-gen-files
+        pip install mkdocs-material
+        pip install mkdocs-literate-nav
+        pip install Pygments>=2.12
+
+    - name: Build documentation
+      run: |
+        python3 docs/generate_reference_docs.py
+        mkdocs build
+
+    - name: Update github-pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: site

@@ -89,7 +89,7 @@ theme:
 repo_url: https://github.com/phaseportrait/phaseportrait/
 site_description: Python package for visualizing non-linear dynamics and chaos
 site_author : Víctor Loras & Unai Lería
-copyright : Copyright © 2021 Víctor Loras, Unai Lería
+copyright : Copyright © 2023 Víctor Loras, Unai Lería
 site_url : https://phaseportrait.github.io/
 
 watch: [README.md, phaseportrait, examples]
