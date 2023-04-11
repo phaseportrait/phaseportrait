@@ -31,7 +31,7 @@ Gives the option to represent a 3D phase portrait given a [dF](dFfunction.md) fu
 
 * **Density** : float, default=1
 
-    Number of elements in the arrows grid plot.
+    [Deprecated] Number of elements in the arrows grid plot.
 
 * **Polar** : bool, default=False
 
@@ -112,6 +112,22 @@ Adds a slider which can change the value of a parameter in execution time.
 
 * None
 
+### *PhasePortrait3D*.colorbar
+> *PhasePortrait3D*.**colorbar**(*toggle=True*)
+
+
+Adds a colorbar for speed.
+
+**Parameters**
+
+* toggle : bool, default=True
+
+    If `True` colorbar is visible.
+
+**Returns**
+
+* None
+
 
 # Defining Range
 1. A range, such `[lowerLimit , upperLimit]`.  All three axes will take the same limits.
@@ -142,4 +158,4 @@ example.plot(color='viridis', grid=True)
 plt.show()
 ``` 
 
-![image](imgs/pp3d_examples/example.png)
+![image](../../imgs/pp3d_examples/example.png)

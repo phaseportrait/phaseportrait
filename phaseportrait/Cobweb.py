@@ -12,43 +12,28 @@ class Cobweb:
     """
     A class used to represent a Cobweb plot and a time series to study the convergence of a map.
 
-    Attributes
-    ----------
-    dF : function
-        Map function, which returns value given a point and some parameters.
-    initial_position : numeric
-        Initial position for iterating the map.
-    xrange : numeric or list
-        Range of representation on x axis.
-    dF_args : dict, optional
-        Dictionary with parameters for `dF` function.
-    yrange : numeric or list, optional
-        Range of representation on y axis.
-    max_steps : int, optional
-        Number of iterations of the map.
-    n_points : int, optional
-        Number of points to plot the map.
-    xlabel : str, optional
-        x axis label in the plot. Default value is `r'$X_{n}$'`
-    ylabel : str, optional
-        y axis label in the plot. Default value is `r'$X_{n+1}$'`
-    Title : str, optional
-        title of the plot. Default value is `'Cobweb plot'`.
-
     Methods
     -------
-    plot():
-        Creates two figures, one containing the Cobweb plot and other with the time series.
-
-    add_slider(param_name, valinit=None, valstep=0.1, valinterval=10):
-        Adds a slider which can change the value of a parameter in execution time.
-
-    initial_position_slider(valinit=None, valstep=0.05, valinterval=None):
-        Adds a slider for changing initial value on a cobweb plot
+    * plot : Creates two figures, one containing the Cobweb plot and other with the time series.
+    * add_slider : Adds a slider which can change the value of a parameter in execution time.
+    * initial_position_slider : Adds a slider for changing initial value on a cobweb plot.
     """
     _name_ = 'Cobweb'
     def __init__(self, dF, initial_position, xrange, *, dF_args={}, yrange=[], max_steps=100, n_points=10000, **kargs):
-        
+        """Cobweb
+
+        Args: 
+            dF (function) : Map function, which returns value given a point and some parameters.
+            initial_position (float) : Initial position for iterating the map.
+            xrange (float or list) : Range of representation on x axis.
+            dF_args (dict, optional) : Dictionary with parameters for `dF` function.
+            yrange (float or list, optional) : Range of representation on y axis.
+            max_steps (int, optional) : Number of iterations of the map.
+            n_points (int, optional) : Number of points to plot the map.
+            xlabel (str, optional) : x axis label in the plot. Default value is `r'$X_{n}$'`
+            ylabel (str, optional) : y axis label in the plot. Default value is `r'$X_{n+1}$'`
+            Title (str, optional) : title of the plot. Default value is `'Cobweb plot'`.
+        """
         self.dF = dF
         self.dF_args = dF_args.copy()
         self.initial_position = initial_position 
@@ -83,13 +68,9 @@ class Cobweb:
         """
         Internally used method. Sets titles and axis for Cobweb and Time Series plots.
 
-        Parameters
-        ----------
-        min_value: numeric
-            Minimum value of the function in the interval.
-
-        max_value: numeric
-            Maximum value of the function in the interval.
+        Args
+            min_value (float): Minimum value of the function in the interval.
+            max_value (float): Maximum value of the function in the interval.
         """
         self.ax['Cobweb'].set_title(self.Title)
         self.ax['Cobweb'].set_xlabel(self.xlabel)
@@ -113,9 +94,8 @@ class Cobweb:
         """
         Prepares the plots, compute the values and plots them.
         
-        Returns
-        -------
-        tuple(matplotlib Figure (Cobweb plot), matplotlib Axis (Cobweb plot), matplotlib Figure (Time series), matplotlib Axis (Time series))
+        Returns:
+            (tuple[matplotlib Figure (Cobweb plot), matplotlib Axis (Cobweb plot), matplotlib Figure (Time series), matplotlib Axis (Time series)]):
         """
         bisector = np.linspace(self.xrange[0], self.xrange[1], self.n_points)
         func_result = self.dF(bisector, **self.dF_args)
@@ -170,19 +150,11 @@ class Cobweb:
         """
         Adds a slider on an existing plot.
         
-        Parameters
-        ----------
-        param_name : str
-            The string key of the variable. Must be the same as the key in the `dF` function.
-        
-        Key Arguments
-        -------------
-        valinit : float
-            Initial value of the parameter.
-        valinterval : Union[float, list]
-            The range of values the slider of the parameter will cover.
-        valstep : float
-            Precision in the slider.
+        Args: 
+            param_name (str) : The string key of the variable. Must be the same as the key in the `dF` function.
+            valinit (float) : Initial value of the parameter.
+            valinterval (Union[float, list]) : The range of values the slider of the parameter will cover.
+            valstep (float) : Precision in the slider.
         """
         self._create_sliders_plot()
 
@@ -208,14 +180,10 @@ class Cobweb:
         """
         Adds a slider for changing initial value on a cobweb plot.
         
-        Key Arguments
-        -------------
-        valinit : numeric, optional
-            Initial position. Default value is the same as initial position given when initializing Cobweb object.
-        valinterval : Union[float, list]
-            The range of values the slider of the parameter will cover.
-        valstep : float
-            Precision in the slider.
+        Args: 
+            valinit (float, optional) : Initial position. Default value is the same as initial position given when initializing Cobweb object.
+            valinterval (Union[float, list]) : The range of values the slider of the parameter will cover.
+            valstep (float) : Precision in the slider.
         """
         if valinit is None:
             valinit = self.initial_position

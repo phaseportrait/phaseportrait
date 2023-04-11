@@ -11,48 +11,31 @@ class _Generator_():
     _Generator_
     -----------
     Base class of the generators classes:
-        -Map
-        
-        -RungeKutta
+    - Map
+    - RungeKutta
     
     Methods
-    -------
-    Nnext :
-        Computes next `number` pairs of position and velocity values and saves them.
-    compute_all :
-        Computes `RungeKutta.max_values` and saves them.
-    next :
-        Computes the next usable pair of values and saves them.
-    save :
-        Saves `self.position` in a convenient way for the representation.
-    clear_values :
-        Erases the values saved by method `save`.
-    _next :
-        Computes the next pair of values.
-    _create_values_array : 
-        Creates the arrays in which the values will be saved.
-    _check_limit_cycle :
-        Optional, checks if a there is repeated elements saved.
+    -------    
+    * Nnext : Computes next `number` pairs of position and velocity values and saves them.
+    * compute_all : Computes `RungeKutta.max_values` and saves them.
+    * next : Computes the next usable pair of values and saves them.
+    * save : Saves `self.position` in a convenient way for the representation.
+    * clear_values : Erases the values saved by method `save`.
+    * _next : Computes the next pair of values.
+    * _create_values_array : Creates the arrays in which the values will be saved.
+    * _check_limit_cycle : Optional, checks if a there is repeated elements saved.
     """
     def __init__(self, portrait, dF, dimension, max_values, *, dF_args=None, initial_values=None, thermalization=None, **kargs):
         """Creates an instance of _Generator_
 
-        Parameters
-        ----------
-        portrait : 
-            Class that uses the _Generator_ class. 
-        dF : callable
-            A `dF` type function.
-        dimension : int
-            Number of dimensions in which it calculates the next values.
-        max_values : int
-            Max number of values saved
-        dF_args : dict, optional
-            If necesary, must contain the kargs for the `dF` function, by default None
-        initial_values : float, list, optional
-            Initial set of conditions, by default None
-        thermalization : int, optional
-            Thermalization steps before points saved, by default None
+        Args:
+            portrait (Object) : Class that uses the _Generator_ class. 
+            dF (callable) : A `dF` type function.
+            dimension (int) : Number of dimensions in which it calculates the next values.
+            max_values (int) : Max number of values saved
+            dF_args (dict, optional) : If necesary, must contain the kargs for the `dF` function, by default None
+            initial_values (float, list, optional) : Initial set of conditions, by default None
+            thermalization (int, optional) : Thermalization steps before points saved, by default None
         """
 
         self.portrait = portrait
@@ -101,19 +84,13 @@ class _Generator_():
         """
         Computes `_Generator_.max_values` and saves them.
 
-        Parameters
-        ----------
-        save_freq : int, optional
-            Number of values computed before saving them, by default 1
-        limit_cycle_check : int, optional
-            Number of points before checking for limit cycles, by default False
-        delta : float, optional
-            Diference between two values to be considerated equal, by default 0.01
+        Args:
+            save_freq (int, optional) : Number of values computed before saving them, by default 1
+            limit_cycle_check (int, optional) : Number of points before checking for limit cycles, by default False
+            delta (float, optional) : Diference between two values to be considerated equal, by default 0.01
 
-        Returns
-        -------
-        int
-            Number of points calculated.
+        Returns:
+            (int): Number of points calculated.
         """
 
         for i in range(self.thermalization):
@@ -125,15 +102,11 @@ class _Generator_():
         """
         Creates an array for storaging the values
 
-        Parameters
-        ----------
-        max_values : int, optional
-            Max size of the arrays, by default None
+        Args:
+        max_values (int, optional) : Max size of the arrays, by default None
 
-        Returns
-        -------
-        Numpy.ndarray
-            Empty array with size `dimension*max_values`
+        Returns:
+            (Numpy.ndarray): Empty array with size `dimension*max_values`
         """
 
         if max_values is not None:
@@ -144,21 +117,14 @@ class _Generator_():
         """
         Computes next `number` pairs of position and velocity values and saves them.
 
-        Parameters
-        ----------
-        number : int
-            Number of pairs of values saved.
-        delta : float, optional
-            Difference between numbers to be considerated equal. Only if `limit_cycle_check=True`.
-        save_freq : int, optional
-            Number of values computed before saving them, by default 1
-        limit_cycle_check : bool, optional
-            Whenever to look for limit cycles, by default False
+        Args:
+            number (int) : Number of pairs of values saved.
+            delta (float, optional) : Difference between numbers to be considerated equal. Only if `limit_cycle_check=True`.
+            save_freq (int, optional) : Number of values computed before saving them, by default 1
+            limit_cycle_check (bool, optional) : Whenever to look for limit cycles, by default False
 
-        Returns
-        -------
-        int, optional
-            Only if limit_cycle_check is `True`. It returns the number of points calculated.
+        Returns:
+            (int, optional) Only if limit_cycle_check is `True`. It returns the number of points calculated.
         """
 
         if save_freq is not None:
@@ -180,10 +146,8 @@ class _Generator_():
         """
         Computes the next usable pair of values and saves them.
 
-        Parameters
-        ----------
-        index : int, optional
-            Where to save the pair of values, by default 1
+        Args:
+            index (int, optional) : Where to save the pair of values, by default 1
         """
 
         for j in range(self.save_freq):

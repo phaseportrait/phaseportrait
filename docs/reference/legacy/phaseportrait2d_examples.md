@@ -28,7 +28,7 @@ example1 = PhasePortrait2D(dF_1, [-3, 3])
 fig, ax = example1.plot()
 ```
 
-![image](imgs/pp2d_examples/Figure_1.png)
+![image](../../imgs/pp2d_examples/Figure_1.png)
 
 Color shows the speed of the trajectory, as we can see, far away points from (0,0) have a greater velocity. Purple shifted colors show less velocity than red shifted colors in the default color scheme. Color scheme can be changed introducing kwarg *color* when creating the class instance. A list with accepted values can be found [here](https://matplotlib.org/stable/gallery/color/colormap_reference.html). Later, we'll do a pair of examples changing the color scheme.
 
@@ -43,7 +43,7 @@ example2 = PhasePortrait2D(dF_1, [-3, 3], Title='This is a title', xlabel='This 
 fig, ax = example2.plot()
 ```
 
-![image](imgs/pp2d_examples/Figure_2.png)
+![image](../../imgs/pp2d_examples/Figure_2.png)
 
 There is also, another way of doing it, using the *ax* class methods:
 
@@ -75,7 +75,7 @@ example2 = PhasePortrait2D(dF_1, [-3, 3], Title=r'You can use some $\left[ LaTeX
 fig, ax = example2.plot()
 ```
 
-![image](imgs/pp2d_examples/Figure_3.png)
+![image](../../imgs/pp2d_examples/Figure_3.png)
 
 
 ## Polar and color
@@ -90,7 +90,7 @@ example2 = PhasePortrait2D(dF_polar, [-3, 3], Title='Polar plot', xlabel='This i
 fig, ax = example2.plot()
 ```
 
-![image](imgs/pp2d_examples/Figure_4.png)
+![image](../../imgs/pp2d_examples/Figure_4.png)
 
 
 ## Density
@@ -112,8 +112,8 @@ big_D = PhasePortrait2D(circle, [-3,3], Density=2, Title='Density=2', xlabel='le
 fig, ax = big_D.plot()
 ```
 
-![image](imgs/pp2d_examples/Figure_5.png) 
-![image](imgs/pp2d_examples/Figure_5.5.png)
+![image](../../imgs/pp2d_examples/Figure_5.png) 
+![image](../../imgs/pp2d_examples/Figure_5.5.png)
 
 
 ## MeshDim
@@ -126,7 +126,7 @@ In order to create the phase portrait, we create an LxL mesh in which the arrows
 
 In the following GIF, we've set an example of the evolution of a portrait changing MeshDim's value.
 
-![image](imgs/pp2d_examples/meshdim_evo.gif)
+![image](../../imgs/pp2d_examples/meshdim_evo.gif)
 
 
 It can be seen that passed MeshDim = 15, the changes are insignificant to have a global understanding of the behaviour of the system.
@@ -145,7 +145,7 @@ def dF_limit_cycle(r, θ, *, μ=0, η=0):
 not_a_circle = PhasePortrait2D(dF_limit_cycle, [-3, 3], dF_args={'μ':1.0, 'η':0.1}, Polar=True, Title='Never gonna run around', xlabel='X', ylabel='Y')
 fig, ax = not_a_circle.plot()
 ```
-![image](imgs/pp2d_examples/Figure_6.png)
+![image](../../imgs/pp2d_examples/Figure_6.png)
 
 * `dF_args` must be a dictionary.
 
@@ -164,7 +164,7 @@ slippery_cycle = PhasePortrait2D(dF_limit_cycle, [-3, 3], Polar=True, Title='And
 slippery_cycle.add_slider('μ', valinit=0, valinterval=[0,1], valstep=0.2)
 fig, ax = slippery_cycle.plot()
 ```
-![image](imgs/pp2d_examples/Figure_7.png)
+![image](../../imgs/pp2d_examples/Figure_7.png)
 
 ## Nullclines
 
@@ -182,7 +182,7 @@ slippery_cycle.add_slider('μ', valinit=0, valinterval=[-1,1], valstep=0.05)
 slippery_cycle.add_nullclines(xcolor='black', ycolor='green')
 slippery_cycle.plot(color='cool')
 ```
-![image](imgs/pp2d_examples/Figure_8.png)
+![image](../../imgs/pp2d_examples/Figure_8.png)
 
 For more information about nullclines see [documentation](nullclines.md).
 

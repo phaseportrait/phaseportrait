@@ -12,7 +12,7 @@ class Streamlines_Size_Gradient(Streamlines_base):
     Creates trajectories given a `dF` function. Using Euler integrator.
     
     Integrated in:
-        -PhasePortrait2D
+    - PhasePortrait2D
     """
 
 
@@ -23,19 +23,11 @@ class Streamlines_Size_Gradient(Streamlines_base):
         """
         Compute a set of streamlines given velocity function `dF`.
 
-
-        Parameters
-        --------
-
-        X and Y: 1D or 2D arrays
-            arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
-        
-        Key arguments:
-        --------
-        maxLen: int default=500
-            The maximum length of an individual streamline segment.
-        dF_args: dict|None default=None
-            dF_args of `dF` function.
+        Args:
+            X (list, list[list]) : arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            Y (list, list[list]) : arrays of the grid points. The mesh spacing is assumed to be uniform in each dimension.
+            maxLen (int default=500) : The maximum length of an individual streamline segment.
+            dF_args (dict|None default=None) : dF_args of `dF` function.
         """
 
         if not Z:

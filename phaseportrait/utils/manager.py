@@ -9,27 +9,13 @@ class Manager:
     def plot_update(self, configuration):
         """Updates the plot with the new configuration configuration
 
-        Parameters
-        ----------
-        configuration : dict
-            For more information check api examples
+        Args:
+            configuration (dict): For more information check api examples
 
-        Returns
-        -------
-        # TODO:
-            _description_
+        Returns:
+            (int): 0 if successfull. 1 otherwise.
         """
         dimension = configuration.get('dimension')
-
-
-        if range := configuration.get('Range'):
-            self.portrait.Range = [[range['x_min'],range['x_max']],
-                                   [range['y_min'],range['y_max']]]
-
-        if dimension == 3:
-            self.portrait.Range = [[range['x_min'],range['x_max']],
-                                   [range['y_min'],range['y_max']],
-                                   [range['z_min'], range['z_max']]]
         
         # Parameters
         kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xScale',  'yScale', 'xlabel', 'ylabel', 'color'] + \
@@ -38,6 +24,19 @@ class Manager:
         for k,v in configuration.items():
             if k in kargs:
                 setattr(self.portrait, k, v)
+                
+        range = configuration.get('Range')
+        try:
+            if range:
+                if dimension == 2:
+                    self.portrait.Range = [[range['x_min'],range['x_max']],
+                                        [range['y_min'],range['y_max']]]
+                if dimension == 3:
+                    self.portrait.Range = [[range['x_min'],range['x_max']],
+                                        [range['y_min'],range['y_max']],
+                                        [range['z_min'], range['z_max']]]
+        except TypeError:
+            return 1
                 
         # Nullclines not implemented in 3d plot
         if (nc:=configuration.get('nullcline')) and dimension != 3:
@@ -86,41 +85,25 @@ class Manager:
         if 'Cobweb' in self.portrait._name_:
             self.portrait.update_dF_args()
 
+
+        colorbar_check = configuration.get("Colorbar", False)
+        self.portrait.colorbar(toggle=colorbar_check)
+                
         self.portrait.plot()
-
-
-        if configuration.get("Colorbar"):
-            colorbar_ax = self.portrait.colorbar_ax if hasattr(self.portrait, "colorbar_ax") else None
-
-            cb = plt.colorbar(matplotlib.cm.ScalarMappable(
-                    norm=self.portrait.stream._velocity_normalization(), 
-                    cmap=self.portrait.color),
-                ax=self.portrait.ax,
-                cax=colorbar_ax)
-
-            self.portrait.colorbar_ax = cb.ax
-        else:
-            if hasattr(self.portrait, "colorbar_ax"):
-                self.portrait.colorbar_ax.remove()
-                del(self.portrait.colorbar_ax)
             
-        # self.portrait.fig.tight_layout()
-        self.portrait.fig.subplots_adjust(left=0.2, bottom=0.2, right=1, top=0.9, wspace=0.01, hspace=0.01)
-        # plt.show()
+        self.portrait.fig.tight_layout()
+        # self.portrait.fig.subplots_adjust(left=0.2, bottom=0.2, right=1, top=0.9, wspace=0.01, hspace=0.01)
         return 0
         
         
     def equivalent_code(self, configuration):
         """Returns equivalent code of given configuration
 
-        Parameters
-        ----------
-        configuration : dict
-            For more information check api examples.
+        Args:
+            configuration (dict): For more information check api examples
 
-        Returns
-        -------
-        str: Equivalent code in Python.
+        Returns:
+            (str): equivalent code to the given configuration
         """
         
         match = re.search(r"def\s+(\w+)\(", configuration['dF'])
@@ -131,10 +114,14 @@ class Manager:
 
         function = f"""\n{configuration['dF']}"""
 
-        portrait = f"""\nphase_diagram = PhasePortrait{dimension}D({function_name}, [[{configuration['Range']['x_min']},{configuration['Range']['x_max']}],[{configuration['Range']['y_min']},{configuration['Range']['y_max']}],[{configuration['Range']['z_min']},{configuration['Range']['z_max']}]]"""
+        portrait = f"""\nphase_diagram = PhasePortrait{dimension}D({function_name}, [[{configuration['Range']['x_min']},{configuration['Range']['x_max']}],[{configuration['Range']['y_min']},{configuration['Range']['y_max']}]]"""
+        if dimension == 3:
+            portrait = portrait[:-1] + f""",[{configuration['Range']['z_min']},{configuration['Range']['z_max']}]]"""
         
         portrait_kargs = ""
-        kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xlabel', 'ylabel', 'zlabel', 'xScale', 'yScale', 'zScale', 'color']
+        # kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xlabel', 'ylabel', 'color']
+        kargs = ['MeshDim', 'dF_args', 'Density', 'Polar', 'Title', 'xScale',  'yScale', 'xlabel', 'ylabel', 'color'] + \
+            (['zScale', 'zlabel'] if dimension==3 else [])
         first = True
         for k in configuration.keys():
             if k in kargs:
@@ -154,7 +141,7 @@ class Manager:
         
         
         nullcline = ''
-        if nc := configuration.get('nullcline') and dimension != 3:
+        if (nc := configuration.get('nullcline')) and dimension != 3:
             nullcline = f"\nphase_diagram.add_nullclines(precision={nc['precision']}, offset={nc['offset']})"
         
         finisher = '\nphase_diagram.plot()\nplt.show()'

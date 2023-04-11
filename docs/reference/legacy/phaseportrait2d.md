@@ -26,7 +26,7 @@ Gives the option to represent a 2D phase portrait given a [dF](dFfunction.md) fu
 
 * **Density** : float, default=1
 
-    Number of elements in the arrows grid plot.
+    [Deprecated] Number of elements in the arrows grid plot.
 
 * **Polar** : bool, default=False
 
@@ -100,6 +100,24 @@ Plots nullclines of the system given by dF function. For more info, see [Nullcli
 
 * None
 
+
+### *PhasePortrait2D*.colorbar
+> *PhasePortrait2D*.**colorbar**(*toggle=True*)
+
+
+Adds a colorbar for speed.
+
+**Parameters**
+
+* toggle : bool, default=True
+
+    If `True` colorbar is visible.
+
+**Returns**
+
+* None
+
+
 # Defining Range
 
 1. A single number. In this case the range is defined from zero to the given number in both axes.
@@ -124,6 +142,6 @@ example.add_nullclines()
 example.plot()
 ``` 
 
-![image](imgs/doc_examples/pp2d_example.png)
+![image](../../imgs/doc_examples/pp2d_example.png)
 
 * [Click here to see more examples.](phaseportrait2d_examples.md)
