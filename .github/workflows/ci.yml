@@ -80,4 +80,4 @@ jobs:
       with:
         folder: site
         repository-name: phaseportrait/phaseportrait.github.io
-        token: ${{ secrets.QP_PAGES_TOKET }}
+        token: ${{ secrets.QP_PAT }}
