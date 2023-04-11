@@ -79,3 +79,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: site
+        repository-name: phaseportrait/phaseportrait.github.io
+        toke: ${{ QP_PAGES_TOKET }}
