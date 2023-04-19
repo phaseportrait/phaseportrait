@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib.colors import to_hex
+from typing import Literal
 
 class Nullcline2D():
     """
@@ -16,7 +17,7 @@ class Nullcline2D():
     * plot : Plots the nullclines.
     """
     
-    def __init__(self, portrait, funcion, *, precision=0.01, xprecision=None, yprecision=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='b', bgcolor='w', alpha=0, polar=False):
+    def __init__(self, portrait, funcion, *, precision=0.01, xprecision=None, yprecision=None, show: Literal['x', 'y', None]=None, offset=0, density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='b', bgcolor='w', alpha=0, polar=False):
         """Creates an instance of Nullcline2D
 
         Args:
@@ -25,6 +26,7 @@ class Nullcline2D():
             precision (float, optional) : The minimum diferencie from `offset` to be considerated a nullcline, by default 0.01
             xprecision (float, optional) : For a different precision value only in the x axis, by default `precision`
             yprecision (float, optional) : For a different precision value only in the y axis, by default `precision`
+            show (Literal['x', 'y', None], optinal) : Used to show only x or y nullclines, both if None, by default None
             offset (float, optional) : If you want, for instance, a twoclide, by default 0
             density (int, optional) : Number of inner divisions on the x axis and y axis, by default 50
             xRange (Union[float,list], optional) : The range in which the nullclines are calculated, by default `portrait.Range[0]`
@@ -41,6 +43,7 @@ class Nullcline2D():
         self.precision = precision
         self.xprecision = xprecision if xprecision is not None else precision
         self.yprecision = yprecision if yprecision is not None else precision
+        self.show = show
         self.offset = offset
         self.xcolor = to_hex(xcolor)
         self.ycolor = to_hex(ycolor)
@@ -91,12 +94,14 @@ class Nullcline2D():
                 for j,yy in enumerate(_y):
                     _xdF[j,i], _ydF[j,i] = self.funcion(xx,yy, **self.dF_args)
         
-        xct = axis.contourf(_x, _y,_xdF, levels=[-self.xprecision + self.offset, self.xprecision + self.offset], colors=[self.xcolor], extend='neither')
-        yct = axis.contourf(_x, _y,_ydF, levels=[-self.yprecision + self.offset, self.yprecision + self.offset], colors=[self.ycolor], extend='neither')
-        
-        xct.cmap.set_over(self.bgcolor, alpha=self.alpha)
-        yct.cmap.set_over(self.bgcolor, alpha=self.alpha)
-        xct.cmap.set_under(self.bgcolor, alpha=self.alpha)
-        yct.cmap.set_under(self.bgcolor, alpha=self.alpha)
+        if self.show is None or self.show == 'x':
+            xct = axis.contourf(_x, _y,_xdF, levels=[-self.xprecision + self.offset, self.xprecision + self.offset], colors=[self.xcolor], extend='neither')
+            xct.cmap.set_over(self.bgcolor, alpha=self.alpha)
+            xct.cmap.set_under(self.bgcolor, alpha=self.alpha)
+
+        if self.show is None or self.show == 'y':   
+            yct = axis.contourf(_x, _y,_ydF, levels=[-self.yprecision + self.offset, self.yprecision + self.offset], colors=[self.ycolor], extend='neither')
+            yct.cmap.set_over(self.bgcolor, alpha=self.alpha)
+            yct.cmap.set_under(self.bgcolor, alpha=self.alpha)
     
         return xct, yct
