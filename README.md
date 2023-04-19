@@ -3,15 +3,12 @@
 
 ![Commit activity](https://img.shields.io/github/commit-activity/m/phaseportrait/phaseportrait)
 [![License](https://img.shields.io/pypi/l/phaseportrait)](LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/phaseportrait/phaseportrait/ci-master.yml)](https://github.com/phaseportrait/phaseportrait/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/phaseportrait/phaseportrait/ci.yml)](https://github.com/phaseportrait/phaseportrait/actions)
 
 [![Python Version](https://img.shields.io/pypi/pyversions/phaseportrait)](https://pypi.org/project/phaseportrait/)
 [![Wheel](https://img.shields.io/pypi/wheel/phaseportrait)](https://pypi.org/project/phaseportrait/)
 
-# Documentation
-
-To check out *phaseportrait*'s documentation, view some examples and read more about it, check our website or try our Graphical User Interface:
-
+<br></br>
 
 <div align="center">
 
@@ -23,45 +20,59 @@ To check out *phaseportrait*'s documentation, view some examples and read more a
 <img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/img/duckduck_son.png" width=30%>
 </a>
 
-
-
 <br></br>
-
-
 
 <a href="https://phaseportrait.github.io/">
 <img src=https://img.shields.io/github/deployments/phaseportrait/phaseportrait/github-pages?label=Documentation>
 </a>
 
-[Graphical User Interface](https://github.com/phaseportrait/phaseportrait-gui)
-
-
-
-
 </div>
 
+<br></br>
 
+```py
+from matplotlib import pyplot
+import numpy
 
-# Examples of use
+import phaseportrait
+
+def pendulum(θ, dθ):
+    return dθ, - numpy.sin(θ)
+
+SimplePendulum = phaseportrait.PhasePortrait2D(pendulum, [-9, 9], Title='Simple pendulum', xlabel=r"$\Theta$", ylabel=r"$\dot{\Theta}$")
+SimplePendulum.plot()
+```
 
 <div align="center">
-<a href="https://phaseportrait.github.io/trajectories_examples/">
-<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/trj_examples/Figure_7.png">
+<a href="https://phaseportrait.github.io/reference/legacy/phaseportrait2d_examples/">
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/pendulum_example.png" width=49.45%><img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/damped_pendulum_example.png" width=50%>
 </a>
 
-<a href="https://phaseportrait.github.io/phaseportrait2d_examples/">
-<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/pendulum_example.png" width=60%><img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/damped_pendulum_example.png" width=60%>
-</a>
-
-<a href="https://phaseportrait.github.io/phaseportrait3d/">
+<a href="https://phaseportrait.github.io/reference/legacy/phaseportrait3d/">
 <img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/pp3d_examples/example.png">
 </a>
 
-<a href="https://phaseportrait.github.io/mapsandcobweb_examples/">
-<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/map_example_code.png">
+
+<a href="https://phaseportrait.github.io/reference/legacy/trajectories_examples/">
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/trj_examples/Figure_7.png">
 </a>
 
+
+
+
+
+<a href="https://phaseportrait.github.io/reference/legacy/mapsandcobweb_examples/">
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/map_example_code.png">
+</a>.
+
 </div>
+
+
+# Documentation
+
+To check out [*phaseportrait*'s documentation](https://phaseportrait.github.io/), view some examples and read more about it, check our website or try our [Graphical User Interface](https://github.com/phaseportrait/phaseportrait-gui)!
+
+
 
 # Installation
 **Installing via pip:**
@@ -81,6 +92,7 @@ $ git clone https://github.com/phaseportrait/phaseportrait
 
 Visit [phase-portrait](https://github.com/phaseportrait/phaseportrait) webpage on GitHub. Click on green button saying *Code*, and download it in zip format.
 Save and unzip on desired directory.
+
 
 # What's this?
 The idea behind this project was to create a simple way to make phase portraits in 2D and 3D in Python, as we couldn't find something similar on the internet, so we got down to work. (Update: found [jmoy/plotdf](https://github.com/jmoy/plotdf), offers similar 2D phase plots but it is very limited).
