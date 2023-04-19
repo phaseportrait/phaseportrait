@@ -1,51 +1,67 @@
+[![PyPI Downloads](https://img.shields.io/pypi/dm/phaseportrait.svg?label=downloads)](https://pypi.org/project/phaseportrait/)
+[![PyPI Version](https://img.shields.io/pypi/v/phaseportrait?)](https://pypi.org/project/phaseportrait/)
+
+![Commit activity](https://img.shields.io/github/commit-activity/m/phaseportrait/phaseportrait)
+[![License](https://img.shields.io/pypi/l/phaseportrait)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/phaseportrait/phaseportrait/ci-master.yml)](https://github.com/phaseportrait/phaseportrait/actions)
+
+[![Python Version](https://img.shields.io/pypi/pyversions/phaseportrait)](https://pypi.org/project/phaseportrait/)
+[![Wheel](https://img.shields.io/pypi/wheel/phaseportrait)](https://pypi.org/project/phaseportrait/)
+
 # Documentation
 
 To check out *phaseportrait*'s documentation, view some examples and read more about it, check our website or try our Graphical User Interface:
 
 
+<div align="center">
 
 <a href="https://phaseportrait.github.io/">
-<center>
-<img src="docs/img/duckduck.png" width=40%>
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/img/duckduck.png" width=40%>
 </img>
-<!-- </center> -->
 </a>
 <a href="https://github.com/phaseportrait/phaseportrait-gui">
-<!-- <center> -->
-<img src="docs/img/duckduck_son.png" width=30%>
-</center>
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/img/duckduck_son.png" width=30%>
 </a>
 
 
-[Documentation](https://phaseportrait.github.io/)
+
+<br></br>
+
+
+
+<a href="https://phaseportrait.github.io/">
+<img src=https://img.shields.io/github/deployments/phaseportrait/phaseportrait/github-pages?label=Documentation>
+</a>
 
 [Graphical User Interface](https://github.com/phaseportrait/phaseportrait-gui)
 
 
 
 
-
-
+</div>
 
 
 
 # Examples of use
+
+<div align="center">
 <a href="https://phaseportrait.github.io/trajectories_examples/">
-<center><img src="docs/imgs/trj_examples/Figure_7.png"></center>
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/trj_examples/Figure_7.png">
 </a>
 
 <a href="https://phaseportrait.github.io/phaseportrait2d_examples/">
-<center><img src="docs/imgs/index/pendulum_example.png" width=60%><img src="docs/imgs/index/damped_pendulum_example.png" width=60%></center>
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/pendulum_example.png" width=60%><img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/damped_pendulum_example.png" width=60%>
 </a>
 
 <a href="https://phaseportrait.github.io/phaseportrait3d/">
-<center><img src="docs/imgs/pp3d_examples/example.png"></center>
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/pp3d_examples/example.png">
 </a>
 
 <a href="https://phaseportrait.github.io/mapsandcobweb_examples/">
-<center><img src="docs/imgs/index/map_example_code.png"></center>
+<img src="https://github.com/phaseportrait/phaseportrait/raw/master/docs/imgs/index/map_example_code.png">
 </a>
 
+</div>
 
 # Installation
 **Installing via pip:**
