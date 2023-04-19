@@ -1,4 +1,5 @@
 from inspect import signature
+from typing import Literal
 
 import matplotlib.cm as mplcm
 import matplotlib.colors as mcolors
@@ -229,13 +230,14 @@ class PhasePortrait2D:
 
 
 
-    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, offset=0., density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
+    def add_nullclines(self, *, precision=0.01, xprecision=None, yprecision=None, show: Literal['x', 'y', None]=None, offset=0., density=50, xRange=None, yRange=None, dF_args=None, xcolor='r', ycolor='g', bgcolor='w', alpha=0):
         """Adds nullclines for both axis.
 
         Args:
             precision (float, optional): Precision if not specific axis precision is specified. Defaults to 0.01.
             xprecision (float, optional): Precision for x axis nullcline. Defaults to None.
             yprecision (float, optional): Precision for y axis nullcline. Defaults to None.
+            show (Literal['x', 'y', None], optinal) : Used to show only x or y nullclines, both if None. Defaults to None.
             offset (float, optional): Specifies the value in which the countours will be drawn. Defaults to 0.
             density (int, optional): Density of grid used in interpolation. Defaults to 50.
             xRange (list[float], optional): Range of x nullcline, by default global range. Defaults to None.
@@ -247,7 +249,7 @@ class PhasePortrait2D:
             alpha (int, optional): Alpha of nullclines and background. Defaults to 0.
         """        
         self.nullclines.append(Nullcline2D(self, self.dF,
-                                          precision=precision, xprecision=xprecision, yprecision=yprecision, offset=offset, density=density, 
+                                          precision=precision, xprecision=xprecision, yprecision=yprecision, show=show, offset=offset, density=density, 
                                           xRange=xRange, yRange=yRange, dF_args=dF_args, 
                                           xcolor=xcolor, ycolor=ycolor, bgcolor=bgcolor, alpha=alpha, polar=self.Polar))
             
