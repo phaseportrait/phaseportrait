@@ -10,11 +10,13 @@ def dFPolar(r, θ, *, μ=0.5,η=0):
     return μ*r*(1 - r*r), 1+η*θ
 
 
-PolarCoordinates = PhasePortrait2D(dFPolar, [-3, 3], Polar=True, Title='Limit cicle')
+PolarCoordinates = PhasePortrait2D(dFPolar, [-3, 3], MeshDim=12, Polar=True, Title='Limit cicle', odeint_method="rungekutta3")
 PolarCoordinates.add_slider('μ', valinit=0.5)
 PolarCoordinates.add_slider('η', valinit=0.0)
-PolarCoordinates.add_nullclines()
+# PolarCoordinates.add_nullclines()
 PolarCoordinates.plot()
+
+plt.show()
 
 """
 Example 2: sliders for 4 parameters on the Love Affairs system
@@ -32,6 +34,8 @@ LoveAffairsPortrait.add_slider('a', valinit=1)
 LoveAffairsPortrait.add_nullclines()
 
 LoveAffairsPortrait.plot()
+
+plt.show()
 
 """
 Example 3: sliders for 4 parameters, showing a non-linear center

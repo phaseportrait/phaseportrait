@@ -8,6 +8,7 @@ def dF(x,y,z):
     return -x, -y, -z
 
 p1 = phaseportrait.PhasePortrait3D(dF, [-3, 3])
+p1.plot()
 plt.show()
 
 
