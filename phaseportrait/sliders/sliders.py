@@ -68,6 +68,7 @@ class Slider():
             New value for the parameter of the slider
         """
         
+        legend = self.portrait.ax.get_legend()
         try:
             self.portrait.ax.cla()
         except:
@@ -78,6 +79,7 @@ class Slider():
         if 'Cobweb' in self.portrait._name_:
             self.portrait.update_dF_args()
 
+        self.portrait.ax.legend_ = legend
         self.portrait.plot()
         
     def update_slider_ends(self, valmin, valmax):
