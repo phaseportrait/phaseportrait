@@ -68,16 +68,32 @@ class Slider():
             New value for the parameter of the slider
         """
         
-        try:
-            self.portrait.ax.cla()
-        except:
-            for ax in self.portrait.ax.values():
-                ax.cla()
+        ax = self.portrait.ax 
+        if isinstance(ax, dict):
+            legend = {}
+            for k in ax.keys():
+                legend.update({k: ax[k].get_legend()})
+            
+        else:
+            legend = ax.get_legend()
+            
+        if isinstance(ax, dict):
+            for k in ax.keys():
+                ax[k].cla()
+        else:
+            ax.cla()
+
         self.value = value
 
         if 'Cobweb' in self.portrait._name_:
             self.portrait.update_dF_args()
 
+        if isinstance(ax, dict):
+            for k in ax.keys():
+                ax[k].legend_ = legend[k]
+        else:
+            ax.legend_ = legend
+        
         self.portrait.plot()
         
     def update_slider_ends(self, valmin, valmax):

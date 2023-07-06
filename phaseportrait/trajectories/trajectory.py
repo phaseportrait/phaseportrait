@@ -93,13 +93,13 @@ class trajectory:
         self.color = kargs.get('color')
         if self.color is None:
             self.color =  'viridis'
-        self._mark_start_point = kargs.get('mark_start_point')
+        self._mark_start_position = kargs.get('mark_start_position')
 
     # This functions must be overwriten on child classes:
     def _prepare_plot(self):...
     def _scatter_start_point(self, val_init):...
     def _scatter_trajectory(self, val, color, cmap):...
-    def _plot_lines(self, val, val_init):...
+    def _plot_lines(self, val, val_init, *, color=None):...
 
 
     # General functions
@@ -124,13 +124,16 @@ class trajectory:
         self.initial_position()
 
 
-    def initial_position(self, *args, **kargs):
+    def initial_position(self, *args, color=None, **kargs):
         """
         Adds a initial position for the computation.
         More than one can be added.
         
         Args:
             args (Union[float, list[2], list[3]], optional) : Initial position for the computation. If None, a random position is chosen.
+           
+        Kargs:
+            color (str|None): If a color is given it is used to plot that trajectory. If None the speed is used to color the line/dots. 
             
         Example:
         -------
@@ -159,9 +162,14 @@ class trajectory:
         if not flag and len(self.trajectories)>0:
             return
         
+        class coloredRungeKutta(RungeKutta):
+            def __init__(self, portrait, color, dF, dimension, max_values, *, dt=0.1, dF_args=None, initial_values=None, thermalization=0):
+                super().__init__(portrait, dF, dimension, max_values, dt=dt, dF_args=dF_args, initial_values=initial_values, thermalization=thermalization)
+                self.__color__ = color
+        
         self.trajectories.append(
-            RungeKutta(
-                self, self.dF, self._dimension, self.n_points, 
+            coloredRungeKutta(
+                self, color, self.dF, self._dimension, self.n_points, 
                 dt=self.runge_kutta_step,
                 dF_args=self.dF_args, 
                 initial_values=args,
@@ -213,11 +221,6 @@ class trajectory:
         
         self._calculate_values(all_initial_conditions=True)
 
-
-        # if self.color == 't':
-        #     cmap = color
-        # else:
-        #     cmap = self.color = color
         if color is not None:
             self.color = color
         cmap = self.color
@@ -228,7 +231,7 @@ class trajectory:
             val_init = trajectory.initial_value
             
             if self.lines:
-                self._plot_lines(val, vel, val_init)
+                self._plot_lines(val, vel, val_init, color=trajectory.__color__)
                     
             else:
                 def norma(v):
@@ -244,7 +247,7 @@ class trajectory:
 
                 self._scatter_trajectory(val, color, cmap)
 
-            if self._mark_start_point:
+            if self._mark_start_position:
                 self._scatter_start_point(val_init)
                 
         for fig in self.fig.values():

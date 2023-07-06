@@ -68,9 +68,10 @@ class Streamlines_Velocity_Color_Gradient:
         vmin = None
 
         for streamline in self.stream_base.streamlines:
-            *_, v = streamline
-            vmax = max(v + ([vmax] if vmax is not None else []))
-            vmin = min(v + ([vmin] if vmin is not None else []))
+            if streamline is not None:
+                *_, v = streamline
+                vmax = max(np.concatenate((v, ([vmax] if vmax is not None else []))))
+                vmin = min(np.concatenate((v, ([vmin] if vmin is not None else []))))
 
         return Normalize(vmin, vmax)
 
@@ -96,8 +97,12 @@ class Streamlines_Velocity_Color_Gradient:
         arrow_kw = dict(arrowstyle=arrowstyle, mutation_scale=10 * arrowsize)
 
         for streamline in self.stream_base.streamlines:
-            *coords, v = streamline
-            points = np.array(coords).T.reshape(-1 , 1, 2 if self.proyection=="2d" else 3)
+            if streamline is None:
+                continue
+            coords, v = streamline
+            if len(v) == 1:
+                continue
+            points = np.array(coords).reshape(-1 , 1, 2 if self.proyection=="2d" else 3)
             segments = np.concatenate([points[:-1], points[1:]], axis=1)
 
             s = np.sqrt(np.sum(np.square(points), 2))

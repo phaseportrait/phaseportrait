@@ -25,20 +25,32 @@ class Streamlines_base:
     
     def _makeStreamline(self, y0):
         """
-        Compute a streamline extending in both directions from the given point. Using Euler integrator.
+        Compute a streamline extending in both directions from the given point.
         """
-        *s, svelocity = self._makeHalfStreamline(y0, 1)  # forwards
-        *r, rvelocity = self._makeHalfStreamline(y0, -1)  # backwards
-
-        for _r in r:
-            _r.reverse()
-        rvelocity.reverse()
-
+        
+        s, svelocity, i_f = self._makeHalfStreamline(y0, 1)  # forwards
+        r, rvelocity, i_b = self._makeHalfStreamline(y0, -1)  # backwards
+        
         speed = self._speed(y0)
-        if np.isnan(speed).any() or np.isinf(speed).any():
+        
+        if np.isnan(speed).any() or np.isinf(speed).any() or i_b==0 or i_f==0:
             return None
+        
+        svelocity = svelocity[:i_f]
+        rvelocity_flip = np.flip(rvelocity[:i_b])
+        
+        speed = np.sqrt(np.sum(np.square(speed)))
+        
+        
+        if not np.isclose(svelocity[0], speed, rtol=100).all() or not np.isclose(rvelocity[0], speed, rtol=100).all():
+            return None
+        
+        s = s[:i_f]
+        r = np.flip(r[:i_b],0)
 
-        return *[r[i] + [y0[i]] + s[i] for i in range(len(y0))],  rvelocity + [np.sqrt(np.sum(np.square(speed)))] + svelocity
+        if not np.isclose(s[0], y0, rtol=100).all() or not np.isclose(r[0], y0, rtol=100).all():
+            return None
+        return np.concatenate((r, [y0], s), 0), np.concatenate((rvelocity_flip, [speed], svelocity))
     
     def _speed_2d_no_polar(self, y0, *args, **kargs):
         return np.array(self.dF(*y0, **self.dF_args))
@@ -69,15 +81,15 @@ class Streamlines_base:
 
 
     def _scipy_odeint(self, coords, sign, deltat):
-        return integrate.odeint(self._speed, coords, [0.1*i*sign*deltat for i in range(4)])[-1]
+        return integrate.odeint(self._speed, coords, sign * np.arange(1,5)*0.2*deltat)[-1]
     
     def _euler_odeint(self, coords, sign, deltat):
         return coords + self._speed(coords) * deltat * sign
     
     def _runge_kutta_3rd_odeint(self, coords, sign, deltat):
         k1 = self._speed(coords)
-        k2 = self._speed(coords + sign*deltat*1/4*k1)
-        k3 = self._speed(coords + sign*deltat*(-1*k1 + 2*k2))
+        k2 = self._speed(coords + sign * deltat*1/4*k1)
+        k3 = self._speed(coords + sign * deltat*(-1*k1 + 2*k2))
         return coords + sign * deltat * ((k1+k3)/6 + 2/3*k2)
     
     def _integration_method(self, coords, sign, deltat):
@@ -98,16 +110,18 @@ class Streamlines_base:
         prev_coords_mask_position = coords_mask_position.copy()
 
         # Save arrays
-        s = [[] for i in range(self.dimension)]
-        svelocity = []
+        s = np.zeros((int(self.maxLen / 2), self.dimension))
+        # s = [[] for i in range(self.dimension)]
+        svelocity = np.zeros((int(self.maxLen / 2)))
 
         i = 0
-        persistency = 0
+        persistency = 20
+        _speed = self._speed(coords)
 
         while (self.range_min < coords).all() and (coords < self.range_max).all():
-            if i > self.maxLen / 2:
+            if i >= int(self.maxLen / 2):
                 break
-            i += 1
+            
 
             coords_mask_position = self.get_masked_coordinates(*coords)
 
@@ -117,28 +131,19 @@ class Streamlines_base:
 
                 self.used[tuple(prev_coords_mask_position)] = True
 
-            # Integration
-            _speed = self._speed(coords)
-            if (_speed == 0).all() or \
-                np.isnan(_speed).any() or \
-                np.isinf(_speed).any():
-                    break
+           
 
             # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
-            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.abs(_speed)))
+            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.max(np.abs(_speed))))
 
             if np.isnan(deltat) or np.isinf(deltat):
-                print(deltat, self.get_delta_coordinates(*coords), _speed)
+                break
 
-            new_coords = self._integration_method(coords, sign, deltat)
-            
-            mean_speed = np.sqrt(np.sum(np.square(new_coords-coords)))/deltat
-            coords = new_coords
+            coords = self._integration_method(coords, sign, deltat)
 
             # Save values
-            for c, coord in enumerate(coords):
-                s[c].append(coord)
-            svelocity.append(mean_speed)
+            s[i] = coords
+            svelocity[i] = np.sqrt(np.sum(np.square(_speed)))
 
 
             # If persistency iterations in a region with previous trajectory break.
@@ -146,8 +151,18 @@ class Streamlines_base:
                 persistency -= 1
                 if persistency <= 0:
                     break
+            
+            i += 1
+            
+             # Integration
+            _speed = self._speed(coords)
+            if (i%8 == 0):
+                if (np.isclose(0, _speed)).all() or \
+                    np.isnan(_speed).any() or \
+                    np.isinf(_speed).any():
+                        break
 
-        return *s, svelocity
+        return s, svelocity, i
 
 
 class Streamlines_base2D(Streamlines_base):

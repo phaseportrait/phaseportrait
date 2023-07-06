@@ -59,25 +59,29 @@ class Trajectory2D(trajectory):
         }
 
 
-    def _plot_lines(self, val, vel, val_init, *, cnorm=None):
-        label = f"({','.join(tuple(map(str, val_init)))})"
-
+    def _plot_lines(self, val, vel, val_init, *, color=None, cnorm=None):
         val_ = val.T.reshape(-1, 1, 2)
         segments = np.concatenate([val_[:-1], val_[1:]], axis=1)
 
-        vel_ = np.sqrt(np.sum(np.square(vel), axis=0))
-        if cnorm is None:
-            cnorm = Normalize(vel_.min(), vel_.max())
-        C = plt.get_cmap(self.color)(cnorm(vel_))
+        if color is None:
+            vel_ = np.sqrt(np.sum(np.square(vel), axis=0))
+            if cnorm is None:
+                cnorm = Normalize(vel_.min(), vel_.max())
+            C = plt.get_cmap(self.color)(cnorm(vel_))
+        else:
+            C = color
         
-        linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C, label=label)
+        linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C)
         self.ax['Z'].add_collection(linez)
-        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        if isinstance(C, list):
+            C = C[0]
+        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C, zorder=-1)
         # self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")
 
 
     def _scatter_start_point(self, val_init):
-        self.ax['Z'].scatter(val_init[0], val_init[1], s=self.size+1, c=[0])
+        label = f"({','.join(tuple(map(str, val_init)))})"
+        self.ax['Z'].scatter(val_init[0], val_init[1], s=self.size*2, label=label)
 
 
     def _scatter_trajectory(self, val, color, cmap):

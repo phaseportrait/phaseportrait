@@ -71,20 +71,21 @@ class Trajectory3D(trajectory):
         }
 
 
-    def _plot_lines(self, val, vel, val_init, *, cnorm=None):
-        label = f"({','.join(tuple(map(str, val_init)))})"
-
+    def _plot_lines(self, val, vel, val_init, *, color=None, cnorm=None):
         val_ = val.T.reshape(-1, 1, 3)
         segments = np.concatenate([val_[:-1], val_[1:]], axis=1)
 
-        vel_ = np.sqrt(np.sum(np.square(vel), axis=0))
-        if cnorm is None:
-            cnorm = Normalize(vel_.min(), vel_.max())
-        C = plt.get_cmap(self.color)(cnorm(vel_))
-        line3d = Line3DCollection(segments, linewidth=self.size, color=C, label=label)
-        linex = LineCollection(segments[:,:,(1,2)], linewidth=self.size, color=C, label=label)
-        liney = LineCollection(segments[:,:,(0,2)], linewidth=self.size, color=C, label=label)
-        linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C, label=label)
+        if color is None:
+            vel_ = np.sqrt(np.sum(np.square(vel), axis=0))
+            if cnorm is None:
+                cnorm = Normalize(vel_.min(), vel_.max())
+            C = plt.get_cmap(self.color)(cnorm(vel_))
+        else:
+            C = color
+        line3d = Line3DCollection(segments, linewidth=self.size, color=C)
+        linex = LineCollection(segments[:,:,(1,2)], linewidth=self.size, color=C)
+        liney = LineCollection(segments[:,:,(0,2)], linewidth=self.size, color=C)
+        linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C)
 
         
 
@@ -94,11 +95,12 @@ class Trajectory3D(trajectory):
         self.ax['Z'].add_collection(linez)
 
 
-
-        self.ax['3d'].plot(*[[val_init[i],val[i,0]] for i in range(3)], '-', linewidth=self.size, color=C[0])
-        self.ax['X'].plot([val_init[1],val[1,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
-        self.ax['Y'].plot([val_init[0],val[0,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
-        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C[0], zorder=-1)
+        if isinstance(C, list): 
+            C = C[0]
+        self.ax['3d'].plot(*[[val_init[i],val[i,0]] for i in range(3)], '-', linewidth=self.size, color=C)
+        self.ax['X'].plot([val_init[1],val[1,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C, zorder=-1)
+        self.ax['Y'].plot([val_init[0],val[0,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C, zorder=-1)
+        self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C, zorder=-1)
         self._update_3d_lims()
 
     def _update_3d_lims(self):
@@ -108,10 +110,11 @@ class Trajectory3D(trajectory):
 
 
     def _scatter_start_point(self, val_init):
-        self.ax['3d'].scatter3D(*val_init, s=self.size*2, c=[0])
-        self.ax['X'].scatter(val_init[1], val_init[2], s=self.size*2, c=[0])
-        self.ax['Y'].scatter(val_init[0], val_init[2], s=self.size*2, c=[0])
-        self.ax['Z'].scatter(val_init[0], val_init[1], s=self.size*2, c=[0])
+        label = f"({','.join(tuple(map(str, val_init)))})"
+        self.ax['3d'].scatter3D(*val_init, s=self.size*2, label=label)
+        self.ax['X'].scatter(val_init[1], val_init[2], s=self.size*2, label=label)
+        self.ax['Y'].scatter(val_init[0], val_init[2], s=self.size*2, label=label)
+        self.ax['Z'].scatter(val_init[0], val_init[1], s=self.size*2, label=label)
 
 
     def _scatter_trajectory(self, val, color, cmap):

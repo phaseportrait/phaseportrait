@@ -18,10 +18,12 @@ if True:
         return w*np.sin(y*y*y), -z*np.exp(x*x)
 
     example = Trajectory2D(dF, n_points=1300, size=2, mark_start_position=True, Title='Just an example')
-    example.initial_position(1,1)
+    example.initial_position(1,1, color="blue")
+    example.initial_position(1,2, color="orange")
     example.add_slider('w', valinterval=[-1,5])
     example.add_slider('z', valinterval=[-1,5])
     example.plot()
+    example.fig["Z"].legend()
     plt.show()
     
 if True:
@@ -32,11 +34,12 @@ if True:
     def Lorenz(x,y,z,*, s=10, r=28, b=8/3):
         return -s*x+s*y, -x*z+r*x-y, x*y-b*z
 
-    a = Trajectory3D(Lorenz, lines=True, n_points=1300, size=3, mark_start_position=True, Title='Nearby IC on Lorenz attractor')
+    a = Trajectory3D(Lorenz, n_points=1300, size=3, mark_start_position=True, Title='Nearby IC on Lorenz attractor')
     a.initial_position(10,10,10)
-    a.initial_position(10,10,10.0001)
     a.add_slider('r', valinterval=[24,30])
     a.plot()
+    for f in a.fig.values():
+        f.legend()
     plt.show()
 
 
@@ -48,7 +51,7 @@ if True:
     def Lorenz(x,y,z,*, s=10, r=28, b=8/3):
         return -s*x+s*y, -x*z+r*x-y, x*y-b*z
 
-    b = Trajectory3D(Lorenz, dF_args={'s':10, 'r':28, 'b':8/3}, n_points=4000, numba=True, color='t', size=2, Title='Lorenz attractor')
+    b = Trajectory3D(Lorenz, lines=False, dF_args={'s':10, 'r':28, 'b':8/3}, n_points=4000, numba=True, color='t', size=2, Title='Lorenz attractor')
     b.initial_position(10,10,10)
     b.plot()
     plt.show()
