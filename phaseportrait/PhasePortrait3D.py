@@ -21,6 +21,41 @@ class PhasePortrait3D:
     -------
     ![image](../../imgs/doc_examples/pp3d_example.png)
 
+    ```python3
+        import numpy as np
+        import matplotlib.pyplot as plt
+        # Create an instance of PhasePortrait3D
+        from phaseportrait.PhasePortrait3D import PhasePortrait3D
+
+
+
+        # Define your differential equation function
+        # This is a different system than the above image
+        def dF(x, y, z, a=0.1, b=0.2, c=0.2):
+            dx = a * (y - x)
+            dy = x * (b - z) - y
+            dz = x * y - c * z
+            return dx, dy, dz
+
+
+        # Define the ranges for x, y, and z axes
+        Range = [[-10, 10], [-10, 10], [-10, 10]]
+
+        # Create a PhasePortrait3D object
+        phase_portrait = PhasePortrait3D(dF, Range)
+
+        # Plot the phase portrait
+        phase_portrait.plot()
+
+        # Add sliders for parameters if needed
+        # phase_portrait.add_slider('a', valinit=0.1, valstep=0.01, valinterval=[0.01, 0.5])
+        # phase_portrait.add_slider('b', valinit=0.2, valstep=0.01, valinterval=[0.01, 0.5])
+        # phase_portrait.add_slider('c', valinit=0.2, valstep=0.01, valinterval=[0.01, 0.5])
+
+        # Show the plot
+        plt.show()
+    ````
+
     Methods 
     -----
     * draw_plot : Draws the streamplot. Is intenally used by method `plot`.
@@ -91,59 +126,78 @@ class PhasePortrait3D:
   
 
     def _create_arrays(self):
-        # If scale is log and min range value is 0 or negative the plots is not correct
+        """
+        Helper method to create arrays for plotting based on the specified ranges and scales.
+        """
+        # If scale is log and min range value is 0 or negative, adjust the range to avoid errors in plotting
         _Range = self.Range.copy()
         for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale, self.zScale], self.Range)):
             if scale == 'log':
                 for j in range(len(Range)):
-                    if Range[j]<=0:
-                        _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
+                    if Range[j] <= 0:
+                        # If range value is 0 or negative, set it to a small positive value for log scale
+                        _Range[i, j] = abs(max(Range)) / 100 if j == 0 else abs(max(Range))
         self.Range = _Range
 
-        
-        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y", "_Z"],[self.xScale, self.yScale, self.zScale], self.Range)):
+        # Create arrays based on the specified scales
+        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y", "_Z"], [self.xScale, self.yScale, self.zScale], self.Range)):
             if scale == 'linear':
+                # If scale is linear, create linearly spaced array within the range
                 setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
             if scale == 'log':
+                # If scale is logarithmic, create log-spaced array within the range
                 setattr(self, _P, np.logspace(np.log10(Range[0]), np.log10(Range[1]), self.MeshDim))
             if scale == 'symlog':
+                # If scale is symmetrical log, create linearly spaced array within the range
                 setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
 
+        # Create meshgrid for the arrays
         self._X, self._Y, self._Z = np.meshgrid(self._X, self._Y, self._Z)
 
-        if self.Polar:   
-            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+        # If polar coordinates are specified, convert Cartesian coordinates to polar coordinates
+        if self.Polar:
+            self._R, self._Theta = (self._X ** 2 + self._Y ** 2) ** 0.5, np.arctan2(self._Y, self._X)
+
 
 
     def plot(self, *, color=None, grid=None):
         """
         Prepares the plots and computes the values.
         
-        Args: 
-            color (str): Matplotlib `Cmap`.
-
+        Args:
+            color (str): Matplotlib colormap.
+            grid (bool): Show grid lines.
+        
         Returns:
-            (tuple(matplotlib Figure, matplotlib Axis)):
+            (tuple(matplotlib Figure, matplotlib Axis)): Tuple containing the figure and axis objects.
         """
+        # Update plot color and grid settings if specified
         if color is not None:
             self.color = color
         if grid is not None:
             self.grid = grid
         
+        # Draw the plot using the specified color and grid settings
         self.stream = self.draw_plot(color=self.color, grid=grid)
         
+        # Add colorbar if the plot stream has velocity normalization
         if hasattr(self, "colorbar_ax"):
+            # Create a colorbar using ScalarMappable with velocity normalization and specified colormap
             cb = plt.colorbar(mplcm.ScalarMappable(
                 norm=self.stream._velocity_normalization(), 
                 cmap=self.color),
-            ax=self.ax,
-            cax=self.colorbar_ax)
+                ax=self.ax,
+                cax=self.colorbar_ax)
             
+            # Update colorbar axis attribute
             self.colorbar_ax = cb.ax
         
+        # Redraw the canvas to reflect any changes
         self.fig.canvas.draw_idle()
 
-        return self.fig, self.ax 
+        # Return the figure and axis objects
+        return self.fig, self.ax
+
     
     def colorbar(self, toggle=True):
         """
@@ -259,17 +313,38 @@ class PhasePortrait3D:
     def _PolarTransformation(self):
         """
         Computes the expression of the velocity field if coordinates are given in polar representation.
+        
+        The transformation equations are as follows:
+        
+        R = sqrt(X^2 + Y^2 + Z^2)
+        Theta = arctan2(Y, X)
+        Phi = arccos(Z / R)
+        
+        where:
+        - R is the radial distance from the origin,
+        - Theta is the azimuthal angle measured from the positive x-axis,
+        - Phi is the polar angle measured from the positive z-axis.
+        
+        The derivatives of R, Theta, and Phi with respect to time are computed using the provided dF function.
+        Then, the derivatives of the Cartesian coordinates (X, Y, Z) with respect to time are calculated using the chain rule:
+        
+        dX/dt = dR/dt * cos(Theta) * sin(Phi) - R * sin(Theta) * sin(Phi) * dTheta/dt + R * cos(Theta) * cos(Phi) * dPhi/dt
+        dY/dt = dR/dt * sin(Theta) * sin(Phi) + R * cos(Theta) * sin(Phi) * dTheta/dt + R * sin(Theta) * cos(Phi) * dPhi/dt
+        dZ/dt = dR/dt * cos(Phi) - R * sin(Phi) * dPhi/dt
+        
+        These equations represent the velocity components in the Cartesian coordinate system.
         """
         if not hasattr(self, "_dR") or not hasattr(self, "_dTheta") or not hasattr(self, "_dPhi"):
-            self._R, self._Theta = np.sqrt(self._X**2 + self._Y**2 + self._Z**2), np.arctan2(self._Y, self._X)
+            self._R = np.sqrt(self._X**2 + self._Y**2 + self._Z**2)
+            self._Theta = np.arctan2(self._Y, self._X)
             self._Phi = np.arccos(self._Z / self._R)
         
-        self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi **self.dF_args)
-        self._dX, self._dY, self._dZ = \
-            self._dR*np.cos(self._Theta)*np.sin(self._Phi) - self._R*np.sin(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.cos(self._Theta)*np.cos(self._Phi) * self._dPhi, \
-            self._dR*np.sin(self._Theta)*np.sin(self._Phi) + self._R*np.cos(self._Theta)*np.sin(self._Phi)*self._dTheta + self._R*np.sin(self._Theta)*np.cos(self._Phi)*self._dPhi, \
-            self._dR*np.cos(self._Phi) - self._R*np.sin(self._Phi)*self._dPhi
+        self._dR, self._dTheta, self._dPhi = self.dF(self._R, self._Theta, self._Phi ** self.dF_args)
         
+        self._dX = self._dR * np.cos(self._Theta) * np.sin(self._Phi) - self._R * np.sin(self._Theta) * np.sin(self._Phi) * self._dTheta + self._R * np.cos(self._Theta) * np.cos(self._Phi) * self._dPhi
+        self._dY = self._dR * np.sin(self._Theta) * np.sin(self._Phi) + self._R * np.cos(self._Theta) * np.sin(self._Phi) * self._dTheta + self._R * np.sin(self._Theta) * np.cos(self._Phi) * self._dPhi
+        self._dZ = self._dR * np.cos(self._Phi) - self._R * np.sin(self._Phi) * self._dPhi
+
 
 
     @property
@@ -315,3 +390,5 @@ class PhasePortrait3D:
             if not isinstance(value, dict):
                 raise exceptions.dF_argsInvalid(value)
         self._dF_args = value
+
+
