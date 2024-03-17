@@ -20,7 +20,7 @@ import mkdocs_gen_files
 
 nav = mkdocs_gen_files.Nav()
 
-LICENSE = """<!-- Copyright 2023 PhasePortriat
+LICENSE = """<!-- Copyright 2024 PhasePortriat
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
