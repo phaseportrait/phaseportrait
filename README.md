@@ -41,6 +41,8 @@ def pendulum(θ, dθ):
 
 SimplePendulum = phaseportrait.PhasePortrait2D(pendulum, [-9, 9], Title='Simple pendulum', xlabel=r"$\Theta$", ylabel=r"$\dot{\Theta}$")
 SimplePendulum.plot()
+
+pytplot.show()
 ```
 
 <div align="center">
