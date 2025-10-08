@@ -69,6 +69,8 @@ class trajectory:
                     exceptions.dFArgsRequired()
         except KeyError:
             pass
+        except ModuleNotFoundError:
+            pass
 
         # Genral Runge-Kutta variables
         self.runge_kutta_step = runge_kutta_step

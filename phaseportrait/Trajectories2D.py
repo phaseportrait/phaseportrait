@@ -73,7 +73,7 @@ class Trajectory2D(trajectory):
         
         linez = LineCollection(segments[:,:,(0,1)], linewidth=self.size, color=C)
         self.ax['Z'].add_collection(linez)
-        if isinstance(C, list):
+        if isinstance(C, list) or isinstance(C, np.ndarray): 
             C = C[0]
         self.ax['Z'].plot([val_init[0],val[0,0]], [val_init[1], val[1,0]], '-', linewidth=self.size, color=C, zorder=-1)
         # self.ax['Z'].plot(val[0,1:], val[1,1:], label=f"({','.join(tuple(map(str, val_init)))})")
