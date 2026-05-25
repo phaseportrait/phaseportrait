@@ -77,7 +77,7 @@ plugins:
 - literate-nav:
     nav_file: reference/SUMMARY.md
 - mkdocstrings:
-    custom_templates: templates
+    # custom_templates: templates
     default_handler: python
     handlers:
       python:

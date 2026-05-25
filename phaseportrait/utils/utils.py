@@ -102,11 +102,11 @@ def construct_interval_3d(var, *, depth=0):
         var (float, list):
             Element from which a 1d interval is created
             It supports:
-            * number
-            * [number, number, number]
-            * [[number, number], number, number]
-            * [[number, number], [number, number], number]
-            * [[number, number],[number, number], [number, number]]
+            * x                -> [[-x,x], [-x,x], [-x,x]]
+            * [x, y, z]        -> [[-x,x], [-y,y], [-z,z]]
+            * [x, y]           -> [[-x,x], [-y,y], [-y,y]]
+            * [[x, y]]         -> [[x,y], [x,y], [x,y]]
+            * [[x0, x1], y, z] -> [[x0,x1], [-y,y], [-z,z]]
             
             And all the permutations.
 
@@ -121,7 +121,7 @@ def construct_interval_3d(var, *, depth=0):
             if depth == 0:
                 return [sorted([0, var])]*3
             elif depth == 1:
-                return sorted([-var, var])
+                return construct_interval_1d(var)
         elif is_range(var):
             if depth==0:
                 return [construct_interval_3d(i, depth=depth+1) for i in var]

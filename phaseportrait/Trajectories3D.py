@@ -95,7 +95,7 @@ class Trajectory3D(trajectory):
         self.ax['Z'].add_collection(linez)
 
 
-        if isinstance(C, list): 
+        if isinstance(C, list) or isinstance(C, np.ndarray):
             C = C[0]
         self.ax['3d'].plot(*[[val_init[i],val[i,0]] for i in range(3)], '-', linewidth=self.size, color=C)
         self.ax['X'].plot([val_init[1],val[1,0]], [val_init[2], val[2,0]], '-', linewidth=self.size, color=C, zorder=-1)
