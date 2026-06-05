@@ -111,27 +111,41 @@ class PhasePortrait2D:
   
 
     def _create_arrays(self):
-        # If scale is log and min range value is 0 or negative the plots is not correct
+        """
+        Creates arrays for plotting based on the specified scale and range.
+
+        This method initializes arrays for the X and Y coordinates based on the specified scaling (linear, log, symlog)
+        and range. It also handles polar coordinates if specified.
+
+        Steps:
+        1. Check if the range is in log scale and adjust if necessary.
+        2. Create arrays for X and Y coordinates based on the specified scaling and range.
+        3. If polar coordinates are specified, compute arrays for R and Theta.
+
+        """
+        # If scale is log and min range value is 0 or negative, adjust the range
         _Range = self.Range.copy().astype(np.float64)
         for i, (scale, Range) in enumerate(zip([self.xScale, self.yScale], self.Range)):
             if scale == 'log':
                 for j in range(len(Range)):
-                    if Range[j]<=0:
-                        _Range[i,j] = abs(max(Range))/100 if j==0 else abs(max(Range))
+                    if Range[j] <= 0:
+                        # If minimum range value is 0 or negative, set it to a small positive value
+                        _Range[i, j] = abs(max(Range)) / 100 if j == 0 else abs(max(Range))
         self._Range = _Range
 
-        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y"],[self.xScale, self.yScale], self.Range)):
+        # Create arrays for X and Y coordinates based on the specified scaling and range
+        for i, (_P, scale, Range) in enumerate(zip(["_X", "_Y"], [self.xScale, self.yScale], self.Range)):
             if scale == 'linear':
                 setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
-            if scale == 'log':
+            elif scale == 'log':
                 setattr(self, _P, np.logspace(np.log10(Range[0]), np.log10(Range[1]), self.MeshDim))
-            if scale == 'symlog':
+            elif scale == 'symlog':
                 setattr(self, _P, np.linspace(Range[0], Range[1], self.MeshDim))
 
+        # Create meshgrid for X and Y coordinates
         self._X, self._Y = np.meshgrid(self._X, self._Y)
 
-        # self._X, self._Y = np.meshgrid(np.linspace(*self.Range[0,:], self.MeshDim), np.linspace(*self.Range[1,:], self.MeshDim))
-
+        # If polar coordinates are specified, compute arrays for R and Theta
         if self.Polar:   
             self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
 
@@ -275,13 +289,39 @@ class PhasePortrait2D:
     def _PolarTransformation(self):
         """
         Computes the expression of the velocity field if coordinates are given in polar representation.
+        
+        This method transforms the Cartesian coordinates (X, Y) into polar coordinates (R, Theta) and calculates
+        the corresponding velocity components using the provided dF function.
+        
+        The transformation equations are as follows:
+        
+        R = sqrt(X^2 + Y^2)     # R is the radial distance from the origin
+        Theta = arctan2(Y, X)   # Theta is the azimuthal angle measured from the positive x-axis
+        
+        The derivatives of R and Theta with respect to time are computed using the provided dF function.
+        Then, the derivatives of the Cartesian coordinates (X, Y) with respect to time are calculated using
+        the chain rule:
+        
+        dX/dt = dR/dt * cos(Theta) - R * sin(Theta) * dTheta/dt
+        dY/dt = dR/dt * sin(Theta) + R * cos(Theta) * dTheta/dt
+        
+        where:
+        - dR/dt is the derivative of R with respect to time,
+        - dTheta/dt is the derivative of Theta with respect to time.
+        
+        These equations represent the velocity components in the Cartesian coordinate system.
         """
         if not hasattr(self, "_dR") or not hasattr(self, "_dTheta"):
-            self._R, self._Theta = (self._X**2 + self._Y**2)**0.5, np.arctan2(self._Y, self._X)
+            self._R = np.sqrt(self._X**2 + self._Y**2)  # Calculate radial distance R
+            self._Theta = np.arctan2(self._Y, self._X)  # Calculate azimuthal angle Theta
         
+        # Compute derivatives of R and Theta using the provided dF function
         self._dR, self._dTheta = self.dF(self._R, self._Theta, **self.dF_args)
-        self._dX, self._dY = self._dR*np.cos(self._Theta) - self._R*np.sin(self._Theta)*self._dTheta, self._dR*np.sin(self._Theta)+self._R*np.cos(self._Theta)*self._dTheta
         
+        # Compute derivatives of Cartesian coordinates (X, Y) using chain rule
+        self._dX = self._dR * np.cos(self._Theta) - self._R * np.sin(self._Theta) * self._dTheta
+        self._dY = self._dR * np.sin(self._Theta) + self._R * np.cos(self._Theta) * self._dTheta
+
 
 
     @property

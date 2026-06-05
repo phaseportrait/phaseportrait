@@ -116,51 +116,57 @@ class Streamlines_base:
 
         i = 0
         persistency = 20
-        _speed = self._speed(coords)
 
-        while (self.range_min < coords).all() and (coords < self.range_max).all():
-            if i >= int(self.maxLen / 2):
-                break
-            
-
-            coords_mask_position = self.get_masked_coordinates(*coords)
-
-            # If mask is False there is not trajectory there yet.
-            if not self.used[tuple(coords_mask_position,)]:
-                prev_coords_mask_position = coords_mask_position.copy()
-
-                self.used[tuple(prev_coords_mask_position)] = True
-
-           
-
-            # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
-            deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.max(np.abs(_speed))))
-
-            if np.isnan(deltat) or np.isinf(deltat):
-                break
-
-            coords = self._integration_method(coords, sign, deltat)
-
-            # Save values
-            s[i] = coords
-            svelocity[i] = np.sqrt(np.sum(np.square(_speed)))
-
-
-            # If persistency iterations in a region with previous trajectory break.
-            if self.used[tuple(coords_mask_position)] and (prev_coords_mask_position!=coords_mask_position).any():
-                persistency -= 1
-                if persistency <= 0:
-                    break
-            
-            i += 1
-            
-             # Integration
+        try:
             _speed = self._speed(coords)
-            if (i%8 == 0):
+            while (self.range_min < coords).all() and (coords < self.range_max).all(): 
+                if i >= int(self.maxLen / 2):
+                    break
+                
+
+                coords_mask_position = self.get_masked_coordinates(*coords)
+
+                # If mask is False there is not trajectory there yet.
+                if not self.used[tuple(coords_mask_position,)]:
+                    prev_coords_mask_position = coords_mask_position.copy()
+
+                    self.used[tuple(prev_coords_mask_position)] = True
+
+            
+
+                # deltat = np.sum(np.square(self.get_delta_coordinates(*coords))) / (4 * _speed)
+                deltat = np.min(self.get_delta_coordinates(*coords)/(10*np.max(np.abs(_speed))))
+
+                if np.isnan(deltat) or np.isinf(deltat):
+                    break
+
+                coords = self._integration_method(coords, sign, deltat)
+
+                # Save values
+                s[i] = coords
+                svelocity[i] = np.sqrt(np.sum(np.square(_speed)))
+
+
+                # If persistency iterations in a region with previous trajectory break.
+                if self.used[tuple(coords_mask_position)] and (prev_coords_mask_position!=coords_mask_position).any():
+                    persistency -= 1
+                    if persistency <= 0:
+                        break
+                
+                i += 1
+                
+                # Integration
+                _speed = self._speed(coords)
+
                 if (np.isclose(0, _speed)).all() or \
                     np.isnan(_speed).any() or \
                     np.isinf(_speed).any():
                         break
+                
+        except Exception as e:
+            print(f"Unexpected error while computing stream lines at coords {coords}. It may be caused by a very small value of dF.")
+            print(f"Automatic deltat={deltat}")
+            print(e)
 
         return s, svelocity, i
 
